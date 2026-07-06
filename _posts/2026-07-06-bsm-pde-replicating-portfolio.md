@@ -7,7 +7,7 @@ tags: [Black-Scholes-Merton, PDE, Ito Lemma, Replicating Portfolio]
 math: true
 permalink: /posts/bsm-pde-replicating-portfolio/
 ---
-## Black-Scholes-Merton PDE 유도 2
+## Black-Scholes-Merton PDE 유도 2 
 
 이번 절에서는 Black-Scholes-Merton 모형을 이용해 옵션 가격이 만족해야 하는 PDE를 다시 유도한다.
 
