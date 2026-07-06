@@ -333,29 +333,87 @@ $$
 
 ### 8. Ito 공식으로 얻은 가격 변화식
 
-이번에는 같은 $df(t, S_t)$를 Ito 공식으로 구해보자.
+이번에는 같은 $df(t,S_t)$를 Ito 공식으로 구해보자.
 
-주식 가격은 다음 과정을 따른다.
+여기서 사용하는 것은 **시간의존형 Ito 공식**이다.
+
+일반적으로 어떤 확률과정 $X_t$가 다음과 같이 주어진다고 하자.
 
 $$
-dS_t = S_t(\mu dt + \sigma dB_t)
+dX_t = \mu_t dt + \sigma_t dB_t
+$$
+
+이때 시간 $t$와 확률과정 $X_t$에 의존하는 함수 $f(t,X_t)$에 Ito 공식을 적용하면 다음과 같다.
+
+$$
+df(t,X_t) = \left(f_t(t,X_t) + \mu_t f_x(t,X_t) + \frac{1}{2}\sigma_t^2 f_{xx}(t,X_t)\right)dt + \sigma_t f_x(t,X_t)dB_t
+$$
+
+이제 이 일반 공식을 주식 가격 과정에 적용한다.
+
+BSM 모형에서 주식 가격은 다음 과정을 따른다.
+
+$$
+dS_t = S_t(\mu dt+\sigma dB_t)
 $$
 
 즉,
 
 $$
-dS_t = \mu S_tdt + \sigma S_tdB_t
+dS_t = \mu S_tdt+\sigma S_tdB_t
 $$
 
 이다.
 
-옵션 가격 함수 $f(t, S_t)$에 Ito 공식을 적용하면,
+따라서 일반 Ito 공식의 입력 과정 $X_t$를 주식 가격 $S_t$로 보면 다음과 같다.
 
 $$
-\color{#2563eb}{df(t, S_t)=\left(f_t(t, S_t)+\mu S_t f_S(t, S_t)+\frac{1}{2}\sigma^2 S_t^2 f_{SS}(t, S_t)\right)dt+\sigma S_t f_S(t, S_t)dB_t}
+\color{#2563eb}{X_t = S_t}
 $$
 
-이다.
+또한 일반식의 drift 항과 diffusion 항은 각각 다음과 같이 대응된다.
+
+$$
+\color{#2563eb}{\mu_t = \mu S_t}
+$$
+
+$$
+\color{#2563eb}{\sigma_t = \sigma S_t}
+$$
+
+즉, 대응 관계를 정리하면 다음과 같다.
+
+| 일반 Ito 공식 | 주식 가격 과정에 적용 |
+|---|---|
+| $X_t$ | $S_t$ |
+| $\mu_t$ | $\mu S_t$ |
+| $\sigma_t$ | $\sigma S_t$ |
+| $f_x(t,X_t)$ | $f_S(t,S_t)$ |
+| $f_{xx}(t,X_t)$ | $f_{SS}(t,S_t)$ |
+
+따라서 일반 Ito 공식
+
+$$
+df(t,X_t) = \left(f_t(t,X_t) + \mu_t f_x(t,X_t) + \frac{1}{2}\sigma_t^2 f_{xx}(t,X_t)\right)dt + \sigma_t f_x(t,X_t)dB_t
+$$
+
+에
+
+$$
+X_t=S_t,\qquad \mu_t=\mu S_t,\qquad \sigma_t=\sigma S_t
+$$
+
+를 대입하면 다음과 같다.
+
+$$
+df(t,S_t) = \left(f_t(t,S_t) + \mu S_t f_S(t,S_t) + \frac{1}{2}(\sigma S_t)^2 f_{SS}(t,S_t)\right)dt + \sigma S_t f_S(t,S_t)dB_t
+$$
+
+이를 정리하면 다음 식을 얻는다.
+
+$$
+\color{#2563eb}{df(t,S_t) = \left(f_t(t,S_t) + \mu S_t f_S(t,S_t) + \frac{1}{2}\sigma^2S_t^2 f_{SS}(t,S_t)\right)dt + \sigma S_t f_S(t,S_t)dB_t}
+$$
 
 여기서 각 미분항의 의미는 다음과 같다.
 
@@ -364,61 +422,105 @@ $$
 | $f_t$ | 시간에 대한 옵션 가격의 변화 |
 | $f_S$ | 주가에 대한 옵션 가격의 1차 미분 ; Delta |
 | $f_{SS}$ | 주가에 대한 옵션 가격의 2차 미분 ; Gamma |
-| $\frac{1}{2}\sigma^2 S_t^2 f_{SS}$ | Ito 공식에서 추가되는 2차 변동성 항 |
+| $\frac{1}{2}\sigma^2S_t^2f_{SS}$ | Ito 공식에서 추가되는 2차 변동성 항 |
+
+여기서 중요한 점은 일반적인 미분 공식과 달리 Ito 공식에는 다음 항이 추가된다는 것이다.
+
+$$
+\frac{1}{2}\sigma_t^2 f_{xx}(t,X_t)
+$$
+
+이 항은 브라운 운동의 2차 변동성 때문에 생기는 항이며, 옵션 가격 함수의 볼록성, 즉 Gamma 효과를 반영한다.
 
 ---
 
 ### 9. 두 가격 변화식 비교
 
-우리는 같은 대상인 $df(t, S_t)$를 두 가지 방식으로 구했다.
+이제 같은 대상인 $df(t,S_t)$를 두 가지 방식으로 구했다.
 
-첫 번째는 복제 포트폴리오로부터 얻은 식이다.
-
-$$
-df(t, S_t)=\left[rf(t, S_t) + (\mu - r)S_t f_S(t, S_t)\right]dt + S_t\sigma f_S(t, S_t)dB_t
-$$
-
-두 번째는 Ito 공식으로 얻은 식이다.
+첫 번째는 **복제 포트폴리오의 자기금융 조건**으로부터 얻은 식이다.
 
 $$
-df(t, S_t)=\left(f_t(t, S_t)+\mu S_t f_S(t, S_t)+\frac{1}{2}\sigma^2 S_t^2 f_{SS}(t, S_t)\right)dt+\sigma S_t f_S(t, S_t)dB_t
+\color{#2563eb}{df(t,S_t) = \left[rf(t,S_t) + (\mu-r)S_t f_S(t,S_t)\right]dt + \sigma S_t f_S(t,S_t)dB_t}
 $$
 
-두 식은 같은 $df(t, S_t)$를 나타내므로 서로 같아야 한다.
-
-먼저 확률항인 $dB_t$ 부분은 이미 같다.
+두 번째는 **Ito 공식**으로부터 얻은 식이다.
 
 $$
-S_t\sigma f_S(t, S_t)dB_t
+\color{#2563eb}{df(t,S_t) = \left[f_t(t,S_t) + \mu S_t f_S(t,S_t) + \frac{1}{2}\sigma^2S_t^2 f_{SS}(t,S_t)\right]dt + \sigma S_t f_S(t,S_t)dB_t}
 $$
 
-이제 drift 부분만 비교하면 된다.
+두 식은 모두 같은 $df(t,S_t)$를 나타내므로 서로 같아야 한다.
+
+먼저 확률항인 $dB_t$ 부분을 비교하면 다음과 같다.
 
 $$
-\color{#2563eb}{rf(t, S_t) + (\mu - r)S_t f_S(t, S_t)=f_t(t, S_t)+\mu S_t f_S(t, S_t)+\frac{1}{2}\sigma^2 S_t^2 f_{SS}(t, S_t)}
+\sigma S_t f_S(t,S_t)dB_t
 $$
 
-양변을 정리하면,
+확률항은 두 식에서 동일하다.
+
+따라서 이제 $dt$가 붙은 drift 부분만 비교하면 된다.
+
+복제 포트폴리오에서 얻은 drift는 다음과 같다.
 
 $$
-\color{#2563eb}{f_t(t, S_t)+\frac{1}{2}\sigma^2 S_t^2 f_{SS}(t, S_t)+rS_t f_S(t, S_t)-rf(t, S_t)=0}
+rf(t,S_t)+(\mu-r)S_t f_S(t,S_t)
 $$
 
-따라서 일반적인 변수 $S$에 대해 쓰면,
+Ito 공식에서 얻은 drift는 다음과 같다.
 
 $$
-\color{#2563eb}{f_t(t, S)+\frac{1}{2}\sigma^2 S^2 f_{SS}(t, S)+rS f_S(t, S)-rf(t, S)=0}
+f_t(t,S_t)+\mu S_t f_S(t,S_t)+\frac{1}{2}\sigma^2S_t^2 f_{SS}(t,S_t)
 $$
 
-이다.
+따라서 두 drift를 같게 두면 다음과 같다.
+
+$$
+\color{#2563eb}{rf(t,S_t)+(\mu-r)S_t f_S(t,S_t) = f_t(t,S_t)+\mu S_t f_S(t,S_t)+\frac{1}{2}\sigma^2S_t^2 f_{SS}(t,S_t)}
+$$
+
+이제 좌변을 전개하면 다음과 같다.
+
+$$
+rf(t,S_t)+\mu S_t f_S(t,S_t)-rS_t f_S(t,S_t) = f_t(t,S_t)+\mu S_t f_S(t,S_t)+\frac{1}{2}\sigma^2S_t^2 f_{SS}(t,S_t)
+$$
+
+양변에 있는 다음 항이 서로 소거된다.
+
+$$
+\mu S_t f_S(t,S_t)
+$$
+
+따라서 다음 식이 남는다.
+
+$$
+rf(t,S_t)-rS_t f_S(t,S_t) = f_t(t,S_t)+\frac{1}{2}\sigma^2S_t^2 f_{SS}(t,S_t)
+$$
+
+모든 항을 한쪽으로 모으면 다음과 같다.
+
+$$
+\color{#2563eb}{f_t(t,S_t)+\frac{1}{2}\sigma^2S_t^2 f_{SS}(t,S_t)+rS_t f_S(t,S_t)-rf(t,S_t)=0}
+$$
+
+일반적인 변수 $S$에 대해 쓰면 다음과 같다.
+
+$$
+\color{#2563eb}{f_t(t,S)+\frac{1}{2}\sigma^2S^2 f_{SS}(t,S)+rS f_S(t,S)-rf(t,S)=0}
+$$
 
 이것이 Black-Scholes-Merton PDE이다.
 
-또는 다음과 같이 쓸 수도 있다.
+원문처럼 묶어서 쓰면 다음과 같다.
 
 $$
-\color{#2563eb}{r\left(Sf_S(t, S) - f(t, S)\right)+f_t(t, S)+\frac{1}{2}\sigma^2S^2f_{SS}(t, S)=0}
+\color{#2563eb}{r\left(Sf_S(t,S)-f(t,S)\right)+f_t(t,S)+\frac{1}{2}\sigma^2S^2f_{SS}(t,S)=0}
 $$
+
+여기서 중요한 점은 주식의 기대수익률을 나타내는 $\mu$가 최종 PDE에서 사라진다는 것이다.
+
+즉 BSM 모형에서 옵션 가격은 실제 주식의 평균 성장률 $\mu$를 직접 추정해서 결정되는 것이 아니라, 복제 포트폴리오와 무차익 원리에 의해 결정된다.
 
 ---
 
