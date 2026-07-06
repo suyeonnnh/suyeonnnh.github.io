@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Black-Scholes-Merton PDE 유도 2"
-date: 2026-07-06 13:00:00 +0900
+date: 2026-07-06 09:00:00 +0900
 categories: [Finance, Stochastic Calculus]
 tags: [Black-Scholes-Merton, PDE, Ito Lemma, Replicating Portfolio]
 math: true
