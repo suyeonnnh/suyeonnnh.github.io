@@ -1,9 +1,11 @@
 ---
+layout: post
 title: "Black-Scholes-Merton PDE 유도 2: 복제 포트폴리오 접근"
 date: 2026-07-06 13:00:00 +0900
 categories: [Finance, Stochastic Calculus]
 tags: [Black-Scholes-Merton, PDE, Ito Lemma, Replicating Portfolio]
 math: true
+permalink: /posts/bsm-pde-replicating-portfolio/
 ---
 ## Black-Scholes-Merton PDE 유도 2: 복제 포트폴리오 접근
 
