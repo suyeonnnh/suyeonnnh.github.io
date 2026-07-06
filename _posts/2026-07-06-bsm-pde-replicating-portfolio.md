@@ -1,13 +1,13 @@
 ---
 layout: post
-title: "Black-Scholes-Merton PDE 유도 2: 복제 포트폴리오 접근"
+title: "Black-Scholes-Merton PDE 유도 2"
 date: 2026-07-06 13:00:00 +0900
 categories: [Finance, Stochastic Calculus]
 tags: [Black-Scholes-Merton, PDE, Ito Lemma, Replicating Portfolio]
 math: true
 permalink: /posts/bsm-pde-replicating-portfolio/
 ---
-## Black-Scholes-Merton PDE 유도 2: 복제 포트폴리오 접근
+## Black-Scholes-Merton PDE 유도 2
 
 이번 절에서는 Black-Scholes-Merton 모형을 이용해 옵션 가격이 만족해야 하는 PDE를 다시 유도한다.
 
