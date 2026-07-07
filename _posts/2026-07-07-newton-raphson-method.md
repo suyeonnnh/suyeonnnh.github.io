@@ -542,7 +542,7 @@ $$
 
 을 반복한다. `err = abs(x - x0)`는 현재 근사값과 이전 근사값의 차이를 의미한다. 이 값이 `TOL`보다 작아지면 반복을 멈춘다.
 
-![MATLAB 뉴턴-랩슨 함수 코드](/assets/img/posts/matlab1.png)
+![MATLAB 뉴턴-랩슨 함수 코드](/assets/img/posts/Matlab1.png)
 ---
 
 ## Example
@@ -597,86 +597,7 @@ end
 
 출력되는 값들은 반복 횟수, 현재 근사값, 현재 함수값, 이전 근사값과의 차이를 나타낸다. 반복이 진행될수록 $f(x_n)$이 0에 가까워지고, $x_n-x_{n-1}$의 크기도 작아진다.
 
-![MATLAB 뉴턴-랩슨 함수 코드](/assets/img/posts/matlab2.png)
----
-
-## C++ Code
-
-다음 C++ 코드는
-
-$$
-f(x)=1+\cos(3x)-x
-$$
-
-의 근을 뉴턴법으로 구한다. 도함수는
-
-$$
-f'(x)=-3\sin(3x)-1
-$$
-
-이다.
-
-```cpp
-#include <iostream>
-#include <cmath>
-#include <iomanip>
-
-using namespace std;
-
-double f(double x) {
-    return 1 + cos(3 * x) - x;
-}
-
-double df(double x) {
-    return -3 * sin(3 * x) - 1;
-}
-
-int main() {
-    double x_prev;
-    double x = 1.0;
-    double tol = 1e-12;
-    int maxIter = 100;
-
-    cout << fixed << setprecision(6);
-
-    cout << "n\t"
-         << "x_n\t\t"
-         << "f(x_n)\t\t"
-         << "|x_n-x_(n-1)|" << endl;
-
-    cout << "0\t"
-         << x << "\t"
-         << f(x) << "\t"
-         << "-" << endl;
-
-    for (int n = 1; n <= maxIter; n++) {
-        x_prev = x;
-
-        x = x_prev - f(x_prev) / df(x_prev);
-
-        cout << n << "\t"
-             << x << "\t"
-             << f(x) << "\t"
-             << fabs(x - x_prev) << endl;
-
-        if (fabs(x - x_prev) < tol) {
-            break;
-        }
-    }
-
-    return 0;
-}
-```
-
-이 코드에서도 핵심은 같다. 현재값 `x_prev`에서 함수값과 도함수값을 계산하고,
-
-```cpp
-x = x_prev - f(x_prev) / df(x_prev);
-```
-
-를 통해 다음 근사값을 만든다.
-![C++ 뉴턴-랩슨 함수 코드](/assets/img/posts/cpp1.png)
----
+![MATLAB 뉴턴-랩슨 함수 코드](/assets/img/posts/Matlab2.png)
 
 ## 비선형 연립방정식으로의 확장
 
@@ -799,6 +720,87 @@ fprintf('---------------------------\n');
 ```
 
 이 코드는 세 개의 미지수를 갖는 비선형 시스템에 뉴턴법을 적용한다. $F(x)$가 0에 가까워질 때까지 야코비안 행렬을 이용해 근사 벡터를 갱신한다.
+![MATLAB 뉴턴-랩슨 함수 코드](/assets/img/posts/Matlab3.png)
+
+---
+
+## C++ Code
+
+다음 C++ 코드는
+
+$$
+f(x)=1+\cos(3x)-x
+$$
+
+의 근을 뉴턴법으로 구한다. 도함수는
+
+$$
+f'(x)=-3\sin(3x)-1
+$$
+
+이다.
+
+```cpp
+#include <iostream>
+#include <cmath>
+#include <iomanip>
+
+using namespace std;
+
+double f(double x) {
+    return 1 + cos(3 * x) - x;
+}
+
+double df(double x) {
+    return -3 * sin(3 * x) - 1;
+}
+
+int main() {
+    double x_prev;
+    double x = 1.0;
+    double tol = 1e-12;
+    int maxIter = 100;
+
+    cout << fixed << setprecision(6);
+
+    cout << "n\t"
+         << "x_n\t\t"
+         << "f(x_n)\t\t"
+         << "|x_n-x_(n-1)|" << endl;
+
+    cout << "0\t"
+         << x << "\t"
+         << f(x) << "\t"
+         << "-" << endl;
+
+    for (int n = 1; n <= maxIter; n++) {
+        x_prev = x;
+
+        x = x_prev - f(x_prev) / df(x_prev);
+
+        cout << n << "\t"
+             << x << "\t"
+             << f(x) << "\t"
+             << fabs(x - x_prev) << endl;
+
+        if (fabs(x - x_prev) < tol) {
+            break;
+        }
+    }
+
+    return 0;
+}
+```
+
+이 코드에서도 핵심은 같다. 현재값 `x_prev`에서 함수값과 도함수값을 계산하고,
+
+```cpp
+x = x_prev - f(x_prev) / df(x_prev);
+```
+
+를 통해 다음 근사값을 만든다.
+![C++ 뉴턴-랩슨 함수 코드](/assets/img/posts/cpp1.png)
+---
 
 ---
 
