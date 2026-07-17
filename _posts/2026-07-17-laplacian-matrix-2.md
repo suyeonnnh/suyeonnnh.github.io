@@ -1,6 +1,6 @@
 ---
 title: "Laplacian Matrix (2): Eigenvalues and Optimization : The Courant-Fischer Theorem"
-date: 2026-07-17 22:10:00 +0900
+date: 2026-07-17 12:10:00 +0900
 categories: [Quant I]
 tags: [Spectral Graph Theory, Eigenvalues, Rayleigh Quotient, Courant-Fischer Theorem, Spectral Theorem, Singular Value Decomposition]
 math: true
