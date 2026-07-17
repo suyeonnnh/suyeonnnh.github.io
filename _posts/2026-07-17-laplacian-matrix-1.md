@@ -241,7 +241,15 @@ $$(M\mathbf 1)(a)=\sum_{b:(a,b)\in E}w_{a,b}=d(a)$$
 
 $$D(a,a)=d(a)$$
 
-$$D=\operatorname{diag}(d(1),d(2),\ldots,d(n))$$
+$$
+D=
+\begin{pmatrix}
+d(1)&0&\cdots&0\\\\
+0&d(2)&\cdots&0\\\\
+\vdots&\vdots&\ddots&\vdots\\\\
+0&0&\cdots&d(n)
+\end{pmatrix}
+$$
 
 ---
 
