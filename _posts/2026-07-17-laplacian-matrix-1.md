@@ -1,6 +1,6 @@
 ---
 title: "Laplacian Matrix (1): Graphs and Matrices for Graphs"
-date: 2026-07-17 22:00:00 +0900
+date: 2026-07-17 12:00:00 +0900
 categories: [Quant I]
 tags: [Graph Theory, Spectral Graph Theory, Laplacian Matrix, Adjacency Matrix]
 math: true
