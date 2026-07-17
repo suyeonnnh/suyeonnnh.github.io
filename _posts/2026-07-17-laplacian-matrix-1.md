@@ -673,7 +673,11 @@ $$L'=\Pi L\Pi^T$$
 
 $$\text{고유값이 다름}\Longrightarrow\text{동형이 아님}$$
 
-$$\text{고유값이 같음}\centernot\Longrightarrow\text{반드시 동형}$$
+$$
+\text{고유값이 같음}
+\not\Rightarrow
+\text{반드시 동형}
+$$
 
 ---
 
