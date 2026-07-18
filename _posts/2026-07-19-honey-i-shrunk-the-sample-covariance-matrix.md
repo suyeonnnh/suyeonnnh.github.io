@@ -1167,7 +1167,7 @@ $$ N\uparrow\quad\Rightarrow\quad\overline{\mathrm{IR}}_{\mathrm{ex\ post}}\down
 
 Figure 1은 목표 기대초과수익률을 300bp로 설정했을 때, 다섯 가지 벤치마크 규모에 대해 Sample과 Shrink-CC가 기록한 실현 정보비율의 분포를 상자그림으로 나타낸 것이다.
 
-![Figure 1. 실현 정보비율의 분포](/assets/img/figure-1-information-ratios.png)
+![Figure 1. 실현 정보비율의 분포](/assets/img/posts/figure-1-information-ratios.png)
 _Figure 1. 목표 기대초과수익률이 300bp일 때의 실현 정보비율 분포. 각 벤치마크 규모에서 첫 번째 상자는 Sample, 두 번째 상자는 Shrink-CC를 나타낸다._
 {: .normal }
 
