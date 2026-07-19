@@ -136,7 +136,7 @@ $$\tau_n=n\Delta\tau,\qquad n=0,1,\ldots,N$$
 
 $$u(x,t+\Delta t)=u(x,t)+\Delta t\,u_t(x,t)+\frac{(\Delta t)^2}{2}u_{tt}(x,t)+O((\Delta t)^3)$$
 
-양변에서 \(u(x,t)\)를 빼고 \(\Delta t\)로 나누면 다음 식을 얻는다.
+양변에서 $u(x,t)$를 빼고 $\Delta t$로 나누면 다음 식을 얻는다.
 
 $$\frac{u(x,t+\Delta t)-u(x,t)}{\Delta t}=u_t(x,t)+\frac{\Delta t}{2}u_{tt}(x,t)+O((\Delta t)^2)$$
 
@@ -235,7 +235,7 @@ Implicit FDM은 공간미분을 새로 구할 시간단계 \(n+1\)에서 평가�
 
 $$\frac{V_j^{n+1}-V_j^n}{\Delta\tau}=\frac{1}{2}\sigma^2S_j^2\frac{V_{j+1}^{n+1}-2V_j^{n+1}+V_{j-1}^{n+1}}{(\Delta S)^2}+(r-q)S_j\frac{V_{j+1}^{n+1}-V_{j-1}^{n+1}}{2\Delta S}-rV_j^{n+1}$$
 
-\(S_j=j\Delta S\)를 대입하고 시간단계 \(n+1\)의 항들을 왼쪽으로 모으면 다음 식을 얻는다.
+$S_j=j\Delta S$를 대입한 뒤, 시간단계 $n+1$의 격자값이 포함된 항을 왼쪽으로 모으면 다음 식을 얻는다.
 
 $$\ell_jV_{j-1}^{n+1}+d_jV_j^{n+1}+u_jV_{j+1}^{n+1}=V_j^n$$
 
@@ -367,36 +367,49 @@ $$\lim_{\Delta\theta\to0,\ \Delta x\to0}e_i^n=0$$
 
 ### 9.1 Explicit FDM의 일치성 도출
 
-열전도방정식의 Explicit 차분식은 다음과 같다.
+열전도방정식에 Explicit 차분법을 적용하면 다음 식을 얻는다.
 
-$$\frac{u_i^{n+1}-u_i^n}{\Delta\theta}=\frac{u_{i+1}^n-2u_i^n+u_{i-1}^n}{(\Delta x)^2}$$
+$$
+\frac{u_i^{n+1}-u_i^n}{\Delta\theta}=\frac{u_{i+1}^n-2u_i^n+u_{i-1}^n}{(\Delta x)^2}
+$$
 
-정확한 해 \(U_i^n\)을 대입하여 국소절단오차를 정의한다.
+정확해의 격자값 $U_i^n=u(x_i,\theta_n)$을 차분식에 대입하여 국소절단오차를 다음과 같이 정의한다.
 
-$$R_{i,\mathrm{E}}^n=\frac{U_i^{n+1}-U_i^n}{\Delta\theta}-\frac{U_{i+1}^n-2U_i^n+U_{i-1}^n}{(\Delta x)^2}$$
+$$
+R_{i,\mathrm{E}}^n=\frac{U_i^{n+1}-U_i^n}{\Delta\theta}-\frac{U_{i+1}^n-2U_i^n+U_{i-1}^n}{(\Delta x)^2}
+$$
 
-시간항을 \((x_i,\theta_n)\)에서 Taylor 전개하면 다음 식을 얻는다.
+시간차분항을 $(x_i,\theta_n)$에서 Taylor 전개하면 다음 식을 얻는다.
 
-$$\frac{U_i^{n+1}-U_i^n}{\Delta\theta}=u_\theta+\frac{\Delta\theta}{2}u_{\theta\theta}+O((\Delta\theta)^2)$$
+$$
+\frac{U_i^{n+1}-U_i^n}{\Delta\theta}=u_\theta+\frac{\Delta\theta}{2}u_{\theta\theta}+O((\Delta\theta)^2)
+$$
 
-공간항을 같은 점에서 Taylor 전개하면 다음 식을 얻는다.
+공간차분항을 같은 점에서 Taylor 전개하면 다음 식을 얻는다.
 
-$$\frac{U_{i+1}^n-2U_i^n+U_{i-1}^n}{(\Delta x)^2}=u_{xx}+\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta x)^4)$$
+$$
+\frac{U_{i+1}^n-2U_i^n+U_{i-1}^n}{(\Delta x)^2}=u_{xx}+\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta x)^4)
+$$
 
-두 전개식을 국소절단오차에 대입한다.
+두 전개식을 국소절단오차의 정의에 대입하면 다음과 같다.
 
-$$R_{i,\mathrm{E}}^n=u_\theta-u_{xx}+\frac{\Delta\theta}{2}u_{\theta\theta}-\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta\theta)^2)+O((\Delta x)^4)$$
+$$
+R_{i,\mathrm{E}}^n=u_\theta-u_{xx}+\frac{\Delta\theta}{2}u_{\theta\theta}-\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta\theta)^2)+O((\Delta x)^4)
+$$
 
-정확한 해는 \(u_\theta=u_{xx}\)를 만족하므로 첫 두 항이 소거된다.
+정확해는 열전도방정식 $u_\theta=u_{xx}$를 만족하므로 $u_\theta-u_{xx}=0$이다. 따라서 국소절단오차는 다음과 같이 정리된다.
 
-$$R_{i,\mathrm{E}}^n=\frac{\Delta\theta}{2}u_{\theta\theta}-\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta\theta)^2)+O((\Delta x)^4)$$
+$$
+R_{i,\mathrm{E}}^n=\frac{\Delta\theta}{2}u_{\theta\theta}-\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta\theta)^2)+O((\Delta x)^4)
+$$
 
-따라서 Explicit FDM의 국소절단오차는 다음 차수를 갖는다.[4]
+그러므로 Explicit FDM의 국소절단오차는 다음 차수를 갖는다.
 
-$$R_{i,\mathrm{E}}^n=O(\Delta\theta)+O((\Delta x)^2)$$
+$$
+R_{i,\mathrm{E}}^n=O(\Delta\theta)+O((\Delta x)^2)
+$$
 
-Explicit FDM은 시간에 대해 1차, 공간에 대해 2차 일치성을 갖는다.
-
+따라서 Explicit FDM은 시간에 대해 1차, 공간에 대해 2차 일치성을 갖는다.
 ### 9.2 Explicit FDM의 안정성 도출
 
 Explicit 차분식을 $\gamma=\Delta\theta/(\Delta x)^2$를 사용하여 정리하면 다음과 같다.
@@ -423,7 +436,7 @@ $$
 G=1-2\gamma+2\gamma\cos(\xi\Delta x)=1-4\gamma\sin^2\left(\frac{\xi\Delta x}{2}\right)
 $$
 
-안정성을 위해서는 모든 파수 $\xi$에 대해 $|G|\le1$이 성립해야 한다. $\sin^2(\xi\Delta x/2)$의 범위가 $[0,1]$이므로 다음 조건이 필요하다.
+안정성을 위해서는 모든 파수 $\xi$에 대해 $|G|\le1$이 성립해야 한다. $0\le\sin^2(\xi\Delta x/2)\le1$이므로 증폭인자는 다음 부등식을 만족해야 한다.
 
 $$
 -1\le1-4\gamma\sin^2\left(\frac{\xi\Delta x}{2}\right)\le1
@@ -514,35 +527,49 @@ $$
 
 ### 10.1 Implicit FDM의 일치성 도출
 
-열전도방정식의 Implicit 차분식은 다음과 같다.
+열전도방정식에 Implicit 차분법을 적용하면 다음 식을 얻는다.
 
-$$\frac{u_i^{n+1}-u_i^n}{\Delta\theta}=\frac{u_{i+1}^{n+1}-2u_i^{n+1}+u_{i-1}^{n+1}}{(\Delta x)^2}$$
+$$
+\frac{u_i^{n+1}-u_i^n}{\Delta\theta}=\frac{u_{i+1}^{n+1}-2u_i^{n+1}+u_{i-1}^{n+1}}{(\Delta x)^2}
+$$
 
-정확한 해 \(U_i^n\)을 대입하여 국소절단오차를 정의한다.
+정확해의 격자값 $U_i^n=u(x_i,\theta_n)$을 차분식에 대입하여 국소절단오차를 다음과 같이 정의한다.
 
-$$R_{i,\mathrm{I}}^{n+1}=\frac{U_i^{n+1}-U_i^n}{\Delta\theta}-\frac{U_{i+1}^{n+1}-2U_i^{n+1}+U_{i-1}^{n+1}}{(\Delta x)^2}$$
+$$
+R_{i,\mathrm{I}}^{n+1}=\frac{U_i^{n+1}-U_i^n}{\Delta\theta}-\frac{U_{i+1}^{n+1}-2U_i^{n+1}+U_{i-1}^{n+1}}{(\Delta x)^2}
+$$
 
-시간항을 새 시간점 \((x_i,\theta_{n+1})\)에서 후진 Taylor 전개한다.
+시간차분항을 새로운 시간점 $(x_i,\theta_{n+1})$을 기준으로 후진 Taylor 전개하면 다음 식을 얻는다.
 
-$$\frac{U_i^{n+1}-U_i^n}{\Delta\theta}=u_\theta-\frac{\Delta\theta}{2}u_{\theta\theta}+O((\Delta\theta)^2)$$
+$$
+\frac{U_i^{n+1}-U_i^n}{\Delta\theta}=u_\theta-\frac{\Delta\theta}{2}u_{\theta\theta}+O((\Delta\theta)^2)
+$$
 
-공간항도 \((x_i,\theta_{n+1})\)에서 전개한다.
+공간차분항도 같은 점 $(x_i,\theta_{n+1})$에서 Taylor 전개한다.
 
-$$\frac{U_{i+1}^{n+1}-2U_i^{n+1}+U_{i-1}^{n+1}}{(\Delta x)^2}=u_{xx}+\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta x)^4)$$
+$$
+\frac{U_{i+1}^{n+1}-2U_i^{n+1}+U_{i-1}^{n+1}}{(\Delta x)^2}=u_{xx}+\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta x)^4)
+$$
 
-두 식을 국소절단오차에 대입한다.
+두 전개식을 국소절단오차의 정의에 대입하면 다음과 같다.
 
-$$R_{i,\mathrm{I}}^{n+1}=u_\theta-u_{xx}-\frac{\Delta\theta}{2}u_{\theta\theta}-\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta\theta)^2)+O((\Delta x)^4)$$
+$$
+R_{i,\mathrm{I}}^{n+1}=u_\theta-u_{xx}-\frac{\Delta\theta}{2}u_{\theta\theta}-\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta\theta)^2)+O((\Delta x)^4)
+$$
 
-정확한 해는 \(u_\theta=u_{xx}\)를 만족하므로 다음 식을 얻는다.
+정확해는 열전도방정식 $u_\theta=u_{xx}$를 만족하므로 $u_\theta-u_{xx}=0$이다. 따라서 국소절단오차는 다음과 같이 정리된다.
 
-$$R_{i,\mathrm{I}}^{n+1}=-\frac{\Delta\theta}{2}u_{\theta\theta}-\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta\theta)^2)+O((\Delta x)^4)$$
+$$
+R_{i,\mathrm{I}}^{n+1}=-\frac{\Delta\theta}{2}u_{\theta\theta}-\frac{(\Delta x)^2}{12}u_{xxxx}+O((\Delta\theta)^2)+O((\Delta x)^4)
+$$
 
-따라서 Implicit FDM의 국소절단오차는 다음 차수를 갖는다.[4]
+그러므로 Implicit FDM의 국소절단오차는 다음 차수를 갖는다.
 
-$$R_{i,\mathrm{I}}^{n+1}=O(\Delta\theta)+O((\Delta x)^2)$$
+$$
+R_{i,\mathrm{I}}^{n+1}=O(\Delta\theta)+O((\Delta x)^2)
+$$
 
-Implicit FDM도 시간에 대해 1차, 공간에 대해 2차 일치성을 갖는다.
+따라서 Implicit FDM은 시간에 대해 1차, 공간에 대해 2차 일치성을 갖는다.
 
 ### 10.2 Implicit FDM의 안정성 도출
 
@@ -586,7 +613,7 @@ $$
 
 > **Implicit FDM의 안정성**
 >
-> 안정성을 위해 $\Delta\theta$와 $\Delta x$ 사이에 추가적인 비율조건을 설정할 필요가 없다. 그러나 격자가 거칠면 절단오차가 커질 수 있으므로 정확도를 높이기 위해서는 두 격자간격을 충분히 줄여야 한다.
+> 안정성을 위해 $\Delta\theta$와 $\Delta x$ 사이에 별도의 비율조건을 설정할 필요가 없다. 다만 격자가 거칠면 절단오차가 커질 수 있으므로 정확도를 높이려면 두 격자간격을 충분히 줄여야 한다.
 {: .prompt-tip }
 
 ### 10.3 Implicit FDM의 수렴성 도출
@@ -683,8 +710,6 @@ $$
 해당 실험에서 Black–Scholes 해는 18.8455이다.
 
 ---
-
-## 13. 정리
 
 유한차분법은 Black–Scholes–Merton 편미분방정식을 격자 위의 차분방정식으로 변환하여 옵션가격을 계산한다.
 
