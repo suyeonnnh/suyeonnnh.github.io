@@ -1,5 +1,5 @@
 ---
-title: "[수치해석] 이분법 Bisection Method"
+title: "Bisection Method"
 date: 2026-07-07 18:00:00 +0900
 categories: [Numerical Analysis]
 tags: [Bisection Method, Numerical Analysis, 수치해석, 근찾기, 근사해, Python, MATLAB]
