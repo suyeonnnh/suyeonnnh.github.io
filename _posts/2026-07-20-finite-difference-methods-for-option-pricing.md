@@ -436,8 +436,7 @@ $$
 G=1-2\gamma+2\gamma\cos(\xi\Delta x)=1-4\gamma\sin^2\left(\frac{\xi\Delta x}{2}\right)
 $$
 
-안정성을 위해서는 모든 파수 $\xi$에 대해 $|G|\le1$이 성립해야 한다. $0\le\sin^2(\xi\Delta x/2)\le1$이므로 증폭인자는 다음 부등식을 만족해야 한다.
-
+안정성을 위해서는 모든 파수 $\xi$에 대해 $\lvert G\rvert\le 1$이 성립해야 한다. 또한 $0\le \sin^2\left(\frac{\xi\Delta x}{2}\right)\le 1$이므로 증폭인자는 다음 부등식을 만족해야 한다.
 $$
 -1\le1-4\gamma\sin^2\left(\frac{\xi\Delta x}{2}\right)\le1
 $$
@@ -609,7 +608,7 @@ $$
 0<\frac{1}{1+4\gamma}\le G\le1
 $$
 
-따라서 모든 $\gamma>0$에 대해 $|G|\le1$이다. 그러므로 Implicit FDM은 von Neumann 안정성 기준에서 무조건 안정적이다.
+따라서 모든 $\gamma>0$에 대해 $\lvert G\rvert\le 1$이 성립한다. 그러므로 Implicit FDM은 von Neumann 안정성 기준에서 무조건 안정적이다.
 
 > **Implicit FDM의 안정성**
 >
