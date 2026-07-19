@@ -1,5 +1,5 @@
 ---
-title: "[수치해석] Newton-Raphson Method"
+title: "Newton-Raphson Method"
 date: 2026-07-07 20:00:00 +0900
 categories: [Numerical Analysis]
 tags: [Newton-Raphson Method, Newton Method, Numerical Analysis, Python, MATLAB, C++]
