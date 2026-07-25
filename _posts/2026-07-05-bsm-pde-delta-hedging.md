@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Black-Scholes-Merton PDE 유도 1: 델타 헤징 접근"
+title: "Black-Scholes-Merton PDE 유도 1"
 date: 2026-07-05 00:00:00 +0900
 categories: [Finance Mathematics]
 tags: [Black-Scholes-Merton, PDE, Ito Lemma, Delta Hedging]
