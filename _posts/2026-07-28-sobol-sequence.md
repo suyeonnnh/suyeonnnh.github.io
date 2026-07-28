@@ -1,7 +1,7 @@
 ---
 title: "Sobol Sequence"
 date: 2026-07-28 18:00:00 +0900
-categories: [Numerical Analysis]
+categories: [Finance Mathematics]
 tags: [Monte Carlo, Quasi Random Number, Van der Corput, Halton Sequence, Sobol Sequence, Direction Number, Primitive Polynomial, Gray Code]
 math: true
 toc: true
