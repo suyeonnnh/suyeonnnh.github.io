@@ -1,5 +1,5 @@
 ---
-layout: single
+layout: post
 title: "Control Variates for Coupon-Bond Pricing under the Black–Karasinski Model"
 date: 2026-10-24
 categories:
@@ -10,8 +10,8 @@ tags:
   - Monte Carlo
   - Control Variates
 math: true
-use_math: true
 ---
+
 
 
 
