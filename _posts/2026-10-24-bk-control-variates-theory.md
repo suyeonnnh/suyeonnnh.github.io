@@ -22,19 +22,19 @@ math: true
 
 본 과제에서는 **Black–Karasinski(BK) 단기금리 모형**을 기반으로, Monte Carlo Simulation을 이용하여 Fixed-Coupon Bond의 가격을 계산한다.
 
-BK 모델에서는 채권 가격을 구하는 닫힌 형태의 해(Closed-form Solution)가 존재하지 않으므로, 몬테카를로 시뮬레이션 또는 다른 수치적 방법을 사용해야 한다.
+BK 모델에서는 채권 가격을 구하는 Closed-form Solution가 존재하지 않으므로, 몬테카를로 시뮬레이션 또는 다른 수치적 방법을 사용해야 한다.
 
 먼저 Analytical Price이 존재하는 **Vasicek 모델**을 이용하여 몬테카를로 계산 방법이 올바르게 작동하는지 검증한다.
 
-이후 통제변량법(Control Variates)을 적용하여 BK 모델의 가격 추정량이 갖는 분산을 감소시킨다.
+이후 Control Variates을 적용하여 BK 모델의 가격 추정량이 갖는 분산을 감소시킨다.
 
 이를 위해 먼저 BK 모델과 **Brownian Motion**에 의해 움직이는 Vasicek 채권을 통제변량으로 사용하고, 다음으로 BK 모델의 금리 경로 자체에서 구성한 통제변량을 사용한다.
 
 통제변량법의 성능은 사용되는 통제변량의 **알려진 기대값(Known Expectation)이 얼마나 정확한지**에 달려 있다. 따라서 본 과제의 핵심적인 부분 중 하나는 사용하는 기대값이 올바른지 검증하는 것이다.
 
-과제에 적용되는 일반적인 규칙인 노트북 구조(Notebook Structure), 검증(Validation), 테스트 기록표(Register), 구술 확인(Oral Check), 실행 시간 제한(Run-time Limit)은 별도의 *Assessment Rules*에 명시되어 있다.
+과제에 적용되는 일반적인 규칙인 노트북 구조, 검증, 테스트 기록표, 구술 확인, 실행 시간 제한은 별도의 *Assessment Rules*에 명시되어 있다.
 
-# 1. Models (금리 모형)
+# 1. Models
 
 이번 과제에서는 **Black–Karasinski(BK) 모델**과 **Vasicek 모델**이라는 두 가지 단기금리 모형을 사용한다. 두 모델 모두 금리가 시간에 따라 어떻게 변하는지를 확률미분방정식(SDE)으로 표현하지만, 모델링하는 대상과 금리의 움직임에는 차이가 있다.
 
@@ -72,7 +72,7 @@ Black–Karasinski(BK) 모델은 단기금리(Short Rate)의 로그값이 **평�
 
 이 식은 크게 두 부분으로 나눌 수 있다.
 
-**① Drift Term (평균회귀 항)**
+**① Drift Term**
 
 ![Drift Term](https://latex.codecogs.com/svg.image?\color{white}\kappa(\theta-x_t)dt)
 
@@ -80,7 +80,7 @@ Black–Karasinski(BK) 모델은 단기금리(Short Rate)의 로그값이 **평�
 
 즉, 금리가 무작위로 움직이더라도 로그 금리는 장기적으로 특정 수준을 향해 돌아가려는 성질을 가진다.
 
-**② Diffusion Term (확률적 변동 항)**
+**② Diffusion Term**
 
 ![Diffusion Term](https://latex.codecogs.com/svg.image?\color{white}\sigma%20dW_t)
 
@@ -164,7 +164,7 @@ BK 모델의 Euler 공식과 구조는 거의 같다.
 
 ### Zero-Coupon Bond Price
 
-Vasicek 모델의 중요한 특징은 **무이표채권(Zero-Coupon Bond)의 가격을 해석적 공식으로 계산할 수 있다는 것**이다. 무이표채권은 만기 전에는 별도의 이자를 지급하지 않고, 만기에 원금을 지급하는 채권이다.
+Vasicek 모델의 중요한 특징은 **Zero-Coupon Bond의 가격을 해석적 공식으로 계산할 수 있다는 것**이다. 무이표채권은 만기 전에는 별도의 이자를 지급하지 않고, 만기에 원금을 지급하는 채권이다.
 
 Vasicek 모델의 무이표채권 가격은 다음과 같고
 
@@ -184,7 +184,7 @@ Vasicek 모델의 무이표채권 가격은 다음과 같고
 
 Vasicek 모델에서는 연속시간 확률과정의 수학적 성질을 이용해 채권 가격을 해석적 공식으로 계산할 수 있다. 반면 Monte Carlo Simulation에서는 Euler 방법으로 금리 경로를 이산화하고, 유한한 개수의 경로를 생성해 채권 가격의 평균을 추정한다.
 
-따라서 두 방법으로 계산한 가격 사이에는 차이가 발생할 수 있으며, 그 원인은 크게 **Sampling Error(표본 오차)**와 **Discretization Error(이산화 오차)**로 구분할 수 있다.
+따라서 두 방법으로 계산한 가격 사이에는 차이가 발생할 수 있으며, 그 원인은 크게 **Sampling Error**와 **Discretization Error**로 구분할 수 있다.
 
 Sampling Error는 무작위 표본을 유한하게 사용하기 때문에 발생하는 오차로, 시뮬레이션 횟수 N을 늘리면 일반적으로 감소하는 반면 Discretization Error는 연속시간 모델을 Euler 방법과 Trapezoidal Rule로 근사하면서 발생하는 오차이다. 이 오차는 N을 늘리는 것만으로 제거할 수 없으며, 시간 간격 Δt를 줄여 근사의 정확도를 높여야 한다. 그러므로 **표본 수 N을 늘리는 것은 Monte Carlo의 통계적 오차를 줄이는 것이고, 시간 간격 Δt를 줄이는 것은 수치적 근사 오차를 줄이는 것**이다.
 
@@ -192,13 +192,13 @@ Sampling Error는 무작위 표본을 유한하게 사용하기 때문에 발생
 
 ---
 
-## 1.3 Discount Factors (할인계수)
+## 1.3 Discount Factors 
 
 이전 단계를 통해 금리 경로를 생성하는 것만으로는 채권 가격을 계산할 수 없다.
 
-채권은 미래에 이자와 원금을 지급하는 상품이므로, 미래에 받을 돈을 현재가치로 환산해야 한다. 이를 위해 **할인계수(Discount Factor)**를 계산한다.
+채권은 미래에 이자와 원금을 지급하는 상품이므로, 미래에 받을 돈을 현재가치로 환산해야 한다. 이를 위해 **Discount Factor**를 계산한다.
 
-### Integrated Rate (적분 금리)
+### Integrated Rate 
 
 먼저 하나의 시뮬레이션 경로에서 시점 0부터 tᵢ까지의 단기금리를 적분한다.
 
@@ -212,9 +212,9 @@ Sampling Error는 무작위 표본을 유한하게 사용하기 때문에 발생
 
 를 의미한다. 금리가 시간에 따라 계속 달라지기 때문에 특정 시점의 금리 하나를 사용하는 대신, 기간 전체의 금리를 적분하는 것이다.
 
-### Trapezoidal Rule (사다리꼴 공식)
+### Trapezoidal Rule 
 
-컴퓨터에서는 연속적인 금리 경로의 적분을 직접 계산하기 어려우므로, **사다리꼴 공식(Trapezoidal Rule)**을 사용하여 근사한다.
+컴퓨터에서는 연속적인 금리 경로의 적분을 직접 계산하기 어려우므로, **Trapezoidal Rule**을 사용하여 근사한다.
 
 ![Trapezoidal Rule](https://latex.codecogs.com/svg.image?\color{white}I^{(j)}(t_i)\approx\sum_{k=1}^{t_i/\Delta%20t}\frac{1}{2}\left(r_{s_{k-1}}^{(j)}+r_{s_k}^{(j)}\right)\Delta%20t)
 
@@ -405,7 +405,7 @@ X가 자신의 기대값에서 얼마나 벗어났는지를 이용해 Y를 보�
 
 ![Optimal Control Coefficient](https://latex.codecogs.com/svg.image?\color{white}\nu^*=\Sigma_X^{-1}\operatorname{Cov}(X,Y))
 
-여기서 Σₓ는 통제변량 벡터 X의 공분산 행렬(Covariance Matrix)이다.
+여기서 Σₓ는 통제변량 벡터 X의 Covariance Matrix이다.
 
 통제변량이 하나인 경우로 m=1이면 식이 간단해진다.
 
@@ -443,7 +443,7 @@ Pre-run에서 추정한 계수 ν̂를 이용하여 각 경로의 채권 가치�
 
 ![Control Variate Estimator](https://latex.codecogs.com/svg.image?\color{white}\widehat{V}_{CV}=\frac{1}{N}\sum_{j=1}^{N}Y_{CV}^{(j)})
 
-이 값이 **Control Variate Estimator(통제변량 추정량)**이다.
+이 값이 **Control Variate Estimator**이다.
 
 Plain Monte Carlo가 원래 채권 가치 Y⁽ʲ⁾의 평균을 계산하는 방식이었다면, Control Variate Monte Carlo는 보정된 값 Y_CV⁽ʲ⁾의 평균을 계산하는 방식이다.
 
