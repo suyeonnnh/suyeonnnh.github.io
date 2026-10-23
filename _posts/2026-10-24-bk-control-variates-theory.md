@@ -509,7 +509,7 @@ Plain Monte Carlo가 원래 채권 가치 Y⁽ʲ⁾의 평균을 계산하는 �
 
 전체적인 계산 과정은 다음과 같이 정리할 수 있다.
 
-**금리 모델 설정 → Euler 방법 적용 → 금리 경로 생성 → Trapezoidal Rule로 적분 금리 계산 → Discount Factor 계산 → 경로별 채권 가치 계산 → Plain Monte Carlo 가격 추정 → Control Variates 적용 → VRF를 통한 분산 감소 효과 평가**
+<span style="color: #3B82F6; font-weight: bold;">금리 모델 설정 → Euler 방법 적용 → 금리 경로 생성 → Trapezoidal Rule로 적분 금리 계산 → Discount Factor 계산 → 경로별 채권 가치 계산 → Plain Monte Carlo 가격 추정 → Control Variates 적용 → VRF를 통한 분산 감소 효과 평가</span>
 
 결국 이번 과제의 목표는 **BK 모델을 기반으로 쿠폰 채권의 가격을 추정하고, Control Variates를 활용해 몬테카를로 추정의 분산을 줄이는 것**이다. 다만 분산이 감소했다고 해서 모든 오차가 사라지는 것은 아니므로, 표본 오차와 이산화 오차를 구분하고 통제변량의 기대값이 올바른지도 검증해야 한다.
 
