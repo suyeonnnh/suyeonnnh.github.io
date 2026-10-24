@@ -1,5 +1,5 @@
 ---
-title: "Optimal Nonparametric Estimation of the Expected Shortfall Risk — 2"
+title: "Optimal Nonparametric Estimation of the Expected Shortfall Risk 2"
 date: 2026-10-25 12:00:00 +0100
 categories:
   - Computational Finance
