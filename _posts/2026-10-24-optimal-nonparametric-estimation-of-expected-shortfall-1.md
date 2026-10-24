@@ -160,13 +160,13 @@ N이 무한대로 커지는 상황보다 실제로 더 중요한 질문은 **데
 
 **(1.1)**
 
-![Equation 1.1](https://latex.codecogs.com/svg.image?\color{white}P(|\widehat%20T_N-\mathrm{ES}_{\alpha}(X)|\leq\sigma_{\mathrm{ES}_{\alpha}(X)}\sqrt{\frac{2\log(2/\delta)}{N}})\approx%201-\delta)
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DP%5Cleft%28%5Cleft%7C%5Cwidehat%20T_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%5Cright%7C%5Cleq%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%5Csqrt%7B%5Cfrac%7B2%5Clog%282%2F%5Cdelta%29%7D%7BN%7D%7D%5Cright%29%5Capprox%201-%5Cdelta" alt="Equation 1.1">
 
 이는 오차 한계 r이 δ에 **로그 형태로만 의존한다**는 뜻이다. 같은 내용을 오차확률로 표현하면
 
 **(1.2)**
 
-![Equation 1.2](https://latex.codecogs.com/svg.image?\color{white}P(|\widehat%20T_N-\mathrm{ES}_{\alpha}(X)|\geq\varepsilon\sigma_{\mathrm{ES}_{\alpha}(X)})\approx%202\exp(-N\varepsilon^2/2))
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DP%5Cleft%28%5Cleft%7C%5Cwidehat%20T_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%5Cright%7C%5Cgeq%5Cvarepsilon%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%5Cright%29%5Capprox%202%5Cexp%28-N%5Cvarepsilon%5E2%2F2%29" alt="Equation 1.2">
 
 그러나 저자들은 **(1.1), (1.2)를 유한 표본에 일반적으로 적용하는 것은 잘못**이라고 강조한다.
 
@@ -176,7 +176,7 @@ N이 무한대로 커지는 상황보다 실제로 더 중요한 질문은 **데
 
 **(1.3)**
 
-![Equation 1.3](https://latex.codecogs.com/svg.image?\color{white}P(|\widehat%20T_N-\mathrm{ES}_{\alpha}(X)|\geq\varepsilon\sigma_{\mathrm{ES}_{\alpha}(X)})\geq\frac{C_{\varepsilon}}{N^{\lambda-1}})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DP%5Cleft%28%5Cleft%7C%5Cwidehat%20T_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%5Cright%7C%5Cgeq%5Cvarepsilon%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%5Cright%29%5Cgeq%5Cfrac%7BC_%7B%5Cvarepsilon%7D%7D%7BN%5E%7B%5Clambda-1%7D%7D" alt="Equation 1.3">
 
 형태의 하한을 제시한다. λ가 2에 가까우면 우변은 거의 1/N 비율로 감소한다. 이는 지수적 감소와 매우 다르다.
 
@@ -192,7 +192,7 @@ N이 무한대로 커지는 상황보다 실제로 더 중요한 질문은 **데
 
 **(1.4)**
 
-![Equation 1.4](https://latex.codecogs.com/svg.image?\color{white}\widehat%20T_N-\mathrm{ES}_{\alpha}(X)=O(\frac{\sigma_{\mathrm{ES}_{\alpha}(X)}}{\sqrt{N}}))
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cwidehat%20T_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%3DO%5Cleft%28%5Cfrac%7B%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%7D%7B%5Csqrt%20N%7D%5Cright%29" alt="Equation 1.4">
 
 이라는 전형적 오차 규모를 설명하지만, **도대체 얼마만큼의 N부터** 이 근사가 잘 작동하는지는 알려주지 않는다.
 
@@ -200,7 +200,7 @@ N이 무한대로 커지는 상황보다 실제로 더 중요한 질문은 **데
 
 **(1.5)**
 
-![Equation 1.5](https://latex.codecogs.com/svg.image?\color{white}E[|\widehat%20T_N-\mathrm{ES}_{\alpha}(X)|]\gtrsim\frac{\sigma_{\mathrm{ES}_{\alpha}(X)}}{\sqrt{N}}+\frac{L}{N})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DE%5Cleft%5B%5Cleft%7C%5Cwidehat%20T_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%5Cright%7C%5Cright%5D%5Cgtrsim%5Cfrac%7B%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%7D%7B%5Csqrt%20N%7D%2B%5Cfrac%20L%20N" alt="Equation 1.5">
 
 따라서 (1.4)와 같은 구간이 지배적이려면 대략 N ≳ L²/σ² 정도의 표본이 필요하다. 여기서 σ는 ES 추정 문제의 점근 표준편차다.
 
@@ -216,7 +216,7 @@ N이 무한대로 커지는 상황보다 실제로 더 중요한 질문은 **데
 
 **(1.6)**
 
-![Equation 1.6](https://latex.codecogs.com/svg.image?\color{white}P(|\widehat%20T_N-\mathrm{ES}_{\alpha}(X)|\gtrsim\varepsilon\sigma_{\mathrm{ES}_{\alpha}(X)}+\varepsilon^2L)\leq%202\exp(-N\varepsilon^2/2))
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DP%5Cleft%28%5Cleft%7C%5Cwidehat%20T_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%5Cright%7C%5Cgtrsim%5Cvarepsilon%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%2B%5Cvarepsilon%5E2%20L%5Cright%29%5Cleq2%5Cexp%28-N%5Cvarepsilon%5E2%2F2%29" alt="Equation 1.6">
 
 **하지만 plug-in 추정량에 대한 이 정도의 보장은 매우 가벼운 꼬리에서만 기대할 수 있고**, 일반적인 금융 손실분포에서는 성능이 크게 악화될 수 있다.
 
@@ -337,7 +337,7 @@ print(f"변경 전: {before:.3f}, 변경 후: {after:.3f}")
 
 **(1.7)**
 
-![Equation 1.7](https://latex.codecogs.com/svg.image?\color{white}P(|\widehat%20S_N-\mathrm{ES}_{\alpha}(X)|\geq%202\varepsilon\sigma_{\mathrm{ES}_{\alpha}(X)})\leq\exp(-c_3N\varepsilon^2))
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DP%5Cleft%28%5Cleft%7C%5Cwidehat%20S_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%5Cright%7C%5Cgeq2%5Cvarepsilon%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%5Cright%29%5Cleq%5Cexp%28-c_3N%5Cvarepsilon%5E2%29" alt="Equation 1.7">
 
 즉 ε이 충분히 작을 때는 Lε²인 **2차항을 상대적으로 무시**할 수 있고, 중심극한정리에서 기대했던 형태와 같은 **차수**의 오차 보장을 얻는다. §4에서 파레토 분포에 대해 이 조건을 더 분석한다.
 
@@ -406,7 +406,7 @@ print(robust_es(x))
 
 Theorem 1.4의 조건이 성립한다고 하자. 어떤 양의 상수 C₀, C₁, C₂가 존재하여 전체 N개 중 **최대 C₀Nε²개**가 악의적으로 변조되더라도
 
-![Theorem 1.8](https://latex.codecogs.com/svg.image?\color{white}P(|\widehat%20S_N-\mathrm{ES}_{\alpha}(X)|\geq\varepsilon\sigma_{\mathrm{ES}_{\alpha}(X)}+C_1L\varepsilon^2)\leq\exp(-C_2N\varepsilon^2))
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DP%5Cleft%28%5Cleft%7C%5Cwidehat%20S_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%5Cright%7C%5Cgeq%5Cvarepsilon%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%2BC_1L%5Cvarepsilon%5E2%5Cright%29%5Cleq%5Cexp%28-C_2N%5Cvarepsilon%5E2%29" alt="Theorem 1.8">
 
 가 성립한다. 증명에서는 C₀ = 1/140, C₁ = 10, C₂ = 1/2800을 사용할 수 있지만, 이 상수들이 최적이라고 주장하지는 않는다.
 
