@@ -12,7 +12,6 @@ tags:
 math: true
 ---
 이번 글은 **Validation** 강의자료를 페이지 순서대로 번역하고, 흐름이 끊기지 않도록 설명을 덧붙인 정리본이다.  
-이번 강의는 한 문장으로 정리하자면
 
 > **코드가 돌아간다는 사실은 코드가 맞다는 뜻이 아니다.**
 
@@ -21,9 +20,6 @@ Computational Finance에서는 숫자 하나가 큰 돈으로 연결될 수 있�
 - 작은 손계산 테스트 하나가 큰 버그를 잡을 수 있다.
 - 초록 체크 표시가 많이 떠 있어도, 그 체크 자체가 잘못 설계되면 아무 의미가 없다.
 - 좋은 검증은 많이 하는 검증이 아니라, **성격이 다른 검증을 겹쳐 놓는 것**이다.
-
-원문 슬라이드에 있는 비유와 사례도 최대한 살려서 정리했다.
-
 ---
 
 ![Lecture 2 slide 1](/assets/images/validation_slide-01.png)
@@ -42,14 +38,11 @@ Computational Finance에서는 숫자 하나가 큰 돈으로 연결될 수 있�
 
 이 실수 때문에 변동성이 실제보다 약 **절반 수준으로 축소**되어 VaR가 낮게 계산되었다.
 
-강의의 메시지는 선명하다.
-
 > **수학 공식 자체는 맞아도, 검증이 약하면 실전에서는 크게 실패할 수 있다.**
 
-여기서 교수님은 “rung-1 check”, 다시 말해 **손으로 계산할 수 있는 몇 개의 입력값을 넣어 보는 가장 낮은 단계의 테스트**가 이 버그를 바로 잡아냈을 것이라고 말한다.
+ “rung-1 check”,**손으로 계산할 수 있는 몇 개의 입력값을 넣어 보는 가장 낮은 단계의 테스트**가 이 버그를 바로 잡아냈을 것이라고 말한다.
 
-이 슬라이드는 이번 강의 전체의 문제의식을 세팅한다.  
-큰 모델 리스크가 거창한 이론에서 생기는 것이 아니라, **아주 평범한 구현 실수와 검증 부재**에서 생길 수 있다는 점이다.
+큰 모델 리스크가 **아주 평범한 구현 실수와 검증 부재**에서 생길 수 있다는 점이다.
 
 ![Lecture 2 slide 2](/assets/images/validation_slide-02.png)
 
@@ -57,7 +50,7 @@ Computational Finance에서는 숫자 하나가 큰 돈으로 연결될 수 있�
 
 ## p.3 에이전트 시대의 경고: 테스트를 통과하도록 테스트를 속이는 경우
 
-이 슬라이드는 훨씬 최근의 사례를 다룬다. 2025년 무렵의 agentic coding 사례다.
+2025년 무렵의 agentic coding 사례다.
 
 사례를 정리하자면
 
@@ -65,7 +58,7 @@ Computational Finance에서는 숫자 하나가 큰 돈으로 연결될 수 있�
 2. **METR 실험**에서는 frontier model이 테스트를 통과하기 위해 테스트 자체를 다시 써 버렸다.
 3. **ImpossibleBench**에서는 명세와 테스트가 충돌할 때, GPT-5가 명세보다 테스트를 맞추는 쪽으로 행동한 비율이 높게 나왔다.
 
-슬라이드의 짧은 코드 예시를 보자.
+짧은 코드 예시를 보자.
 
 ```python
 class Tensor:
@@ -77,19 +70,16 @@ assert (result == expected).all()
 겉으로는 `check passed`가 뜬다.  
 실제로는 **아무것도 검증하지 않았다.**
 
-교수님이 여기서 주는 메시지는 실무적으로도 중요하다.
 
 > **코드와 테스트를 같은 에이전트가 모두 쓰면, 초록색 통과 표시만으로는 아무것도 증명되지 않는다.**
 
-이 강의의 맥락에서는, 네가 oral exam에서 설명할 수 있을 정도로 **각 테스트의 성질과 허용오차를 스스로 유도**해야 한다는 뜻이다.
+ oral exam에서 설명할 수 있을 정도로 **각 테스트의 성질과 허용오차를 스스로 유도**해야 한다는 뜻이다.
 
 ![Lecture 2 slide 3](/assets/images/validation_slide-03.png)
 
 ---
 
-## p.4 좋은 체크의 해부학
-
-좋은 검증(check)은 네 가지 재료를 가져야 한다고 정리한다.
+## p.4
 
 ### 좋은 체크의 네 요소
 
@@ -103,7 +93,7 @@ assert (result == expected).all()
 - **무작위 결과**라면 `k` standard errors, 보통 3 s.e. 수준을 사용한다.
 - **결정론적 결과**라면 알려진 오차 차수나 반올림 오차를 기준으로 잡는다.
 
-슬라이드는 동시에 나쁜 체크의 예도 보여 준다.
+동시에 나쁜 체크의 예도 보여 준다.
 
 - 무조건 `1e-3` 같은 상수를 박아 넣는 경우
 - 한 점에서만 검사하는 경우
@@ -112,7 +102,7 @@ assert (result == expected).all()
 - 기대되는 수렴 차수를 말하지 않는 플롯
 - 적은 seed만으로 coverage를 논하는 경우
 
-요약하면, 좋은 검증은 “대충 맞아 보임”이 아니라 **왜 이 허용오차가 나왔는지 설명 가능한 검증**이다.
+ 좋은 검증은 “대충 맞아 보임”이 아니라 **왜 이 허용오차가 나왔는지 설명 가능한 검증**이다.
 
 ![Lecture 2 slide 4](/assets/images/validation_slide-04.png)
 
@@ -120,8 +110,7 @@ assert (result == expected).all()
 
 ## p.5 Validation ladder
 
-이 슬라이드는 강의 전체에서 가장 구조적인 슬라이드다.  
-교수님은 검증을 **사다리(ladder)**에 비유한다.
+검증을 **사다리(ladder)**에 비유한다.
 
 낮은 단계는 싸고(local), 높은 단계는 비싸고(global) 넓은 범위를 본다.
 
@@ -142,13 +131,12 @@ assert (result == expected).all()
 7. **Statistical sanity (CI coverage)**  
    신뢰구간 coverage 같은 통계적 타당성 확인
 
-핵심 메시지:
 
 - 낮은 단계의 테스트는 **어느 함수에서 문제인지 빠르게 찾아낸다.**
 - 높은 단계의 테스트는 **전체 파이프라인과 error bar까지** 함께 확인한다.
 - 검증은 한 번에 끝내는 작업이 아니라, **구현을 쌓아 올릴 때마다 같이 올라가는 사다리**다.
 
-이 슬라이드는 앞으로 나올 T1~T8 테스트를 이해하는 기준점이 된다.
+앞으로 나올 T1~T8 테스트를 이해하는 기준점이 된다.
 
 ![Lecture 2 slide 5](/assets/images/validation_slide-05.png)
 
@@ -156,8 +144,8 @@ assert (result == expected).all()
 
 ## p.6 예시 문제: Black-Scholes 아래 Monte Carlo 가격 계산
 
-이제 강의는 running example로 들어간다.  
-배경은 **Black-Scholes 모델에서 Monte Carlo로 call과 put 가격을 계산하는 문제**다.
+강의는 running example로 들어간다. 
+**Black-Scholes 모델에서 Monte Carlo로 call과 put 가격을 계산하는 문제**다.
 
 위험중립측도 아래에서 terminal stock price는 다음 형태를 갖는다.
 
@@ -169,14 +157,14 @@ assert (result == expected).all()
 1. **Plain MC**
 2. **Antithetic MC**
 
-이번 강의의 실전 과제는 다음과 같다.
+실전 과제는 다음과 같다.
 
 - call과 put을 두 방법으로 가격 계산하기
 - standard error까지 계산하기
 - 코드를 검증하기
 - antithetic variates가 언제 도움이 되는지 분석하기
 
-한 줄로 요약하면, 이번 강의는 “Monte Carlo를 구현하는 법”보다 **Monte Carlo 코드를 믿을 수 있게 만드는 법**을 가르친다.
+“Monte Carlo를 구현하는 법”보다 **Monte Carlo 코드를 믿을 수 있게 만드는 법**을 가르친다.
 
 ![Lecture 2 slide 6](/assets/images/validation_slide-06.png)
 
@@ -214,8 +202,7 @@ assert (result == expected).all()
 
 ## p.8 Rung 1: 손계산 테스트와 파라미터 선택의 중요성
 
-이 슬라이드는 정말 중요하다.  
-검증 사다리의 가장 낮은 단계인 **hand test**를 구체적으로 보여 준다.
+이 슬라이드는 검증 사다리의 가장 낮은 단계인 **hand test**를 구체적으로 보여 준다.
 
 교수님은 다음 파라미터를 사용한다.
 
@@ -285,7 +272,7 @@ assert (result == expected).all()
 > **체크 하나하나가 완벽할 필요는 없다.**  
 > **대신 각 체크가 못 보는 부분을 다른 체크가 보게 만들어야 한다.**
 
-예를 들어 put-call parity를 shared normals로 검사하면, pathwise하게 martingale과 비슷한 정보만 보게 된다. 그래서 교수님은 **독립적인 normals**를 쓰라고 강조한다.
+예를 들어 put-call parity를 shared normals로 검사하면, pathwise하게 martingale과 비슷한 정보만 보게 된다.  **독립적인 normals**를 쓰는 것이 중요하다.
 
 ![Lecture 2 slide 9](/assets/images/validation_slide-09.png)
 
@@ -307,8 +294,6 @@ assert (result == expected).all()
 
 RMSE를 200회 반복으로 계산하면 상대 오차가 약 5% 정도 될 수 있다.  
 `N`을 64배 바꿔 가며 slope를 추정할 때 이 오차가 slope를 `0.02~0.03` 정도 움직일 수 있어서, `±0.1` 정도가 안전하고도 날카로운 허용오차라고 설명한다.
-
-이 슬라이드가 좋은 이유는, tolerance를 감으로 찍지 않고 **분포와 표본크기에서 출발해 설명**하고 있기 때문이다.
 
 ![Lecture 2 slide 10](/assets/images/validation_slide-10.png)
 
@@ -369,8 +354,6 @@ T8에서 slope가 거의 0 쪽으로 무너지는 것도 의미심장하다. bia
 
 ## p.13 Close-up 2: sigma*T vs sigma*sqrt(T)
 
-이 슬라이드는 아주 좋은 함정을 보여 준다.
-
 `T = 1`이면
 
 - `sigma*T`
@@ -379,8 +362,6 @@ T8에서 slope가 거의 0 쪽으로 무너지는 것도 의미심장하다. bia
 가 같아진다. 그래서 base case만 보면 테스트가 모두 통과할 수 있다.
 
 하지만 T2는 `T = 3`을 쓰므로 이 버그를 바로 잡는다. T5도 `T = 5`, `T = 0.01` 같은 non-unit maturity에서 큰 `z` 값을 보이며 버그를 잡는다.
-
-강조하는 교훈은 다음과 같다.
 
 - **극단적인 파라미터**를 써라.
 - **1이 아닌 값**을 써라.
@@ -401,8 +382,8 @@ z-test도 결국 **standard error가 믿을 만해야만** 의미가 있다.
 
 ---
 
-## p.14 교수님이 실제로 발견한 버그: 가격은 맞고 error bar가 틀린 경우
-교수님이 antithetic code의 첫 버전에서 직접 발견한 버그를 소개하신다.
+## p.14 가격은 맞고 error bar가 틀린 경우
+교수님께서 antithetic code의 첫 버전에서 직접 발견한 버그를 소개하셨다.
 
 상황은 다음과 같다.
 
@@ -447,7 +428,6 @@ z-test도 결국 **standard error가 믿을 만해야만** 의미가 있다.
 5. **실제 버그를 넣어 본다**  
    Itô term 누락, `sigma*T` 버그, 잘못된 s.e. 계산 같은 예시로 검증 체계가 실제로 작동하는지 확인한다.
 
-내가 이 강의에서 특히 중요하다고 느낀 포인트는 세 가지다.
 
 ### 1. 낮은 단계 테스트가 생각보다 강력하다
 
@@ -460,7 +440,7 @@ coverage는 **양보다 다양성**에서 나온다.
 
 ### 3. error bar 검증이 꼭 필요하다
 
-Monte Carlo는 숫자 하나만 내는 알고리즘이 아니라, **그 숫자의 불확실성까지 함께 내는 알고리즘**이다.  
+Monte Carlo는 **그 숫자의 불확실성까지 함께 내는 알고리즘**이다.  
 그래서 standard error와 confidence interval이 틀리면, 가격이 맞아도 코드가 완전히 맞았다고 할 수 없다.
 
 ---
