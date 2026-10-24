@@ -10,14 +10,6 @@ tags:
   - Control Variates
 math: true
 ---
-
-
-
-
-
-
-# Control Variates for Coupon-Bond Pricing under the Black–Karasinski Model
-
 ## Objective
 
 본 과제에서는 **Black–Karasinski(BK) 단기금리 모형**을 기반으로, Monte Carlo Simulation을 이용하여 Fixed-Coupon Bond의 가격을 계산한다.
