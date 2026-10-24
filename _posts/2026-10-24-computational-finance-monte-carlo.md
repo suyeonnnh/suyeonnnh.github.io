@@ -1,6 +1,6 @@
 ---
 title: "Computational Finance : Monte Carlo"
-date: 2026-10-24 20:00:00 +0100
+date: 2026-10-24 21:00:00 +0100
 categories:
   - Computational Finance
 tags:
@@ -13,7 +13,7 @@ tags:
 math: true
 ---
 
-이 글은 Wrocław University of Science and Technology의 **Computational Finance 2026/27 — Monte Carlo** 강의자료(Jan Palczewski)를 슬라이드 순서대로 번역·정리한 학습 기록이다. 각 절 제목의 **p.숫자**는 원본 PDF의 페이지 번호다. 원문의 식과 실험값을 보존하고, 이해를 돕는 설명과 Python 구현은 별도로 덧붙였다.
+이 글은 Wrocław University of Science and Technology의 **Computational Finance 2026/27 — Monte Carlo** 강의자료(Jan Palczewski)를 슬라이드 순서대로 번역·정리한 학습 기록이다. 
 
 >
 > 몬테카를로의 기본 개념(p.2–11) → 분산 감소의 원리(p.12–23) → 아시안 옵션과 Control Variates(p.24–32) → 최적 계수와 금융상품 응용(p.33–37) 순서로 진행한다. 슬라이드에 있는 의사코드는 Python 실습으로도 구현한다.
