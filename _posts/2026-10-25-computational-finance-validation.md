@@ -26,11 +26,6 @@ Computational Finance에서는 숫자 하나가 큰 돈으로 연결될 수 있�
 
 ---
 
-## p.1 강의 제목
-
-이번 강의 제목은 **Validating numerical code**다.  
-단순히 numerical method를 구현하는 단계에서 끝나는 것이 아니라, **그 결과를 믿어도 되는지 확인하는 방법**이 핵심 주제다.
-
 ![Lecture 2 slide 1](/assets/images/validation_slide-01.png)
 
 ---
