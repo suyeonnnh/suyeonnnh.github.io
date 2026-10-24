@@ -1,6 +1,6 @@
 ---
-title: "Computational Finance — Lecture 1: Monte Carlo"
-date: 2026-10-25 20:00:00 +0100
+title: "Computational Finance : Monte Carlo"
+date: 2026-10-24 20:00:00 +0100
 categories:
   - Computational Finance
 tags:
