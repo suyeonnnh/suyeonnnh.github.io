@@ -1194,8 +1194,6 @@ Vasicek 두 종류의 통제변량을 비교하고, 모델 근사 규칙과 수�
 
 두 번째 모델 없이 BK 적분 금리의 함수 자체를 통제변량으로 사용한다. 특히 2차 항까지 활용하여 할인계수의 비선형성을 근사한다.
 
-
-
 ## Task 8. BK 적분 금리 통제변량의 기대값
 
 Part D에서는 다른 금리 모델 대신 BK 적분 금리 I(t) 자체를 사용한다. 할인계수의 2차 근사 exp(-I) ≈ 1 − I + I²/2를 바탕으로 X₁ = Σ cᵢI(tᵢ), X₂ = Σ cᵢI(tᵢ)²를 구성한다.
@@ -1204,51 +1202,52 @@ Part D에서는 다른 금리 모델 대신 BK 적분 금리 I(t) 자체를 사�
 
 BK 로그 금리 x(t)는 Gaussian 과정이고 실제 금리는 exp(x(t))이므로 금리의 1차·2차 모멘트를 계산할 수 있다. 먼저 연속시간 기대값을 유도하고 실제 CV 구현에서는 Euler·Trapezoidal 방식과 일치하는 **이산시간 기대값**을 사용한다.
 
-![BK stochastic differential equation](https://latex.codecogs.com/svg.image?\color{white}dx_t=\kappa(\theta-x_t)dt+\sigma\,dW_t,\quad%20r_t=e^{x_t})
+![BK stochastic differential equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Ddx_t%3D%5Ckappa%28%5Ctheta-x_t%29dt%2B%5Csigma%5C%2CdW_t%2C%5Cqquad%20r_t%3De%5E%7Bx_t%7D)
 
 The log short rate follows an Ornstein–Uhlenbeck process, which is Gaussian.
 
 Assuming that the initial log rate x_0 is deterministic, its mean is:
 
-![Mean of log short rate](https://latex.codecogs.com/svg.image?\color{white}m(t)=E[x_t]=\theta+(x_0-\theta)e^{-\kappa%20t})
+![Mean of log short rate](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dm%28t%29%3DE%5Bx_t%5D%3D%5Ctheta%2B%28x_0-%5Ctheta%29e%5E%7B-%5Ckappa%20t%7D)
 
 Its covariance function is:
 
-![Covariance of log short rate](https://latex.codecogs.com/svg.image?\color{white}K(s,t)=\frac{\sigma^2}{2\kappa}\left(e^{-\kappa|t-s|}-e^{-\kappa(t+s)}\right))
+![Covariance of log short rate](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DK%28s%2Ct%29%3D%5Cfrac%7B%5Csigma%5E2%7D%7B2%5Ckappa%7D%5Cleft%28e%5E%7B-%5Ckappa%5Clvert%20t-s%5Crvert%7D-e%5E%7B-%5Ckappa%28t%2Bs%29%7D%5Cright%29)
 
 Since r_t = exp(x_t), the short rate follows a lognormal distribution at each fixed time.
 
 Therefore,
 
-![Expected short rate](https://latex.codecogs.com/svg.image?\color{white}E[r_t]=\exp\left(m(t)+\frac12%20K(t,t)\right))
+![Expected short rate](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DE%5Br_t%5D%3D%5Cexp%5Cleft%28m%28t%29%2B%5Cfrac12%20K%28t%2Ct%29%5Cright%29)
 
 The integrated short rate is:
 
-![Integrated short rate](https://latex.codecogs.com/svg.image?\color{white}I(t)=\int_0^t%20r_s\,ds)
+![Integrated short rate](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DI%28t%29%3D%5Cint_0%5Et%20r_s%5C%2Cds)
 
 Its first moment is:
 
-![First moment of integrated rate](https://latex.codecogs.com/svg.image?\color{white}E[I(t)]=\int_0^t%20E[r_s]\,ds)
+![First moment of integrated rate](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DE%5BI%28t%29%5D%3D%5Cint_0%5Et%20E%5Br_s%5D%5C%2Cds)
 
 To derive its second moment, we write:
 
-![Second moment of integrated rate](https://latex.codecogs.com/svg.image?\color{white}E[I(t)^2]=\int_0^t\int_0^t%20E[r_s%20r_u]\,ds\,du)
+![Second moment of integrated rate](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DE%5BI%28t%29%5E2%5D%3D%5Cint_0%5Et%5Cint_0%5Et%20E%5Br_s%20r_u%5D%5C%2Cds%5C%2Cdu)
 
 Because the log rates are jointly Gaussian,
 
-![Joint short-rate moment](https://latex.codecogs.com/svg.image?\color{white}E[r_s%20r_u]=\exp\left(m(s)+m(u)+\frac12%20K(s,s)+\frac12%20K(u,u)+K(s,u)\right))
+![Joint short-rate moment](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DE%5Br_s%20r_u%5D%3D%5Cexp%5Cleft%28m%28s%29%2Bm%28u%29%2B%5Cfrac12%20K%28s%2Cs%29%2B%5Cfrac12%20K%28u%2Cu%29%2BK%28s%2Cu%29%5Cright%29)
 
 Thus, the expectations of the two coupon-weighted controls are:
 
-![Expected X1](https://latex.codecogs.com/svg.image?\color{white}E[X_1]=\sum_{i=1}^{n}c_iE[I(t_i)])
+![Expected X1](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DE%5BX_1%5D%3D%5Csum_%7Bi%3D1%7D%5E%7Bn%7Dc_iE%5BI%28t_i%29%5D)
 
-![Expected X2](https://latex.codecogs.com/svg.image?\color{white}E[X_2]=\sum_{i=1}^{n}c_iE[I(t_i)^2])
+![Expected X2](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DE%5BX_2%5D%3D%5Csum_%7Bi%3D1%7D%5E%7Bn%7Dc_iE%5BI%28t_i%29%5E2%5D)
 
 These expressions provide the theoretical expectations under the continuous-time BK model.
 
 However, our Monte Carlo implementation uses the Euler scheme and trapezoidal integration. Therefore, the simulated integrated rate is a discretized approximation.
 
 For the control-variate calculation, we will derive its exact discrete-time moments using the Gaussian structure of the Euler log-rate process.
+
 
 This ensures that the control expectations correspond to the quantities actually simulated.
 
