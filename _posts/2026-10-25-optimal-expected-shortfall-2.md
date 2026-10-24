@@ -11,9 +11,6 @@ tags:
   - Adversarial Robustness
 math: true
 ---
-
-# 2. Proofs of Theorem 1.4 and Theorem 1.8 (원문 p. 12–18)
-
 지난 1편에서는 Plug-in Estimator가 유한 표본과 heavy-tailed 분포에서 겪는 문제를 확인하고, 저자들이 제안한 강건 ES 추정량을 살펴보았다. 전체 표본으로 계산한 ES 추정값을 블록별 추정값의 분위수 구간에 제한하는 방법이었다.
 
 이번 2편에서는 **그 방법이 어떤 이유로 높은 확률의 오차 보장을 갖는지** 증명 과정을 따라가려 한다. 특히 Theorem 1.4에서 주장한 finite-sample bound와 Theorem 1.8의 adversarial robustness를 중심으로 읽는다.
