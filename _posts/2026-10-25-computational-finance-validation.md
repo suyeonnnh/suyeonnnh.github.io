@@ -1,5 +1,5 @@
 ---
-title: "Computational Finance - Validation"
+title: "Computational Finance : Validation"
 date: 2026-10-24 22:00:00 +0100
 categories:
   - Computational Finance
