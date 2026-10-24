@@ -1,6 +1,6 @@
 ---
 title: "Optimal Nonparametric Estimation of the Expected Shortfall Risk 4"
-date: 2026-10-24 17:00:00 +0100
+date: 2026-10-25 12:00:00 +0100
 categories:
   - Computational Finance
 tags:
@@ -27,12 +27,12 @@ math: true
 논문에서 사용하는 파레토 분포의 모수는 꼬리모수 λ와 최소 손실 수준 x₀이다. 여기서는 x₀ > 0으로 둔다.
 
 
-![Pareto CDF](https://latex.codecogs.com/svg.image?\color{white}F_X%28x%29=1-\left%28\frac{x_0}{x}\right%29^{\lambda}%20%28x\geq%20x_0%29)
+![Pareto CDF](https://latex.codecogs.com/svg.image?\color%7Bwhite%7DF_X%28x%29=1-\left%28\frac%7Bx_0%7D%7Bx%7D\right%29^%7B\lambda%7D%20%28x\geq%20x_0%29)
 
 
 따라서 t ≥ x₀에서 손실이 t 이상일 확률은 다음과 같다.
 
-![Pareto survival function](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20P%28X\geq%20t%29=\left%28\frac{x_0}{t}\right%29^\lambda)
+![Pareto survival function](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20P%28X\geq%20t%29=\left%28\frac%7Bx_0%7D%7Bt%7D\right%29^\lambda)
 
 꼬리모수 λ가 작을수록 큰 손실이 발생할 확률이 천천히 감소한다. λ > 2이면 분산이 유한하고, λ가 2에 가까울수록 매우 큰 관측값의 영향이 커질 수 있다.
 
@@ -42,9 +42,9 @@ math: true
 
 이 절에서 사용하는 ES는 상위 α 비율에 해당하는 손실 분위수의 평균이다. 파레토 분포의 분위수 함수는
 
-![Pareto quantile](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20F_X^{-1}%28u%29=x_0%281-u%29^{-1%2F\lambda})
+![Pareto quantile](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20F_X^%7B-1%7D%28u%29=x_0%281-u%29^%7B-1%2F\lambda%7D)
 이고, 이를 ES 정의에 대입하면
-![Pareto ES](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20\mathrm{ES}_\alpha%28X%29=\frac{x_0}{\alpha}\int_{1-\alpha}^{1}%281-u%29^{-1%2F\lambda}\,du=\frac{x_0\lambda}{\alpha^{1%2F\lambda}%28\lambda-1%29})
+![Pareto ES](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20\mathrm%7BES%7D_\alpha%28X%29=\frac%7Bx_0%7D%7B\alpha%7D\int_%7B1-\alpha%7D^%7B1%7D%281-u%29^%7B-1%2F\lambda%7D\,du=\frac%7Bx_0\lambda%7D%7B\alpha^%7B1%2F\lambda%7D%28\lambda-1%29%7D)
 
 를 얻는다. λ > 1이면 이 값이 유한하다. 이후 Lemma 4.1에서는 λ > 2를 가정한다.
 
@@ -54,9 +54,9 @@ Lemma 4.1은 파레토 분포에서 기존 plug-in ES 추정량이 일정 크기
 
 가정은 λ > 2, x₀ > 0이고 표본 수 N은 다음 조건을 만족한다.
 
-![Lemma 4.1 sample condition](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20N\geq\frac{1}{\alpha}\left%28\frac{\lambda-1}{\lambda}\right%29^{\frac{\lambda}{\lambda-1}})
+![Lemma 4.1 sample condition](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20N\geq\frac%7B1%7D%7B\alpha%7D\left%28\frac%7B\lambda-1%7D%7B\lambda%7D\right%29^%7B\frac%7B\lambda%7D%7B\lambda-1%7D%7D)
 이때 ε ≥ 0에 대해 다음 관계가 성립한다.
-![Lemma 4.1](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20P\%21\left%28\left%7C\widehat%20T_N-\mathrm{ES}_\alpha%28X%29\right%7C\geq\varepsilon\sigma_{\mathrm{ES}_\alpha}\right%29\geq\frac12\left%28\frac{x_0}{\alpha%28\mathrm{ES}_\alpha%28X%29+\varepsilon\sigma_{\mathrm{ES}_\alpha}%29}\right%29^\lambda\frac{1}{N^{\lambda-1}})
+![Lemma 4.1](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20P\%21\left%28\left%7C\widehat%20T_N-\mathrm%7BES%7D_\alpha%28X%29\right%7C\geq\varepsilon\sigma_%7B\mathrm%7BES%7D_\alpha%7D\right%29\geq\frac12\left%28\frac%7Bx_0%7D%7B\alpha%28\mathrm%7BES%7D_\alpha%28X%29+\varepsilon\sigma_%7B\mathrm%7BES%7D_\alpha%7D%29%7D\right%29^\lambda\frac%7B1%7D%7BN^%7B\lambda-1%7D%7D)
 
 여기서 σ_ESα는 ES 추정 문제의 점근 표준편차다. 오른쪽에는 **N의 (λ−1)제곱에 반비례하는 항**이 나타난다. λ가 2에 가까우면 오차확률의 하한이 약 1/N 비율로 감소한다. 이전에 다룬 sub-Gaussian 형태의 지수적 오차확률과 큰 차이가 있다.
 
@@ -66,17 +66,17 @@ Lemma 4.1은 파레토 분포에서 기존 plug-in ES 추정량이 일정 크기
 
 손실은 모두 양수이며 plug-in ES는 가장 큰 α 비율의 관측값을 평균한다. 따라서 어느 한 관측값이 αNt 이상이면 plug-in 추정량도 t 이상이다.
 
-![Largest observation bound](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20P%28\widehat%20T_N\geq%20t%29\geq%20P%28\exists%20i\leq%20N:X_i\geq\alpha%20Nt%29)
+![Largest observation bound](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20P%28\widehat%20T_N\geq%20t%29\geq%20P%28\exists%20i\leq%20N:X_i\geq\alpha%20Nt%29)
 
 **Step 2. 파레토 꼬리확률을 적용**
 
 파레토 분포에서는 해당 사건의 단일 관측 확률을 직접 계산할 수 있다.
 
-![Single observation probability](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20p=P%28X_i\geq\alpha%20Nt%29=\left%28\frac{x_0}{\alpha%20Nt}\right%29^\lambda)
+![Single observation probability](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20p=P%28X_i\geq\alpha%20Nt%29=\left%28\frac%7Bx_0%7D%7B\alpha%20Nt%7D\right%29^\lambda)
 
 N개의 독립된 관측값 가운데 하나라도 이 사건이 발생할 확률은 1−(1−p)^N이다. p가 충분히 작아 p ≤ 1/N이면 이전 Section 3의 Lemma 3.2를 통해 하한을 얻는다.
 
-![At least one extreme observation](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%201-%281-p%29^N\geq\frac{Np}{2}=\frac{x_0^\lambda}{2\alpha^\lambda%20t^\lambda%20N^{\lambda-1}})
+![At least one extreme observation](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%201-%281-p%29^N\geq\frac%7BNp%7D%7B2%7D=\frac%7Bx_0^\lambda%7D%7B2\alpha^\lambda%20t^\lambda%20N^%7B\lambda-1%7D%7D)
 
 **Step 3. 오차의 기준값을 대입**
 
@@ -99,24 +99,24 @@ N을 늘리면 극단값의 영향이 점차 줄어들 수 있다. 그러나 Par
 
 파레토 분포에서는 이 두 값이 α와 λ에 따라 어떻게 변하는지 계산할 수 있다. 논문은
 
-![Parameter r](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20r:=\frac{\lambda+1}{\lambda},\qquad%201%3Cr%3C\frac32)
+![Parameter r](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20r:=\frac%7B\lambda+1%7D%7B\lambda%7D,\qquad%201%3Cr%3C\frac32)
 로 두고 α ≤ 1/2를 가정한다.
 
 ### (i) Lipschitz 상수 L
 
 Lemma 4.2의 첫 번째 결론은 [1−2α, 1−α/2]에서 분위수 함수가 Lipschitz 연속이며 다음 상수를 사용할 수 있다는 것이다.
 
-![Lipschitz constant](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20L=\frac{x_0%202^r}{\lambda\alpha^r})
+![Lipschitz constant](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20L=\frac%7Bx_0%202^r%7D%7B\lambda\alpha^r%7D)
 
 **Proof**
 
 앞서 계산한 분위수 함수를 미분한다.
 
-![Quantile derivative](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20\frac{d}{du}F_X^{-1}%28u%29=\frac{x_0}{\lambda}%281-u%29^{-r})
+![Quantile derivative](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20\frac%7Bd%7D%7Bdu%7DF_X^%7B-1%7D%28u%29=\frac%7Bx_0%7D%7B\lambda%7D%281-u%29^%7B-r%7D)
 
 이 도함수는 u가 1에 가까워질수록 증가한다. 주어진 구간의 오른쪽 끝 u = 1−α/2에서 최댓값을 갖는다.
 
-![Maximum quantile slope](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20\max_{u\in%5B1-2\alpha,1-\alpha%2F2%5D}\frac{d}{du}F_X^{-1}%28u%29=\frac{x_0}{\lambda}%28\alpha%2F2%29^{-r}=L)
+![Maximum quantile slope](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20\max_%7Bu\in%5B1-2\alpha,1-\alpha%2F2%5D%7D\frac%7Bd%7D%7Bdu%7DF_X^%7B-1%7D%28u%29=\frac%7Bx_0%7D%7B\lambda%7D%28\alpha%2F2%29^%7B-r%7D=L)
  
 > 파레토 분위수 함수를 미분하고, 관심 구간에서 도함수가 최대가 되는 지점을 찾는다. 최대 기울기를 Lipschitz 상수로 사용할 수 있다.
 {: .prompt-tip }
@@ -127,7 +127,7 @@ L은 α가 작아질수록 증가한다. ES가 극단적인 손실 구간을 대
 
 두 번째 결론은 다음과 같다.
 
-![Lemma 4.2 variance bounds](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20\frac{x_0^2\alpha^{1-2r}}{2\lambda^2%283-2r%29}\leq\sigma_{\mathrm{ES}_\alpha%28X%29}^2\leq\frac{2x_0^2\alpha^{1-2r}}{\lambda^2%28r-1%29%283-2r%29})
+![Lemma 4.2 variance bounds](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20\frac%7Bx_0^2\alpha^%7B1-2r%7D%7D%7B2\lambda^2%283-2r%29%7D\leq\sigma_%7B\mathrm%7BES%7D_\alpha%28X%29%7D^2\leq\frac%7B2x_0^2\alpha^%7B1-2r%7D%7D%7B\lambda^2%28r-1%29%283-2r%29%7D)
 
 이 식은 ES 점근 분산이 α의 거듭제곱 형태로 커질 수 있음을 보여준다. 3−2r은 λ > 2 가정에서 양수이다.
 
@@ -137,19 +137,19 @@ L은 α가 작아질수록 증가한다. ES가 극단적인 손실 구간을 대
 
 Section 1의 ES 점근 분산 정의에서 t와 s를 각각 u = F(t), v = F(s)로 치환한다. 밀도 f에 대해 dt = du/f(F⁻¹(u))가 성립한다.
 
-![Variance after change of variables](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20\sigma_{\mathrm{ES}_\alpha%28X%29}^2=\frac{1}{\alpha^2\lambda^2}\int_{1-\alpha}^{1}\%21\int_{1-\alpha}^{1}\frac{\min\{u,v\}-uv}{%281-u%29^r%281-v%29^r}\,du\,dv)
+![Variance after change of variables](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20\sigma_%7B\mathrm%7BES%7D_\alpha%28X%29%7D^2=\frac%7B1%7D%7B\alpha^2\lambda^2%7D\int_%7B1-\alpha%7D^%7B1%7D\%21\int_%7B1-\alpha%7D^%7B1%7D\frac%7B\min\%7Bu,v\%7D-uv%7D%7B%281-u%29^r%281-v%29^r%7D\,du\,dv)
 
 이제 적분 영역을 u ≤ v와 u ≥ v로 나눈다. 고정된 v에 대해 다음 두 함수를 정의한다.
 
-![A v B v definition](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20A_v=\int_{1-\alpha}^{v}\frac{u%281-v%29}{%281-u%29^r}\,du,\qquad%20B_v=\int_v^1\frac{v%281-u%29}{%281-u%29^r}\,du)
+![A v B v definition](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20A_v=\int_%7B1-\alpha%7D^%7Bv%7D\frac%7Bu%281-v%29%7D%7B%281-u%29^r%7D\,du,\qquad%20B_v=\int_v^1\frac%7Bv%281-u%29%7D%7B%281-u%29^r%7D\,du)
 논문의 식 (4.3)은 다음과 같다.
-![Equation 4.3](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20\sigma_{\mathrm{ES}_\alpha%28X%29}^2=\frac{1}{\alpha^2\lambda^2}\int_{1-\alpha}^1\frac{A_v+B_v}{%281-v%29^r}\,dv)
+![Equation 4.3](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20\sigma_%7B\mathrm%7BES%7D_\alpha%28X%29%7D^2=\frac%7B1%7D%7B\alpha^2\lambda^2%7D\int_%7B1-\alpha%7D^1\frac%7BA_v+B_v%7D%7B%281-v%29^r%7D\,dv)
 
 **Step 1. 하한 계산**
 
 A_v는 음수가 아니고, α ≤ 1/2에서 v ≥ 1/2가 성립한다. B_v는 직접 적분할 수 있다.
 
-![B v integral](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20B_v=\frac{v}{%282-r%29%281-v%29^{r-2}})
+![B v integral](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20B_v=\frac%7Bv%7D%7B%282-r%29%281-v%29^%7Br-2%7D%7D)
 
 A_v를 제외하고 v를 1/2로 아래에서 제한하면 분산의 하한을 얻는다. 그 결과 Lemma 4.2의 왼쪽 부등식이 성립한다.
 
@@ -157,7 +157,7 @@ A_v를 제외하고 v를 1/2로 아래에서 제한하면 분산의 하한을 �
 
 원문은 A_v를 B_v로 제어한다.
 
-![A v upper bound](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20A_v\leq\frac{2-r}{r-1}B_v)
+![A v upper bound](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20A_v\leq\frac%7B2-r%7D%7Br-1%7DB_v)
 
 이 부등식과 v ≤ 1을 적용하면 분산의 상한을 얻는다. 마지막으로 x₀ = 1을 해제하면 앞의 Lemma 4.2 전체 결과가 완성된다.
 
@@ -171,13 +171,13 @@ A_v를 제외하고 v를 1/2로 아래에서 제한하면 분산의 하한을 �
 
 Section 2에서 증명한 강건 추정량의 오차는 다음 두 규모를 갖는다.
 
-![Equation 4.1](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20%7C\widehat%20S_N-\mathrm{ES}_\alpha%28X%29%7C=O%28\varepsilon\sigma_{\mathrm{ES}_\alpha%28X%29}%29+O%28\varepsilon^2L%29)
+![Equation 4.1](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20%7C\widehat%20S_N-\mathrm%7BES%7D_\alpha%28X%29%7C=O%28\varepsilon\sigma_%7B\mathrm%7BES%7D_\alpha%28X%29%7D%29+O%28\varepsilon^2L%29)
 
 첫 번째 항에는 ε와 점근 표준편차 σ가, 두 번째 항에는 ε의 제곱과 Lipschitz 상수 L이 포함된다. 어느 항이 더 큰지는 ε와 σ/L의 상대적인 크기에 달려 있다.
 
 Lemma 4.2의 두 경계를 이용하면 파레토 분포에 대해
 
-![Remark 4.3 ratio bound](https://latex.codecogs.com/svg.image?\color{white}\displaystyle%20\frac{\sigma_{\mathrm{ES}_\alpha%28X%29}}{L}\geq\frac{\sqrt\alpha}{2^r\sqrt2}\geq\frac14\sqrt\alpha)
+![Remark 4.3 ratio bound](https://latex.codecogs.com/svg.image?\color%7Bwhite%7D\displaystyle%20\frac%7B\sigma_%7B\mathrm%7BES%7D_\alpha%28X%29%7D%7D%7BL%7D\geq\frac%7B\sqrt\alpha%7D%7B2^r\sqrt2%7D\geq\frac14\sqrt\alpha)
 를 얻는다. 따라서 ε ≤ √α/4인 범위에서는 εσ 항이 ε²L 항보다 크거나 같아진다.
 
 Remark 4.3은 1편의 Corollary 1.7과도 연결된다. 파레토 분포에서 **ε가 충분히 작은 영역**에서는 강건 추정량의 1차 오차항이 전체 오차 규모를 결정한다.
