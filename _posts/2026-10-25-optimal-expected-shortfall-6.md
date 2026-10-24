@@ -213,7 +213,8 @@ Lemma 6.5는 선형항의 오차확률을 다음처럼 제한한다.
 
 > **Proof — Lemma 6.5 (마무리)**
 >
-> m이 충분히 크도록 선택했기 때문에 Chebyshev 부등식으로 P(|L_j| ≥ εσ̄_ES) ≤ 1/11을 얻는다. 독립성 가정을 완화하면서도 블록 수준의 확률 제어를 유지하는 단계다.
+> m이 충분히 크도록 선택했기 때문에 Chebyshev 
+부등식으로 ![Probability bound](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20P%5Cleft%28%5Cleft%7CL_j%5Cright%7C%5Cgeq%5Cvarepsilon%5Cbar%7B%5Csigma%7D_%7B%5Cmathrm%7BES%7D%7D%5Cright%29%5Cleq%5Cfrac%7B1%7D%7B11%7D)를 얻는다. 독립성 가정을 완화하면서도 블록 수준의 확률 제어를 유지하는 단계다.
 {: .prompt-tip }
 
 ## 6.7 Lemma 6.6 — 분위수 근방의 나머지항
