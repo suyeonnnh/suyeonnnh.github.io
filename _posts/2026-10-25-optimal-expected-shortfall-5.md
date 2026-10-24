@@ -266,6 +266,10 @@ plt.tight_layout()
 plt.show()
 ```
 
+![Python Monte Carlo experiment](/assets/images/es_part5_python_experiment.png)
+
+*Figure 8. Python 소규모 재현 실험: Pareto 분포에서 세 가지 ES 추정량의 오차확률 비교 (α = 0.1, λ = 2.2, m = 250, 1,000회 반복).*
+
 이 코드는 α = 0.1, λ = 2.2, m = 250에서 **실험 반복 횟수 1,000회**로 비교한다. 원문 Figure 2는 다른 λ와 δ, 100만 회 반복을 사용했다. 따라서 **곡선의 수치와 순위가 원문과 똑같이 나오리라고 기대하면 안 된다.** 반복 횟수가 작으면 아주 낮은 오차확률은 정확하게 측정하기 어렵다.
 
 ![Pareto theoretical ES](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%5C%20%5Coperatorname%7BES%7D_%7B%5Calpha%7D%28X%29%3D%5Cfrac%7B%5Clambda%7D%7B%5Clambda-1%7D%5Calpha%5E%7B-1%2F%5Clambda%7D)
