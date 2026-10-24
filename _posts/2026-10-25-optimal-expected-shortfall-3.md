@@ -143,7 +143,7 @@ Section 1의 오차식에는 σ/√N 항과 함께 **L/N에 비례하는 항**�
 
 일정한 조건 아래, 다음 세 성질을 갖는 분포 X가 존재한다.
 
-- |X| ≤ 1이 거의 확실하게 성립한다.
+- 확률변수 X의 절댓값이 1 이하인 조건이 거의 확실하게 성립한다.
 - 분위수 함수 F_X⁻¹는 (0,1)에서 L-Lipschitz이다.
 - ES 추정의 점근 분산 σ²_ES는 0이다.
 
@@ -186,7 +186,7 @@ Feller의 Binomial anti-concentration 결과를 적용하면 이 사건의 확�
 
 ![Plug-in negative bias](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cwidehat%7BT%7D_N%5Cleq%5Cfrac%7Bx_0%5Cdelta%7D%7B%5Calpha%7D)
 
-실제 ES는 0이고 |x₀| = δL이므로 다음과 같은 하한을 얻는다.
+실제 ES는 0이고, x₀의 절댓값은 δL이므로 다음과 같은 하한을 얻는다.
 
 ![Second-order error](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7C%5Cwidehat%7BT%7D_N-%5Coperatorname%7BES%7D_%7B%5Calpha%7D%28X%29%7C%5Cgeq%5Cfrac%7BL%5Cdelta%5E2%7D%7B%5Calpha%7D%3D%5Cfrac%7BL%5Cvarepsilon%5E2%7D%7B1600%7D)
 
