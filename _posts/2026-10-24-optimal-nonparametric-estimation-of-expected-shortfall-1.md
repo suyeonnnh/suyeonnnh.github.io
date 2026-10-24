@@ -53,15 +53,15 @@ Plug-in Estimator는 실제 확률분포를 알 수 없을 때, 관측된 데이
 
 확률변수 X를 금융 손실이라고 하자. 논문에서는 α ∈ (0, 1/2)에 대해 ES를 다음과 같이 정의한다.
 
-![Expected Shortfall](https://latex.codecogs.com/svg.image?\color{white}\operatorname{ES}_{\alpha}(X)=\frac{1}{\alpha}\int_{1-\alpha}^{1}\operatorname{VaR}_{u}(X)\,du)
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Coperatorname%7BES%7D_%7B%5Calpha%7D%28X%29%3D%5Cfrac%7B1%7D%7B%5Calpha%7D%5Cint_%7B1-%5Calpha%7D%5E%7B1%7D%5Coperatorname%7BVaR%7D_%7Bu%7D%28X%29%5C%2Cdu" alt="Expected Shortfall">
 
 여기서 VaR는 다음과 같다.
 
-![Value at Risk](https://latex.codecogs.com/svg.image?\color{white}\operatorname{VaR}_u(X)=\inf\{t\in\mathbb{R}:P(X\leq%20t)\geq%20u\})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Coperatorname%7BVaR%7D_u%28X%29%3D%5Cinf%5C%7Bt%5Cin%5Cmathbb%7BR%7D%3AP%28X%5Cleq%20t%29%5Cgeq%20u%5C%7D" alt="Value at Risk">
 
 그러나 ES를 계산하려면 손실 X의 누적분포함수(CDF)
 
-![CDF](https://latex.codecogs.com/svg.image?\color{white}F_X(t)=P(X\leq%20t))
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DF_X%28t%29%3DP%28X%5Cleq%20t%29" alt="CDF">
 
 를 알아야 하는데, 현실에서 이 분포를 정확히 아는 경우는 드물다. 따라서 일반적으로 과거 관측값 X₁, …, Xₙ을 사용한다. 실제 금융 시계열에는 약한 상관관계가 있을 수 있지만, 이 논문에서는 ES 추정 관련 많은 연구의 표준적인 접근에 따라 **독립·동일분포(i.i.d.)**를 기본 가정으로 사용한다. 다만 제안한 틀은 약한 종속성을 가진 데이터에도 확장할 수 있으며, 이를 **Section 6**에서 다룬다.
 
@@ -84,13 +84,13 @@ Plug-in Estimator는 실제 확률분포를 알 수 없을 때, 관측된 데이
 
 관측값 X₁, …, Xₙ만으로 ES를 추정하는 가장 자연스러운 방법은 **plug-in estimator**다. ES는 X의 분포함수 F_X에 의해 결정되므로, 알 수 없는 F_X를 **경험적 분포함수(empirical CDF)** F̂_N으로 대체한다.
 
-![Empirical CDF](https://latex.codecogs.com/svg.image?\color{white}\widehat%20F_N(t)=\frac{1}{N}\sum_{i=1}^{N}\mathbf{1}_{\{X_i\leq%20t\}})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cwidehat%20F_N%28t%29%3D%5Cfrac%7B1%7D%7BN%7D%5Csum_%7Bi%3D1%7D%5E%7BN%7D%5Cmathbf%7B1%7D_%7B%5C%7BX_i%5Cleq%20t%5C%7D%7D" alt="Empirical CDF">
 
 여기서 지시함수는 Xᵢ ≤ t이면 1, 아니면 0인 지시함수이다. 따라서 F̂_N(t)는 **전체 데이터 중 t 이하인 값의 비율**이다.
 
 이 경험적 분포를 ES 공식에 그대로 대입하면
 
-![Plug-in Estimator](https://latex.codecogs.com/svg.image?\color{white}\widehat%20T_N=\frac{1}{\alpha}\int_{1-\alpha}^{1}\widehat%20F_N^{-1}(u)\,du)
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cwidehat%20T_N%3D%5Cfrac%7B1%7D%7B%5Calpha%7D%5Cint_%7B1-%5Calpha%7D%5E%7B1%7D%5Cwidehat%20F_N%5E%7B-1%7D%28u%29%5C%2Cdu" alt="Plug-in Estimator">
 
 를 얻는다. 여기서 F̂_N의 역함수는 경험적 분위수 함수다.
 
@@ -100,7 +100,7 @@ Plug-in 추정량 자체가 표본에 따라 달라지는 확률변수이므로,
 
 먼저 N이 무한대로 커질 때의 **점근적(asymptotic)** 거동을 분석한다. 이를 위해 ES 추정 문제에 관련된 분산을 다음과 같이 정의한다.
 
-![ES Asymptotic Variance](https://latex.codecogs.com/svg.image?\color{white}\sigma_{\mathrm{ES}_{\alpha}(X)}^2=\frac{1}{\alpha^2}\int_{q}^{\infty}\int_{q}^{\infty}[F_X(\min\{t,s\})-F_X(t)F_X(s)]\,dt\,ds)
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%5E2%3D%5Cfrac%7B1%7D%7B%5Calpha%5E2%7D%5Cint_%7Bq%7D%5E%7B%5Cinfty%7D%5Cint_%7Bq%7D%5E%7B%5Cinfty%7D%5BF_X%28%5Cmin%5C%7Bt%2Cs%5C%7D%29-F_X%28t%29F_X%28s%29%5D%5C%2Cdt%5C%2Cds" alt="ES Asymptotic Variance">
 
 여기서 q = VaR₁₋α(X)이다.
 
@@ -110,7 +110,7 @@ Plug-in 추정량 자체가 표본에 따라 달라지는 확률변수이므로,
 
 ES 관련 분산이 유한하고 분위수 함수가 u = 1−α에서 연속이면,
 
-![Central Limit Theorem](https://latex.codecogs.com/svg.image?\color{white}\sqrt{N}(\widehat%20T_N-\mathrm{ES}_{\alpha}(X))\xrightarrow{d}\mathcal{N}(0,\sigma_{\mathrm{ES}_{\alpha}(X)}^2))
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Csqrt%7BN%7D%28%5Cwidehat%20T_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%29%5Cxrightarrow%7Bd%7D%5Cmathcal%7BN%7D%280%2C%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%5E2%29" alt="Central Limit Theorem">
 
 가 성립한다. 정규분포 N(0, σ²)는 평균이 0이고 분산이 σ²인 정규분포다.
 
@@ -154,7 +154,7 @@ N이 무한대로 커지는 상황보다 실제로 더 중요한 질문은 **데
 
 신뢰수준 1−δ에 대해, 가능한 작으면서 다음을 만족하는 오차 한계 r = r(δ, N, X)를 찾고 싶다.
 
-![Finite Sample Error Bound](https://latex.codecogs.com/svg.image?\color{white}P(|\widehat%20T_N-\mathrm{ES}_{\alpha}(X)|\leq%20r)\geq%201-\delta)
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DP%28%7C%5Cwidehat%20T_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7C%5Cleq%20r%29%5Cgeq%201-%5Cdelta" alt="Finite Sample Error Bound">
 
 여기서 확률은 무작위 표본 X₁, …, Xₙ을 뽑는 과정에 대한 것이다. 점근 정규근사가 **유한한 N에서도 정확하다고 지나치게 낙관적으로 가정**하면 다음 식을 예상할 수 있다.
 
@@ -182,7 +182,7 @@ N이 무한대로 커지는 상황보다 실제로 더 중요한 질문은 **데
 
 더 일반적인 분포들에 대해 §3.1에서는 Plug-in 추정량의 오차확률이 최악의 경우 대략
 
-![Polynomial Error Rate](https://latex.codecogs.com/svg.image?\color{white}P(|\widehat%20T_N-\mathrm{ES}_{\alpha}(X)|\geq\varepsilon\sigma_{\mathrm{ES}_{\alpha}(X)})\gtrsim\frac{1}{N\varepsilon^2})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DP%28%7C%5Cwidehat%20T_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7C%5Cgeq%5Cvarepsilon%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%29%5Cgtrsim%5Cfrac%7B1%7D%7BN%5Cvarepsilon%5E2%7D" alt="Polynomial Error Rate">
 
 보다 빠르게 줄어들기를 기대하기 어렵다고 설명한다. 이는 신뢰수준을 높일수록 오차 한계가 √(1/(δN)) 규모로 커질 수 있다는 뜻이다. 로그에만 의존하는 이상적인 한계보다 훨씬 불리하다.
 
@@ -208,7 +208,7 @@ N이 무한대로 커지는 상황보다 실제로 더 중요한 질문은 **데
 
 분위수 추정에서 분위수 함수의 연속성이 중요하다는 것은 알려져 있다. 특히 유한표본 분석에는 보통 분위수 함수의 **Lipschitz 연속성**이 사용된다. X에 양의 밀도함수 f_X가 있다면
 
-![Quantile Derivative](https://latex.codecogs.com/svg.image?\color{white}\frac{d}{du}\mathrm{VaR}_u(X)=\frac{1}{f_X(F_X^{-1}(u))})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cfrac%7Bd%7D%7Bdu%7D%5Cmathrm%7BVaR%7D_u%28X%29%3D%5Cfrac%7B1%7D%7Bf_X%28F_X%5E%7B-1%7D%28u%29%29%7D" alt="Quantile Derivative">
 
 이므로 VaR 분위수 주변에서 밀도 f_X가 너무 작지 않아야 분위수 함수가 급격하게 변하지 않는다. ES가 상위 꼬리 구간의 분위수 평균인 만큼, 분위수의 연속성 조건이 ES 추정에도 중요하다. 저자들은 이 **2차 오차항의 역할**이 이전 연구에서 충분히 명시적으로 다뤄지지 않았다고 지적한다.
 
@@ -259,31 +259,31 @@ print(f"변경 전: {before:.3f}, 변경 후: {after:.3f}")
 
 먼저 바닥함수는 내림, 천장함수는 올림이다. 블록 크기 m, 블록 개수 n을
 
-![Block Size](https://latex.codecogs.com/svg.image?\color{white}m=\left\lceil\frac{11}{\varepsilon^2}\right\rceil,\qquad%20n=\left\lfloor\frac{N}{m}\right\rfloor)
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dm%3D%5Cleft%5Clceil%5Cfrac%7B11%7D%7B%5Cvarepsilon%5E2%7D%5Cright%5Crceil%2C%5Cqquad%20n%3D%5Cleft%5Clfloor%5Cfrac%7BN%7D%7Bm%7D%5Cright%5Crfloor" alt="Block Size">
 
 로 정한다. j = 1, …, n에 대해 겹치지 않는 블록을
 
-![Sample Blocks](https://latex.codecogs.com/svg.image?\color{white}I_j=\{(j-1)m+1,\ldots,jm\})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DI_j%3D%5C%7B%28j-1%29m%2B1%2C%5Cldots%2Cjm%5C%7D" alt="Sample Blocks">
 
 로 정의한다. 즉 nm ≤ N이고, nm개 데이터를 n개 블록으로 나눈다. 마지막에 남는 N−nm개는 **블록 구성에는 쓰지 않지만 전체 데이터 plug-in 추정량에는 포함**된다.
 
 각 블록에서도 동일하게 경험적 CDF와 ES 추정량을 계산한다.
 
-![Block Empirical CDF](https://latex.codecogs.com/svg.image?\color{white}\widehat%20F_{I_j}(t)=\frac{1}{m}\sum_{i\in%20I_j}\mathbf{1}_{\{X_i\leq%20t\}})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cwidehat%20F_%7BI_j%7D%28t%29%3D%5Cfrac%7B1%7D%7Bm%7D%5Csum_%7Bi%5Cin%20I_j%7D%5Cmathbf%7B1%7D_%7B%5C%7BX_i%5Cleq%20t%5C%7D%7D" alt="Block Empirical CDF">
 
-![Block Plug-in ES](https://latex.codecogs.com/svg.image?\color{white}\widehat%20T_{I_j}=\frac{1}{\alpha}\int_{1-\alpha}^{1}\mathrm{VaR}_u(\widehat%20F_{I_j})\,du)
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cwidehat%20T_%7BI_j%7D%3D%5Cfrac%7B1%7D%7B%5Calpha%7D%5Cint_%7B1-%5Calpha%7D%5E%7B1%7D%5Cmathrm%7BVaR%7D_u%28%5Cwidehat%20F_%7BI_j%7D%29%5C%2Cdu" alt="Block Plug-in ES">
 
 그 다음 블록별 ES 추정값의 **선형보간 경험적 분위수** Q̂(β)를 구한다. 논문은 하이퍼파라미터를
 
-![Beta Range](https://latex.codecogs.com/svg.image?\color{white}0.35\leq\beta_1\leq\beta_2\leq0.65)
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D0.35%5Cleq%5Cbeta_1%5Cleq%5Cbeta_2%5Cleq0.65" alt="Beta Range">
 
 로 놓고 다음 추정량을 정의한다.
 
-![Robust ES Estimator](https://latex.codecogs.com/svg.image?\color{white}\widehat%20S_N=\min\{\max\{\widehat%20T_N,\widehat%20Q(\beta_1)\},\widehat%20Q(\beta_2)\})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cwidehat%20S_N%3D%5Cmin%5C%7B%5Cmax%5C%7B%5Cwidehat%20T_N%2C%5Cwidehat%20Q%28%5Cbeta_1%29%5C%7D%2C%5Cwidehat%20Q%28%5Cbeta_2%29%5C%7D" alt="Robust ES Estimator">
 
 **동일한 식을 더 쉽게 쓰면**
 
-![Robust ES Cases](https://latex.codecogs.com/svg.image?\color{white}\widehat%20S_N=\begin{cases}\widehat%20Q(\beta_1),&\widehat%20T_N<\widehat%20Q(\beta_1)\\\widehat%20T_N,&\widehat%20Q(\beta_1)\leq\widehat%20T_N\leq\widehat%20Q(\beta_2)\\\widehat%20Q(\beta_2),&\widehat%20T_N>\widehat%20Q(\beta_2)\end{cases})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cwidehat%20S_N%3D%5Cbegin%7Bcases%7D%5Cwidehat%20Q%28%5Cbeta_1%29%2C%26%5Cwidehat%20T_N%3C%5Cwidehat%20Q%28%5Cbeta_1%29%5C%5C%5Cwidehat%20T_N%2C%26%5Cwidehat%20Q%28%5Cbeta_1%29%5Cleq%5Cwidehat%20T_N%5Cleq%5Cwidehat%20Q%28%5Cbeta_2%29%5C%5C%5Cwidehat%20Q%28%5Cbeta_2%29%2C%26%5Cwidehat%20T_N%3E%5Cwidehat%20Q%28%5Cbeta_2%29%5Cend%7Bcases%7D" alt="Robust ES Cases">
 
 **전체 데이터의 plug-in 추정값을 블록 추정량들이 만든 구간 안으로 잘라 넣는(clipping/truncation) 방법**이다.
 
@@ -301,7 +301,7 @@ print(f"변경 전: {before:.3f}, 변경 후: {after:.3f}")
 
 어떤 양의 절대상수 c₀, c₁, c₂, c₃가 존재한다고 하자. ES 관련 분산이 유한하고, 분위수 함수가 [1−2α, 1−α/2]에서 L-Lipschitz이며, ε < c₀√α, N ≥ c₁ε⁻²이면
 
-![Theorem 1.4](https://latex.codecogs.com/svg.image?\color{white}P(|\widehat%20S_N-\mathrm{ES}_{\alpha}(X)|\geq\varepsilon\sigma_{\mathrm{ES}_{\alpha}(X)}+c_2L\varepsilon^2)\leq\exp(-c_3N\varepsilon^2))
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DP%28%7C%5Cwidehat%20S_N-%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7C%5Cgeq%5Cvarepsilon%5Csigma_%7B%5Cmathrm%7BES%7D_%7B%5Calpha%7D%28X%29%7D%2Bc_2L%5Cvarepsilon%5E2%29%5Cleq%5Cexp%28-c_3N%5Cvarepsilon%5E2%29" alt="Theorem 1.4">
 
 가 성립한다. 저자들은 이를 **최적 통계적 성능**이라고 설명한다. §3에서 제시하는 하한과 비교하면, 어떤 추정량도 본질적으로 더 좋은 오차·신뢰수준 관계를 일반적으로 보장할 수 없기 때문이다.
 
@@ -345,11 +345,11 @@ print(f"변경 전: {before:.3f}, 변경 후: {after:.3f}")
 
 밀도함수 f_X가 있을 때 u = 1−α에서 분위수 함수의 국소 기울기는
 
-![Local Quantile Slope](https://latex.codecogs.com/svg.image?\color{white}D(\alpha)=\frac{1}{f_X(F_X^{-1}(1-\alpha))})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DD%28%5Calpha%29%3D%5Cfrac%7B1%7D%7Bf_X%28F_X%5E%7B-1%7D%281-%5Calpha%29%29%7D" alt="Local Quantile Slope">
 
 이다. Theorem 1.4에서 쓰는 L은 보다 넓은 분위수 구간에서의 기울기 상한이고, 저자들은
 
-![Lipschitz Constant](https://latex.codecogs.com/svg.image?\color{white}L=\max_{\beta\in[\alpha/2,2\alpha]}D(\beta))
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7DL%3D%5Cmax_%7B%5Cbeta%5Cin%5B%5Calpha%2F2%2C2%5Calpha%5D%7DD%28%5Cbeta%29" alt="Lipschitz Constant">
 
 로 설명한다. Table 1에서는 실무적인 비교를 위해 L 대신 **D(α)**를 보고한다.
 
@@ -412,7 +412,7 @@ Theorem 1.4의 조건이 성립한다고 하자. 어떤 양의 상수 C₀, C₁
 
 당연히 **데이터 대부분 또는 전부가 변조**되면 어떤 추정 방법으로도 원래의 ES를 만족스럽게 복구할 수 없다. 변조된 관측치 수를 K라고 하면 논문은 K ≤ C₀Nε²를 요구한다. 따라서
 
-![Corruption Constraint](https://latex.codecogs.com/svg.image?\color{white}\varepsilon\geq\sqrt{\frac{K}{C_0N}})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cvarepsilon%5Cgeq%5Csqrt%7B%5Cfrac%7BK%7D%7BC_0N%7D%7D" alt="Corruption Constraint">
 
 이라는 제약이 발생한다. §3.4에서는 변조 비율과 관련된 이 오차 규모가 **minimax 관점에서 최적**임을 보인다.
 
@@ -430,7 +430,7 @@ ES 추정은 금융 규제와 이론적 관심에 의해 오래 연구된 주제
 
 이 논문의 방법과 가까운 선행 방법은 β₁ = β₂ = 1/2일 때 얻어지는 **median of blocks estimator**다. 이 경우
 
-![Median of Blocks](https://latex.codecogs.com/svg.image?\color{white}\widehat%20S_N=\operatorname{median}\{\widehat%20T_{I_1},\ldots,\widehat%20T_{I_n}\})
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cwidehat%20S_N%3D%5Coperatorname%7Bmedian%7D%5C%7B%5Cwidehat%20T_%7BI_1%7D%2C%5Cldots%2C%5Cwidehat%20T_%7BI_n%7D%5C%7D" alt="Median of Blocks">
 
 이다. 평균 추정에서 유명한 **median-of-means**와 비슷한 생각을 ES에 적용한 셈이다. 평균 추정에서는 이런 추정량의 성능이 잘 알려져 있지만, 저자들에 따르면 **ES 추정에 대해 통계적으로 최적인 유한 표본 보장**은 이전 문헌에서 충분히 마련되지 않았다.
 
