@@ -1,7 +1,7 @@
 ---
 title: 'Optimization Theory : Necessary and sufficient optimality conditions'
 date: 2026-10-25 12:00:00 +0200
-categories: [Mathematics, Optimization Theory]
+categories: [Optimization Theory]
 tags: [Optimization, Optimality Conditions, Hessian, Convexity, Coercivity]
 math: false
 ---
