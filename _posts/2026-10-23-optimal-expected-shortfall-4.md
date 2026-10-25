@@ -1,6 +1,6 @@
 ---
 title: "Optimal Nonparametric Estimation of the Expected Shortfall Risk 4"
-date: 2026-10-24 17:00:00 +0100
+date: 2026-10-23 17:00:00 +0100
 categories:
   - Computational Finance
 tags:
