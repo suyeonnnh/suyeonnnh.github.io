@@ -13,6 +13,7 @@ tags:
   - Secant Method
 math: false
 ---
+
 이번 글에서는 **Optimization Theory — Line Search Algorithms** 를 순서대로 번역하고, 각 방법의 작동 이유와 한계를 정리한다. 이전의 최적성 조건에서 최적해의 성질을 배웠다면, 이번에는 최적해를 실제 계산으로 찾아가는 방법에 집중한다.
 
 탐색법의 전체 흐름은 **구간을 줄이는 방법 → 함수 모양을 보간하는 방법 → 도함수의 영점을 찾는 방법**이다. 처음 두 부류는 함수값만으로 수행할 수 있지만, 뒤로 갈수록 미분 정보를 적극적으로 사용한다. 미분 정보를 더 쓰면 빠를 수 있지만 그만큼 초기점과 함수의 형태에 민감해진다.
@@ -27,11 +28,9 @@ math: false
 
 함수 f가 실수에서 실수로 가는 함수이고, 작은 정수 K에 대해 초기값 x0, …, x(K−1)이 주어져 있다고 하자. 이후의 근삿값을 다음의 일반적인 반복 규칙으로 만든다.
 
-
 ![Iteration rule](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20x_n%3DF%28x_%7Bn-1%7D%2C%5Cldots%2Cx_%7Bn-K%7D%29)
 
 목표는 이 수열의 극한이 함수 f의 **국소 최솟점** x*가 되게 하는 것이다.
-
 
 ![Limit](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clim_%7Bn%5Cto%5Cinfty%7Dx_n%3Dx%5E%2A)
 
@@ -45,7 +44,6 @@ math: false
 
 **Unimodal 함수**는 고려하는 구간 안에서 한 번의 최솟값 구조를 갖는 함수다. 함수가 [a,b]에서 unimodal이고 최솟점을 x*라 하자. 내부의 두 시험점을 왼쪽에서 오른쪽으로 xa, xb 순서로 놓는다.
 
-
 ![Ordered points](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20x_L%3Da%3Cx_a%3Cx_b%3Cb%3Dx_U)
 
 함수값 f(xa), f(xb)의 대소를 비교하면 최솟점이 반드시 포함되는 쪽을 남길 수 있다. 구간 축소에서 중요한 것은 정확한 최솟점을 한 번에 구하는 것이 아니라, **최솟점을 버리지 않으면서 후보 구간을 줄이는 것**이다.
@@ -57,7 +55,6 @@ math: false
 ### 3.2 Interval Reduction Rules (p.5)
 
 슬라이드의 세 경우는 다음과 같다.
-
 
 ![Formula](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f%28x_a%29%3Cf%28x_b%29%5C%20%5CLongrightarrow%5C%20x%5E%2A%5Cin%5Bx_L%2Cx_b%5D)
 
@@ -72,7 +69,6 @@ math: false
 ### 4.1 Original Algorithm (p.6)
 
 Golden-section search는 시험점의 위치를 황금비에서 나온 상수 K로 정한다.
-
 
 ![Golden ratio](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20K%3D%5Cfrac%7B%5Csqrt5-1%7D%7B2%7D%5Capprox0.618034)
 
@@ -136,7 +132,6 @@ x_star = (xU + xL) / 2
 
 함수 f가 [a,b]에서 unimodal이라면 탐색 구간의 양 끝점 수열은 그 구간의 전역 최솟점으로 수렴한다. n회 반복 후 얻은 구간 중점은 실제 최솟점에서 다음보다 멀리 떨어질 수 없다.
 
-
 ![Golden-section bound](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Cx_n-x%5E%2A%7C%5Cleq%5Cfrac12K%5En%28b-a%29)
 
 구간 길이가 매회 K배로 줄어드는 구조이므로 수렴 속도는 **선형(linear)**이다.
@@ -151,19 +146,13 @@ x_star = (xU + xL) / 2
 
 세 점 a<c<b에서 측정한 함수값 f(a), f(c), f(b)를 정확히 지나는 **유일한 2차 다항식 p**를 만든다. p(a)=f(a), p(c)=f(c), p(b)=f(b)이다. 함수 f와 p의 모양이 비슷하다면 p의 최솟점 x_bar가 f의 최솟점을 가리키는 실마리가 된다. 보간이 충분히 정확하지 않으면 x_bar와 기존 점을 사용해 구간을 좁히고 반복한다.
 
-![Quadratic interpolation diagram](/assets/images/line_search_quadratic.png)
-
-*Figure 3. 세 점의 함수값에 맞춘 2차 보간식과 그 꼭짓점.*
-
 ### 5.2 Algorithm — Parabolic Minimizer (p.10)
 
 초기 세 점은 반드시 다음 관계를 만족하도록 찾는다.
 
-
 ![Initial bracket](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20a%3Cc%3Cb%2C%5Cqquad%20f%28a%29%3Ef%28c%29%3Cf%28b%29)
 
 보간 다항식의 최솟점은 다음 명시식으로 계산한다.
-
 
 ![Quadratic interpolation vertex](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cbar%20x%3D%5Cfrac%7B%28b%5E2-c%5E2%29f%28a%29%2B%28c%5E2-a%5E2%29f%28b%29%2B%28a%5E2-b%5E2%29f%28c%29%7D%7B2%5B%28b-c%29f%28a%29%2B%28c-a%29f%28b%29%2B%28a-b%29f%28c%29%5D%7D)
 
@@ -229,6 +218,10 @@ while δ0 > ε and flag:
 
 **그림의 핵심:** 초기에 작은 간격으로만 이동하면 최솟점에 도달하기 전에 계산을 많이 할 수 있다. 감소 방향이 확인되면 탐색폭을 빠르게 늘려 적절한 시작 구간을 찾는다.
 
+![Quadratic interpolation diagram](/assets/images/line_search_quadratic.png)
+
+*Figure 3. 슬라이드 p.12 — d=1일 때 δ, 2δ, 4δ, 8δ로 탐색폭을 늘리는 과정.*
+
 ### 5.5 Convergence Warning and Safeguards (p.13)
 
 **중요: Quadratic interpolation은 반드시 최솟점으로 수렴하지 않는다.** 연속된 두 근삿값의 차이가 ε보다 작아져도 실제 극솟점에서 멀리 떨어져 있을 수 있다. 종료조건은 곧 최적성 증명이 아니다.
@@ -256,7 +249,6 @@ Cubic interpolation은 두 점 a<b에서 네 개의 정보를 사용한다. 함�
 
 원문은 탐색할 최솟점이 구간 안에 있도록 다음 조건을 둔다.
 
-
 ![Cubic initial conditions](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f%5Cprime%28a%29%3C0%5Cquad%5Cmathrm%7Band%7D%5Cquad%28f%5Cprime%28b%29%5Cgeq0%5C%20%5Cmathrm%7Bor%7D%5C%20f%28b%29%5Cgeq%20f%28a%29%29)
 
 보간 다항식의 최솟점이 실제 함수의 최솟점과 충분히 가깝지 않다면 [a,x_bar] 또는 [x_bar,b]로 구간을 갱신하고 반복한다.
@@ -268,7 +260,6 @@ Cubic interpolation은 두 점 a<b에서 네 개의 정보를 사용한다. 함�
 ### 6.2 Algorithm — Cubic Interpolation Formula (p.16)
 
 초기 구간을 구하고, 이전 값 x_star와 새 보간 최솟점 x_bar의 차이가 ε 이하가 될 때까지 갱신한다. 중간 계산 변수 z와 w를 다음과 같이 정의한다.
-
 
 ![Cubic z](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20z%3D%5Cfrac%7B3%28f%28a%29-f%28b%29%29%7D%7Bb-a%7D%2Bf%5Cprime%28a%29%2Bf%5Cprime%28b%29)
 
@@ -338,7 +329,6 @@ while δ0 > ε and flag:
 
 여기서는 함수 f의 최솟값을 직접 찾는 대신, **1계 도함수 f′의 영점**을 찾는다. 도함수의 그래프와 교차점을 이용하는 접근법이다.
 
-
 ![Stationary point](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f%5Cprime%28x%5E%2A%29%3D0)
 
 주의할 점은 **도함수의 영점이 모두 최솟점은 아니라는 것**이다. 극댓점이나 안장형 정지점도 조건을 만족할 수 있다. 일반적인 방정식의 영점 탐색법인 Newton's method와 Secant method를 f′에 적용하는 것이 이 절의 기본 아이디어다.
@@ -346,7 +336,6 @@ while δ0 > ε and flag:
 ### 7.2 Newton's Method (p.20)
 
 Newton 방법에서는 g=f′를 두고, g의 그래프에서 접선을 그어 x축과 만나는 점을 다음 추정치로 사용한다. 이때 g′=f″이다. 따라서 갱신식은 다음과 같다.
-
 
 ![Newton update](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20x_%7Bk%2B1%7D%3Dx_k-%5Cfrac%7Bf%5Cprime%28x_k%29%7D%7Bf%5Cprime%5Cprime%28x_k%29%7D)
 
@@ -368,7 +357,6 @@ until abs(previous - x_star) < ε
 ### 7.3 Secant Method (p.21)
 
 Secant 방법은 접선을 직접 계산하는 대신, 이전 두 점을 잇는 **할선(secant)**의 기울기로 도함수의 변화를 근사한다. 즉, f″를 계산할 필요가 없다.
-
 
 ![Secant update](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20x_%7Bk%2B1%7D%3Dx_k-%5Cfrac%7Bx_k-x_%7Bk-1%7D%7D%7Bf%5Cprime%28x_k%29-f%5Cprime%28x_%7Bk-1%7D%29%7Df%5Cprime%28x_k%29)
 
@@ -397,7 +385,6 @@ until abs(x0-x1) < ε
 - **Newton method:** f′의 단순근에 대해서는 2차(quadratic) 수렴.
 - **Secant method:** f′의 단순근에 대해서는 약 1.618차의 초선형 수렴.
 
-
 ![Secant convergence order](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cfrac%7B1%2B%5Csqrt5%7D%7B2%7D%5Capprox1.618)
 
 - **Multiple roots:** 원문은 두 방법 모두 선형(linear) 수렴으로 느려진다고 설명한다.
@@ -420,4 +407,3 @@ until abs(x0-x1) < ε
 흐름을 정리하자면 함수 모양을 거의 모르는 상태에서는 **구간을 안전하게 줄이고**, 값이 충분히 모이면 **다항식 보간으로 속도를 높이며**, 도함수 정보를 신뢰할 수 있으면 **정지점 방정식을 더 빠르게 해결**할 수 있다는 것이다.
 
 **Reference** — Piotr Więcek, *Optimization Theory: Line Search Algorithms*, Wrocław University of Science and Technology, 21 October 2026, slides 1–22.
-
