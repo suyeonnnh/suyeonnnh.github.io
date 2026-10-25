@@ -13,7 +13,7 @@ tags:
 math: false
 ---
 
-이번 글은 **Gradient Methods: Part I (2026.10.23)** 를 순서대로 공부한 내용이다. 이전 글의 Line Search가 1차원에서 이동할 길이를 찾았다면, 이번에는 다변수 공간에서 **어느 방향으로, 얼마나 이동할지**를 결정한다.
+이번 글은 **Gradient Methods: Part I** 를 순서대로 공부한 내용이다. 이전 글의 Line Search가 1차원에서 이동할 길이를 찾았다면, 이번에는 다변수 공간에서 **어느 방향으로, 얼마나 이동할지**를 결정한다.
 
 흐름은 **반복식 → 하강 방향 → Steepest Descent / Newton → Stepsize → 수렴 정리 → 수렴 속도 비교**다.
 
