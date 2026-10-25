@@ -52,7 +52,7 @@ math: false
 
 ![Interval reduction example](/assets/images/line_search_interval_reduction.png)
 
-*Figure 1. 두 내부점의 함수값을 비교해 탐색 범위를 줄이는 설명용 그래프. 강의 원본 그림을 그대로 재현한 것은 아니다.*
+*Figure 1. 두 내부점의 함수값을 비교해 탐색 범위를 줄이는 그래프.*
 
 ### 3.2 Interval Reduction Rules (p.5)
 
@@ -61,9 +61,7 @@ math: false
 
 ![Formula](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f%28x_a%29%3Cf%28x_b%29%5C%20%5CLongrightarrow%5C%20x%5E%2A%5Cin%5Bx_L%2Cx_b%5D)
 
-![Formula](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f%28x_a%29%3Ef%28x_b%29%5C%20%5CLongrightarrow%5C%20x%5E%2A%5Cin%5Bx_a%2Cx_U%5D)
-
-![Formula](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f%28x_a%29%3Df%28x_b%29%5C%20%5CLongrightarrow%5C%20x%5E%2A%5Cin%5Bx_a%2Cx_b%5D)
+![Formula](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f%28x_a%29%isplaystyle%20f%28x_a%29%3Df%28x_b%29%5C%20%5CLongrightarrow%5C%20x%5E%2A%5Cin%5Bx_a%2Cx_b%5D)
 
 첫째 경우에는 오른쪽 끝을, 둘째 경우에는 왼쪽 끝을 버린다. 같을 때는 중앙 구간을 남긴다. 이를 반복하면 최솟점을 포함하는 구간을 원하는 만큼 좁힐 수 있다. 이러한 보장의 출발점은 **unimodality 가정**이다.
 
@@ -155,7 +153,7 @@ x_star = (xU + xL) / 2
 
 ![Quadratic interpolation diagram](/assets/images/line_search_quadratic.png)
 
-*Figure 3. 세 점의 함수값에 맞춘 2차 보간식과 그 꼭짓점. 이해를 위한 별도 예시.*
+*Figure 3. 세 점의 함수값에 맞춘 2차 보간식과 그 꼭짓점.*
 
 ### 5.2 Algorithm — Parabolic Minimizer (p.10)
 
@@ -265,7 +263,7 @@ Cubic interpolation은 두 점 a<b에서 네 개의 정보를 사용한다. 함�
 
 ![Cubic interpolation diagram](/assets/images/line_search_cubic.png)
 
-*Figure 4. 양 끝점에서의 함수값과 도함수를 함께 맞추는 3차 보간 그래프. 별도 설명용 예시.*
+*Figure 4. 양 끝점에서의 함수값과 도함수를 함께 맞추는 3차 보간 그래프.*
 
 ### 6.2 Algorithm — Cubic Interpolation Formula (p.16)
 
@@ -365,7 +363,7 @@ until abs(previous - x_star) < ε
 
 ![Newton tangent illustration](/assets/images/line_search_newton.png)
 
-*Figure 5. 도함수 g=f′의 접선과 x축 교점으로 새 값을 만드는 Newton 방법. 별도 설명용 예시.*
+*Figure 5. 도함수 g=f′의 접선과 x축 교점으로 새 값을 만드는 Newton 방법.*
 
 ### 7.3 Secant Method (p.21)
 
@@ -388,7 +386,7 @@ until abs(x0-x1) < ε
 
 ![Secant diagram](/assets/images/line_search_secant.png)
 
-*Figure 6. 두 점의 할선을 이용해 도함수의 영점을 갱신하는 Secant 방법. 별도 설명용 예시.*
+*Figure 6. 두 점의 할선을 이용해 도함수의 영점을 갱신하는 Secant 방법.*
 
 ### 7.4 Convergence of Derivative-Based Methods (p.22)
 
