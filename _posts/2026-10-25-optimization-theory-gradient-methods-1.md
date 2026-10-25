@@ -85,7 +85,7 @@ D가 대칭 양의 정부호(symmetric positive definite)이고 현재 그래디
 
 ![Steepest Descent Zigzag](/assets/images/gradient_steepest_descent_zigzag.png)
 
-*Figure 1 — 교수님 슬라이드 p.7의 원본 도식: 길쭉한 타원형 등고선에서 이동 경로가 지그재그가 된다.*
+*Figure 1 — 타원형 등고선에서 이동 경로가 지그재그가 된다.*
 
 최급강하법이 가장 가파른 방향을 선택하는데도 느린 이유는 무엇일까? 등고선이 가늘고 긴 타원일 때 현재 위치에서의 음의 그래디언트가 계곡의 긴 방향보다는 가로지르는 방향을 향하기 쉽다. 그러면 한쪽 벽에서 반대편 벽으로 이동하는 현상이 반복된다.
 
@@ -188,7 +188,7 @@ alpha_k = alpha
 
 ![Armijo Rule Diagram](/assets/images/gradient_armijo_rule.png)
 
-*Figure 2 — 교수님 슬라이드 p.11 원본 도식: 충분 감소조건을 만족하는 보폭의 범위와 만족하지 못하는 보폭의 범위.*
+*Figure 2 — 충분 감소조건을 만족하는 보폭의 범위와 만족하지 못하는 보폭의 범위.*
 
 Armijo Rule은 매번 정확한 1차원 최솟점을 찾지 않아도 되고, 함수값이 충분히 감소할 때까지만 탐색하므로 실무적으로 유용하다.
 
