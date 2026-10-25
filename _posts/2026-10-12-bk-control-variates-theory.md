@@ -1,6 +1,6 @@
 ---
 title: "Control Variates for Coupon-Bond Pricing under the Black–Karasinski Model 1"
-date: 2026-10-23
+date: 2026-10-12
 categories:
   - Computational Finance
 tags:
