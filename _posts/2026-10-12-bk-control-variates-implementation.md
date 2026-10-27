@@ -8,17 +8,53 @@ tags:
   - Vasicek
   - Monte-Carlo
   - Control-Variates
-math: true
+math: false
 ---
 
 ## Introduction
+
 지난 글에서는 Black–Karasinski(BK)와 Vasicek 모델의 수학적 구조, 할인계수, 쿠폰 채권의 Monte Carlo 가격 추정과 Control Variates의 기본 원리를 정리했다.
 
-이번 글에서는 앞에서 다룬 내용을 **Python으로 구현하고 실제 출력값을 확인**한다. 먼저 Vasicek의 해석적 가격과 Monte Carlo 추정값을 비교하여 계산을 검증하고, BK 채권 가격을 추정한다. 이후 Vasicek과 BK 경로 기반 통제변량을 각각 적용해 표준오차와 VRF를 비교한다. 마지막으로 통제변량의 기대값이 잘못되었을 때 결과에 어떤 문제가 발생하는지도 확인한다.
+이번 글에서는 이론을 Python으로 구현하여 **Monte Carlo 가격 추정의 정확도와 분산 감소 효과**를 비교한다. 먼저 해석적 가격을 계산할 수 있는 Vasicek 모델에서 구현을 검증하고, Black–Karasinski 모델로 확장해 두 가지 변동성에서 쿠폰 채권 가격을 추정한다. 이후 Vasicek 경로를 이용한 통제변량과 BK 금리 적분값으로 구성한 통제변량을 비교하여 가격, 표준오차(Standard Error, SE), 분산 감소 배율(Variance Reduction Factor, VRF)을 살펴본다.
+
+프로젝트를 하며 얻은 중요한 점은 **추정량의 표준오차가 작다고 해서 가격이 반드시 정확해지는 것은 아니라는 점**이었다. 통제변량의 기대값이 시뮬레이션의 이산화 방식과 일치하지 않거나 잘못 지정되면, 작은 SE를 유지하면서도 가격 추정에 편향이 발생할 수 있다. 이를 확인하기 위해 독립 표본을 이용한 기대값 검증, 시간 간격과 적분 방식 비교, 의도적인 기대값 오류 실험, 자동화된 테스트를 차례로 수행한다.
 
 ## Parameters
-| 구분 | 파라미터 | 값 |
-|
+
+| 구분 | 파라미터 | 값 | 설명 |
+|---|---|---|---|
+| Black–Karasinski | κ (kappa) | 0.8 | 로그 금리의 평균회귀 속도 |
+| Black–Karasinski | θ (theta) | ln(0.03) | 로그 금리의 장기 평균 수준 |
+| Black–Karasinski | r₀ | 0.03 | 초기 단기금리 |
+| Black–Karasinski | σ (sigma) | **0.2, 0.5** | 비교할 두 변동성 시나리오 |
+| Vasicek (Baseline) | α (alpha) | 0.8 | 평균회귀 속도 |
+| Vasicek (Baseline) | β (beta) | 0.03 | 장기 평균금리 |
+| Vasicek (Baseline) | η (eta) | 0.01 | 금리 변동성 |
+| Vasicek (Baseline) | r₀ᵛ | 0.03 | 초기 단기금리 |
+| Coupon Bond | T | 5 years | 만기 |
+| Coupon Bond | C | 0.04 | 매년 지급하는 쿠폰, 액면가 1 기준 |
+| Coupon Bond | Principal | 1.0 | 만기 원금 |
+| Simulation | Δt | 1/52 | 기본 주간 시간 간격 |
+| Time-step Comparison | Δt | 1/252 | 더 촘촘한 시간 간격 |
+| Pricing Sample | N | 20,000 | 채권 가격 평가 경로 수 |
+| Pilot Sample | N_pilot | 2,000 | 통제변량 계수 추정용 독립 경로 수 |
+| Random Seed | Seed | 2026 | 기본 가격 평가 난수 시드 |
+| Independent Validation | N_test | 30,000 | 통제변량 기대값 검증용 경로 수 |
+
+BK 모델에서는 **σ = 0.2와 σ = 0.5를 각각 고정**하고 동일한 추정법의 가격과 SE를 비교한다. 통제변량을 적용할 때는 가격 평가에 쓰는 경로와 계수를 추정하는 pilot 경로를 분리하며, 비교 대상에는 가능한 한 같은 난수 증분(Common Random Numbers)을 사용한다. 이때 목적은 변동성을 인위적으로 줄이는 것이 아니라, **같은 BK 모형과 같은 변동성 조건에서 Monte Carlo 추정량의 분산을 줄이는 것**이다.
+
+경로별 채권 가격 Y의 Monte Carlo 추정량과 표준오차는 다음과 같다.
+
+- **MC price:** P̂_MC = (1/N) Σᵢ Yᵢ
+- **Standard error:** SE = s_Y / √N
+- **Sample variance:** s_Y² = [1/(N−1)] Σᵢ (Yᵢ − Ȳ)²
+
+기대값 μ_X = E[X]를 알고 있는 통제변량 X에 대해서는 다음과 같이 가격을 보정한다.
+
+- **Control variate:** Y_CV = Y − ν̂ (X − μ_X)
+- **Variance Reduction Factor:** VRF = Var(Y) / Var(Y_CV) (표본분산 기준)
+
+**VRF가 클수록 같은 표본 수에서 더 작은 분산을 얻었다**는 뜻이며, 기대값의 정확성은 별도로 검증해야 한다. 여기서 ν̂는 독립 pilot 표본으로 추정한 통제변량 계수이다.
 
 ---
 
@@ -28,7 +64,7 @@ math: true
 
 Vasicek 모델은 해석적 채권 가격을 구할 수 있으므로 Monte Carlo 구현을 검증하는 기준으로 사용한다. 먼저 Euler 방법으로 금리 경로를 생성하고, 사다리꼴 적분으로 할인계수를 계산한다. 연간 쿠폰과 만기 원금을 각 지급 시점에 할인하여 경로별 채권 가치를 구한다.
 
-**Python Implementation** (Notebook 셀 2)
+**Python Implementation**
 
 ```python
 import numpy as np
@@ -125,7 +161,7 @@ Standard error: 0.00015148
 
 Vasicek의 해석적 영이표채권 가격을 이용해 쿠폰 채권의 기준 가격을 구한다. MC 가격과 해석적 가격의 차이를 SE 단위로 비교하고, 시간 간격을 1/52에서 1/252로 변경하여 이산화 오차의 영향을 확인한다.
 
-**Python Implementation** (Notebook 셀 4)
+**Python Implementation**
 
 ```python
 
@@ -197,7 +233,7 @@ dt = 1/252 : 1.04382200, SE = 0.00015169
 Analytical: 1.04389268
 ```
 
-**Python Implementation** (Notebook 셀 5)
+**Python Implementation**
 
 ```python
 # Basic numerical validation
@@ -236,7 +272,7 @@ All basic validation tests passed.
 
 BK에서는 로그 금리를 Euler 방법으로 생성하고 실제 금리를 지수변환하여 계산한다. 두 변동성 σ=0.2와 σ=0.5에서 Plain MC 채권 가격과 표준오차를 비교한다. 또한 σ=0인 경우 결정론적 할인 가격과 일치하는지 검증한다.
 
-**Python Implementation** (Notebook 셀 7)
+**Python Implementation**
 
 ```python
 import numpy as np
@@ -355,7 +391,7 @@ Standard error: 0.00024446
 ![BK 변동성별 Plain MC 가격과 ±1.96 SE](/assets/images/bk_plain_mc_price.png)
 *Figure. BK 변동성별 Plain MC 가격과 ±1.96 SE.*
 
-**Python Implementation** (Notebook 셀 8)
+**Python Implementation**
 
 ```python
 # Validation for Part B
@@ -414,7 +450,7 @@ All Part B validation tests passed.
 
 Part C에서는 Vasicek 모델을 BK 가격 추정의 통제변량으로 사용한다. **동일한 Gaussian increments**로 두 모델을 함께 시뮬레이션하여 경로 간 상관관계를 높이고, 회귀계수는 독립적인 pilot 표본에서 추정한 후 가격 표본에 적용한다.
 
-**Python Implementation** (Notebook 셀 10)
+**Python Implementation**
 
 ```python
 import numpy as np
@@ -524,7 +560,7 @@ Pricing paths: 20000
 
 통제변량은 Vasicek의 만기 할인계수(ZCB)와 쿠폰 채권 가격 두 종류다. 기대값은 **실제 시뮬레이션에 사용한 Euler·Trapezoidal 이산화와 일치하도록** 계산한다. 가격, SE, 추정 계수 ν̂, VRF를 비교한다.
 
-**Python Implementation** (Notebook 셀 12)
+**Python Implementation**
 
 ```python
 def vasicek_control_expectations(alpha, beta, eta, dt=DT):
@@ -651,7 +687,7 @@ print("Control-variate functions ready.")
 Control-variate functions ready.
 ```
 
-**Python Implementation** (Notebook 셀 13)
+**Python Implementation**
 
 ```python
 task4_results = {}
@@ -725,7 +761,7 @@ Task 4에서는 두 통제변량 모두 Plain MC보다 SE를 낮췄다. 이번 �
 
 BK의 단기금리 동역학을 장기 평균 금리 부근에서 1차로 근사하여 Vasicek 파라미터 대응 규칙을 유도한다. 이는 국소적인 근사 규칙이며 두 모형의 정확한 동등성을 의미하지 않는다.
 
-**Python Implementation** (Notebook 셀 16)
+**Python Implementation**
 
 ```python
 def match_vasicek_parameters(sigma):
@@ -771,7 +807,7 @@ eta   = 0.015000
 
 α와 η를 격자에서 변경하면서 통제변량별 VRF를 계산한다. 모든 격자점에서 같은 Gaussian 난수를 사용해 비교의 표본잡음을 줄인다. 결과는 **탐색한 격자 안에서의 최대값**이며 전역 최적성은 보장하지 않는다.
 
-**Python Implementation** (Notebook 셀 18)
+**Python Implementation**
 
 ```python
 # Search ranges
@@ -884,7 +920,7 @@ Best eta: 0.002000
 Maximum grid VRF: 32.1381
 ```
 
-**Python Implementation** (Notebook 셀 19)
+**Python Implementation**
 
 ```python
 # Additional check: is the best eta at the grid boundary?
@@ -946,9 +982,7 @@ eta=0.0020, VRF=32.1381
 eta=0.0040, VRF=31.3863
 ```
 
-이 결과는 **최종 제출 Notebook에 저장된 실행 출력**을 그대로 옮긴 것이다.
-
-**Python Implementation** (Notebook 셀 20)
+**Python Implementation**
 
 ```python
 %matplotlib inline
@@ -1007,7 +1041,7 @@ Saved: vrf_heatmap_sigma_0.5.png
 ![BK σ=0.2의 Vasicek 통제변량 VRF 히트맵](/assets/images/vrf_heatmap_sigma_0.2.png)
 *Figure. BK σ=0.2의 Vasicek 통제변량 VRF 히트맵.*
 
-**Python Implementation** (Notebook 셀 21)
+**Python Implementation**
 
 ```python
 # Investigate the effect of beta
@@ -1071,7 +1105,7 @@ Coupon VRF: 25.6528
 
 Part C의 기본값(Baseline), Task 5의 모형 근사값(Matched), Task 6의 탐색값(Grid best)을 **같은 독립 가격 표본**에서 비교한다. 가격·SE·ν̂·VRF를 함께 확인하고 단순 근사 규칙이 언제나 가장 높은 VRF를 주지는 않는다는 점을 살펴본다.
 
-**Python Implementation** (Notebook 셀 24)
+**Python Implementation**
 
 ```python
 task7_results = []
@@ -1174,7 +1208,7 @@ Grid best  params=(0.8374999999999999, 0.03, 0.002) price=1.03410222 SE=0.000046
 
 독립 pilot 표본과 가격 표본을 분리했는지, 통제변량의 기대값과 시뮬레이션 평균이 통계적 허용 범위 내에 있는지, 각 가격·SE·VRF가 유한한지 확인한다. 기본 테스트만으로 모든 계산 오류를 배제할 수는 없다.
 
-**Python Implementation** (Notebook 셀 27)
+**Python Implementation**
 
 ```python
 for sigma in SIGMAS:
@@ -1302,7 +1336,7 @@ For the control-variate calculation, we will derive its exact discrete-time mome
 
 This ensures that the control expectations correspond to the quantities actually simulated.
 
-**Python Implementation** (Notebook 셀 31)
+**Python Implementation**
 
 ```python
 import numpy as np
@@ -1405,7 +1439,7 @@ Pilot paths: 2000
 Pricing paths: 20000
 ```
 
-**Python Implementation** (Notebook 셀 32)
+**Python Implementation**
 
 ```python
 def d_integrated_rate_moments(sigma, dt=D_DT):
@@ -1527,7 +1561,7 @@ E[X2] = 0.02957599
 
 BK 만기 적분금리 I(T), I(T)와 제곱항, 쿠폰 가중 적분금리 X₁, 두 쿠폰 가중 항 X₁·X₂의 네 구성을 비교한다. 여러 통제변량을 동시에 사용하면 계수 ν̂는 벡터가 되며, 독립 pilot 표본에 대한 최소제곱으로 추정한다.
 
-**Python Implementation** (Notebook 셀 34)
+**Python Implementation**
 
 ```python
 def d_make_controls(annual_integrals):
@@ -1625,7 +1659,7 @@ print("BK path-based CV functions ready.")
 BK path-based CV functions ready.
 ```
 
-**Python Implementation** (Notebook 셀 35)
+**Python Implementation**
 
 ```python
 d_task9_results = {}
@@ -1774,7 +1808,7 @@ SE:    0.00024446
 
 Part C의 기본 Vasicek 통제변량과 Part D의 BK 경로 기반 통제변량을 동일한 BK 경로·난수·표본수 조건에서 비교한다. Part C의 Baseline 설정을 기준으로 한 비교임을 분명히 한다.
 
-**Python Implementation** (Notebook 셀 38)
+**Python Implementation**
 
 ```python
 # Baseline Vasicek parameters from Part C
@@ -1886,7 +1920,7 @@ print("Part C comparison functions ready.")
 Part C comparison functions ready.
 ```
 
-**Python Implementation** (Notebook 셀 39)
+**Python Implementation**
 
 ```python
 d_task10_results = {}
@@ -1981,7 +2015,7 @@ Part D: X1, X2             SE=0.00000019 VRF=1722574.84 nu=[-0.98535  0.41439]
 
 Part D의 이산 모멘트가 기초 부등식을 만족하는지, 독립 표본평균이 계산된 기대값과 일치하는지, CV 추정 결과가 유한한지 검사한다. 또한 σ=0일 때 결정론적인 채권 가격으로 돌아가는지 확인한다.
 
-**Python Implementation** (Notebook 셀 42)
+**Python Implementation**
 
 ```python
 # Part D validation
@@ -2093,9 +2127,9 @@ Part D에서는 BK 경로를 직접 사용하는 통제변량을 구성하고 �
 
 ## Task 11. Independent Validation of Control Expectations
 
-통제변량의 기대값이 정확한지를 독립 Monte Carlo 표본 30,000개로 검증한다. 기본 Vasicek 통제변량뿐 아니라 **Matched와 Grid best까지 포함**하여 Part C에서 실제 사용한 모든 설정을 확인한다. Part D의 I(T), I(T)², X₁, X₂도 두 BK 변동성별로 검증한다. 허용 기준은 최종 제출본에 맞춰 **3 SE**로 설정한다.
+통제변량의 기대값이 정확한지를 독립 Monte Carlo 표본 30,000개로 검증한다. 기본 Vasicek 통제변량뿐 아니라 **Matched와 Grid best까지 포함**하여 Part C에서 실제 사용한 모든 설정을 확인한다. Part D의 I(T), I(T)², X₁, X₂도 두 BK 변동성별로 검증한다. 허용 기준은 **3 SE**로 설정한다.
 
-**Python Implementation** (Notebook 셀 45)
+**Python Implementation**
 
 ```python
 import numpy as np
@@ -2239,7 +2273,7 @@ BK sigma=0.5, X2              0.0295760   0.0294177   0.0000811   0.0002433    -
 All Task 11 expectation checks passed.
 ```
 
-**Python Implementation** (Notebook 셀 46)
+**Python Implementation**
 
 ```python
 # =========================================================
@@ -2361,8 +2395,6 @@ Additional checks passed: 8/8
 Total Task 11 checks: 18
 ```
 
-이 결과는 **최종 제출 Notebook에 저장된 실행 출력**을 그대로 옮긴 것이다.
-
 ### Task 11. Results and Interpretation
 
 추가 Vasicek 설정 8개도 독립 표본과 비교한 결과 모두 3 SE 기준을 통과했다. 기본 Vasicek 2개와 BK 통제변량 8개를 합하면 **총 18개 검사에서 18개 모두 통과**했다. 단, 통계적 허용 범위 통과는 수학적인 무오류 증명을 의미하지 않는다.
@@ -2379,7 +2411,7 @@ Total Task 11 checks: 18
 
 시간 간격 1/52와 1/252에서 계산한 기대값을 비교한다. Vasicek은 연속시간 가격과 이산시간 기대값을 대조하고, BK는 두 시간격자에서 통제변량 기대값이 어떻게 달라지는지 확인한다. **사다리꼴 적분과 왼쪽 직사각형 적분의 차이도 Vasicek과 BK 모두 비교**한다.
 
-**Python Implementation** (Notebook 셀 49)
+**Python Implementation**
 
 ```python
 # Task 12: time-step effects
@@ -2488,7 +2520,7 @@ X1: +0.0000864939
 X2: +0.0000336947
 ```
 
-**Python Implementation** (Notebook 셀 50)
+**Python Implementation**
 
 ```python
 def e_vasicek_expectations_with_rule(
@@ -2581,7 +2613,7 @@ ZCB: trapezoid=0.8609213775, left=0.8609212490, difference=-0.0000001285
 Coupon: trapezoid=1.0438928806, left=1.0438927316, difference=-0.0000001490
 ```
 
-**Python Implementation** (Notebook 셀 51)
+**Python Implementation**
 
 ```python
 # BK trapezoidal vs left-point integration
@@ -2737,7 +2769,7 @@ X2         0.0295422994   0.0295396205  -0.0000026789
 All BK integration-rule checks passed.
 ```
 
-**Python Implementation** (Notebook 셀 52)
+**Python Implementation**
 
 ```python
 # Task 12: expectation mismatch relative to standard error
@@ -2867,7 +2899,7 @@ sigma=0.5, Vasicek coupon: price shift=-0.000001212, |shift|/SE=0.025
 
 BK 통제변량 X₁의 기대값에 의도적으로 δ=0.005를 더한다. 잘못된 기대값은 모든 보정 가격에 동일한 상수를 더하므로 **가격 추정값을 이동시키지만 표본분산과 SE를 바꾸지 않는다.** 95% 신뢰구간의 포함률도 독립 반복 실험으로 비교한다.
 
-**Python Implementation** (Notebook 셀 55)
+**Python Implementation**
 
 ```python
 E_DELTA = 0.005
@@ -2953,7 +2985,7 @@ Incorrect-expectation shift tests passed.
 ![잘못된 기대값이 CV 가격을 이동시키는 현상](/assets/images/bk_wrong_mu_shift.png)
 *Figure. 잘못된 기대값이 CV 가격을 이동시키는 현상.*
 
-**Python Implementation** (Notebook 셀 56)
+**Python Implementation**
 
 ```python
 # Task 13: Confidence interval coverage experiment
@@ -3127,7 +3159,7 @@ Incorrect mean CI width: 0.00008549
 
 마지막으로 Plain MC, Vasicek 통제변량의 기본·Matched·Grid 설정, BK 경로 기반 통제변량을 가격·SE·VRF·실행 시간으로 비교한다. 실행 시간은 하드웨어와 구현 순서에 의존하므로 절대적인 성능이라고 해석하지 않는다.
 
-**Python Implementation** (Notebook 셀 59)
+**Python Implementation**
 
 ```python
 import time
@@ -3386,9 +3418,9 @@ SE:     0.00000019
 
 ## 1. Executable Test Functions
 
-최종 제출본에서는 검증을 별도의 함수로 등록하고, 자동 생성되는 **Test Register**로 기록한다. 각 테스트는 기대 결과, 관측 결과, 허용오차와 근거를 함께 남긴다.
+검증 함수를 별도로 구성하고, 실행 결과를 **Test Register**로 정리한다. 각 테스트는 기대 결과, 관측 결과, 허용오차와 근거를 함께 남긴다.
 
-**Python Implementation** (Notebook 셀 62)
+**Python Implementation**
 
 ```python
 # =========================================================
@@ -3541,7 +3573,7 @@ All Step 1 validation tests passed.
 
 수작업으로 계산할 수 있는 작은 데이터에 대해 CV 가격을 검증하고, 잘못된 기대값을 넣었을 때 가격 이동이 이론적 항등식과 맞는지 확인한다.
 
-**Python Implementation** (Notebook 셀 64)
+**Python Implementation**
 
 ```python
 # =========================================================
@@ -3671,13 +3703,11 @@ F05: PASS - CV expectation-shift identity
 All Step 2 validation tests passed.
 ```
 
-이 결과는 **최종 제출 Notebook에 저장된 실행 출력**을 그대로 옮긴 것이다.
-
 ## 3. Deliberate-Bug Test
 
 BK 통제변량 X₁의 기대값에 의도적으로 0.005를 더한 후 독립 기대값 검증을 실행한다. 올바른 기대값은 통과하고 잘못된 기대값은 **AssertionError로 탐지되어야 한다.** 예외는 테스트 안에서 기록하므로 Notebook 전체 재실행을 중단시키지 않는다.
 
-**Python Implementation** (Notebook 셀 66)
+**Python Implementation**
 
 ```python
 # =========================================================
@@ -3805,13 +3835,11 @@ Original pricing implementation: UNCHANGED
 F06: PASS - Deliberate bug successfully detected
 ```
 
-이 결과는 **최종 제출 Notebook에 저장된 실행 출력**을 그대로 옮긴 것이다.
-
 ## 4. Test Register
 
 F01부터 F06까지 여섯 가지 테스트의 결과를 실제 실행된 검증 함수에서 수집해 기록한다. 반복 실행 중 기록이 중복되지 않도록 정리하며 허용오차와 검출 가능한 오류 범위를 명시한다.
 
-**Python Implementation** (Notebook 셀 68)
+**Python Implementation**
 
 ```python
 # =========================================================
@@ -3979,15 +4007,16 @@ print("Test Register generated successfully.")
 Tests passed: 6/6
 Test Register generated successfully.
 ```
+
 ## 5. One Bug I Found
 
-최종 Test Register를 만드는 과정에서 검증 셀을 여러 번 실행하자 결과 목록에 같은 Test ID가 중복 저장되는 문제가 있었다. 원인은 Jupyter가 이전 실행의 리스트 상태를 유지한다는 점이었다. Test ID별 가장 최근 결과만 남기도록 수정한 뒤 **6/6 테스트 통과**를 확인했다. 실제 채권 가격이나 통제변량 계산식은 변경하지 않았다. 생성형 AI는 코드 작성·구조화·설명 정리의 보조 수단으로 사용했으며 최종 결과는 실행 결과를 기준으로 검토했다.
+Test Register를 만드는 과정에서 검증 셀을 여러 번 실행하자 결과 목록에 같은 Test ID가 중복 저장되는 문제가 있었다. 원인은 Jupyter가 이전 실행의 리스트 상태를 유지한다는 점이었다. Test ID별 가장 최근 결과만 남기도록 수정한 뒤 **6/6 테스트 통과**를 확인했다. 실제 채권 가격이나 통제변량 계산식은 변경하지 않았다. 생성형 AI는 코드 작성·구조화·설명 정리의 보조 수단으로 사용했으며 최종 결과는 실행 결과를 기준으로 검토했다.
 
 ### AI Declaration
-최종 제출 Notebook에는 AI 활용 선언을 명시했다. 사용한 방법과 검증 책임의 구분은 제출본의 선언을 따른다.
+코드 구성과 설명을 정리하는 데 생성형 AI를 보조적으로 활용했다. 수식의 적용 방식, 구현 결과 및 검증 책임은 작성자에게 있으며, 가격 추정 결과는 실제 코드 실행과 테스트를 통해 확인했다.
 
 ---
 
 ## Final Summary
 
-최종 제출본에서는 Part A–E의 가격 추정·통제변량 성능 비교뿐 아니라, **독립적인 기대값 검증 18개, BK 적분 규칙 비교, 의도적 오류 검출, 테스트 등록표 F01–F06**까지 추가했다. 위 코드와 실행 결과는 최종 제출 Notebook을 기준으로 옮겼으며, 블로그의 설명체와 표 구성은 기존 글의 스타일을 유지했다.
+Part A–E에서 가격 추정과 통제변량의 분산 감소 효과를 비교했으며, **독립적인 기대값 검증 18개, BK 적분 규칙 비교, 의도적 오류 검출, 테스트 등록표 F01–F06**를 통해 구현 결과의 신뢰성을 함께 확인했다. 특히 작은 표준오차만으로는 편향을 발견할 수 없으므로, 통제변량의 기대값을 시뮬레이션 방식과 일치시키고 독립적으로 검증하는 절차가 중요하다.
