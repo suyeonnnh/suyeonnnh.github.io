@@ -10,40 +10,25 @@ tags:
   - Control-Variates
 math: true
 ---
-## Introduction
 
+## Introduction
 지난 글에서는 Black–Karasinski(BK)와 Vasicek 모델의 수학적 구조, 할인계수, 쿠폰 채권의 Monte Carlo 가격 추정과 Control Variates의 기본 원리를 정리했다.
 
 이번 글에서는 앞에서 다룬 내용을 **Python으로 구현하고 실제 출력값을 확인**한다. 먼저 Vasicek의 해석적 가격과 Monte Carlo 추정값을 비교하여 계산을 검증하고, BK 채권 가격을 추정한다. 이후 Vasicek과 BK 경로 기반 통제변량을 각각 적용해 표준오차와 VRF를 비교한다. 마지막으로 통제변량의 기대값이 잘못되었을 때 결과에 어떤 문제가 발생하는지도 확인한다.
 
-## Parameters 
-
+## Parameters
 | 구분 | 파라미터 | 값 |
-|---|---|---|
-| BK | κ, θ, r₀ | 0.8, ln(0.03), 0.03 |
-| BK | σ | 0.2, 0.5 |
-| Vasicek (기본값) | α, β, η, r₀ᵛ | 0.8, 0.03, 0.01, 0.03 |
-| Bond | T, C, Principal | 5 years, 0.04, 1 |
-| Simulation | Δt, N | 1/52, 20,000 |
-| CV pre-run | N̂ | 2,000 (별도 표본) |
-
-BK에서는 σ 값을 두 가지로 나누어 같은 가격 추정 방법의 성능을 비교한다. **σ를 낮춰 SE를 줄이는 것이 아니라 σ를 고정한 채 통제변량으로 SE를 줄이는 것**이 목적이다.
+|
 
 ---
 
-
 # Part A: Plain Monte Carlo in the Vasicek Model
-
-Vasicek 모델은 해석적 채권 가격을 구할 수 있어 MC 시뮬레이션을 검증할 기준으로 사용한다. 표본오차와 이산화 오차는 구분해서 해석해야 한다.
-
 
 ## Task 1. Vasicek Plain Monte Carlo
 
-Vasicek의 금리를 Euler 방법으로 생성하고 적분 금리를 사다리꼴 공식으로 근사한다. 쿠폰 지급 시점마다 할인계수를 적용하여 경로별 가격을 구한 뒤, 그 평균과 표준오차를 계산한다.
-
+Vasicek 모델은 해석적 채권 가격을 구할 수 있으므로 Monte Carlo 구현을 검증하는 기준으로 사용한다. 먼저 Euler 방법으로 금리 경로를 생성하고, 사다리꼴 적분으로 할인계수를 계산한다. 연간 쿠폰과 만기 원금을 각 지급 시점에 할인하여 경로별 채권 가치를 구한다.
 
 **Python Implementation** (Notebook 셀 2)
-
 
 ```python
 import numpy as np
@@ -126,7 +111,6 @@ print(f"MC bond price: {mc_price:.8f}")
 print(f"Standard error: {se:.8f}")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -137,14 +121,11 @@ MC bond price: 1.04383592
 Standard error: 0.00015148
 ```
 
+## Task 2. Vasicek Analytical Comparison
 
-## Task 2. Vasicek 해석적 가격과 비교
-
-Vasicek은 해석적 채권 가격 공식이 있으므로 MC 결과와 비교할 수 있다. 가격 차이가 표본오차 크기에 비추어 합리적인지 확인하고 Δt를 바꿔 이산화 오차 가능성을 함께 살펴본다.
-
+Vasicek의 해석적 영이표채권 가격을 이용해 쿠폰 채권의 기준 가격을 구한다. MC 가격과 해석적 가격의 차이를 SE 단위로 비교하고, 시간 간격을 1/52에서 1/252로 변경하여 이산화 오차의 영향을 확인한다.
 
 **Python Implementation** (Notebook 셀 4)
-
 
 ```python
 
@@ -200,7 +181,6 @@ print(f"dt = 1/252 : {mc_fine:.8f}, SE = {se_fine:.8f}")
 print(f"Analytical: {analytical_price:.8f}")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -217,9 +197,7 @@ dt = 1/252 : 1.04382200, SE = 0.00015169
 Analytical: 1.04389268
 ```
 
-
 **Python Implementation** (Notebook 셀 5)
-
 
 ```python
 # Basic numerical validation
@@ -246,26 +224,19 @@ assert np.isclose(
 print("All basic validation tests passed.")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
 All basic validation tests passed.
 ```
 
-
 # Part B: Plain Monte Carlo in the BK Model
-
-BK에서는 로그 금리를 Euler로 생성한 다음 지수함수로 실제 금리를 구하고, 할인계수로 쿠폰 채권의 현재가치를 계산한다.
-
 
 ## Task 3. BK Plain Monte Carlo
 
-이번에는 BK 로그 금리에 Euler 방법을 적용한다. 실제 금리는 지수함수로 계산하고 두 가지 변동성 σ=0.2, 0.5에서 가격과 SE를 비교한다.
-
+BK에서는 로그 금리를 Euler 방법으로 생성하고 실제 금리를 지수변환하여 계산한다. 두 변동성 σ=0.2와 σ=0.5에서 Plain MC 채권 가격과 표준오차를 비교한다. 또한 σ=0인 경우 결정론적 할인 가격과 일치하는지 검증한다.
 
 **Python Implementation** (Notebook 셀 7)
-
 
 ```python
 import numpy as np
@@ -369,7 +340,6 @@ for sigma in sigmas:
     print()
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -382,14 +352,10 @@ MC bond price: 1.03400908
 Standard error: 0.00024446
 ```
 
-
-![BK plain MC price](/assets/images/bk_plain_mc_price.png)
-
-*Figure 1. BK 변동성별 MC 채권 가격. 오차 막대는 ±1.96 SE를 나타낸다.*
-
+![BK 변동성별 Plain MC 가격과 ±1.96 SE](/assets/images/bk_plain_mc_price.png)
+*Figure. BK 변동성별 Plain MC 가격과 ±1.96 SE.*
 
 **Python Implementation** (Notebook 셀 8)
-
 
 ```python
 # Validation for Part B
@@ -436,26 +402,19 @@ assert se_zero < 1e-12
 print("All Part B validation tests passed.")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
 All Part B validation tests passed.
 ```
 
-
 # Part C: Vasicek Control Variates
 
-BK와 Vasicek에 같은 Gaussian increments를 사용한다. Vasicek 무이표채권과 쿠폰 채권의 기대값을 이용해 BK 추정량을 보정하고, 보정 계수는 독립 pre-run에서 추정한다.
+## Part C Overview
 
-
-## Part C 개요
-
-BK와 Vasicek에 같은 표준정규 난수를 사용한다. Vasicek의 무이표채권과 쿠폰 채권을 통제변량으로 사용해 BK 가격 추정의 분산이 얼마나 감소하는지 확인한다.
-
+Part C에서는 Vasicek 모델을 BK 가격 추정의 통제변량으로 사용한다. **동일한 Gaussian increments**로 두 모델을 함께 시뮬레이션하여 경로 간 상관관계를 높이고, 회귀계수는 독립적인 pilot 표본에서 추정한 후 가격 표본에 적용한다.
 
 **Python Implementation** (Notebook 셀 10)
-
 
 ```python
 import numpy as np
@@ -553,7 +512,6 @@ print(f"Pilot paths: {N_PILOT}")
 print(f"Pricing paths: {N}")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -562,14 +520,11 @@ Pilot paths: 2000
 Pricing paths: 20000
 ```
 
+## Task 4. Two Vasicek Control Variates
 
-## Task 4. Vasicek 통제변량 두 종류
-
-통제변량은 Vasicek 만기 할인계수와 Vasicek 쿠폰 채권 가치이다. 별도 2,000개 경로로 보정 계수를 추정한 뒤 20,000개 가격 경로에 적용한다. 기대값은 실제 Euler·사다리꼴 방식으로 생성한 통제변량과 일치하도록 계산한다.
-
+통제변량은 Vasicek의 만기 할인계수(ZCB)와 쿠폰 채권 가격 두 종류다. 기대값은 **실제 시뮬레이션에 사용한 Euler·Trapezoidal 이산화와 일치하도록** 계산한다. 가격, SE, 추정 계수 ν̂, VRF를 비교한다.
 
 **Python Implementation** (Notebook 셀 12)
-
 
 ```python
 def vasicek_control_expectations(alpha, beta, eta, dt=DT):
@@ -690,14 +645,13 @@ def evaluate_controls(sigma, params, z_pilot, z_pricing):
 print("Control-variate functions ready.")
 ```
 
+**저장된 실행 결과**
 
 ```text
 Control-variate functions ready.
 ```
 
-
 **Python Implementation** (Notebook 셀 13)
-
 
 ```python
 task4_results = {}
@@ -726,10 +680,10 @@ for sigma in SIGMAS:
         print(f"VRF:      {r['vrf']:.4f}")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
+
 === BK sigma = 0.2 ===
 Plain MC price: 1.04212403
 Plain MC SE:    0.00009197
@@ -763,17 +717,15 @@ nu:       1.584209
 VRF:      25.3936
 ```
 
+### Task 4. Results and Interpretation
 
-**Task 4 해석.** 두 통제변량 모두 SE를 낮췄으며 이 실험에서는 쿠폰 채권 통제변량의 VRF가 조금 더 높다. 동일한 지급 구조가 BK 채권 가치의 변동을 더 잘 설명할 수 있기 때문이다.
+Task 4에서는 두 통제변량 모두 Plain MC보다 SE를 낮췄다. 이번 실험에서 Vasicek 쿠폰 채권 통제변량은 동일한 현금흐름 구조를 반영하기 때문에 ZCB 통제변량보다 조금 높은 VRF를 보였다. 다만 결과는 선택된 모형 파라미터에 의존한다.
 
+## Task 5. Vasicek Parameter Matching
 
-## Task 5. Vasicek 파라미터 매칭
-
-BK의 금리 동역학을 장기 금리 근방에서 1차로 근사하면 α≈κ, β≈exp(θ), η≈σ exp(θ)라는 규칙을 얻는다. 이는 Itô 보정항과 고차항을 무시한 국소 근사이며 두 모형이 정확히 같다는 뜻은 아니다.
-
+BK의 단기금리 동역학을 장기 평균 금리 부근에서 1차로 근사하여 Vasicek 파라미터 대응 규칙을 유도한다. 이는 국소적인 근사 규칙이며 두 모형의 정확한 동등성을 의미하지 않는다.
 
 **Python Implementation** (Notebook 셀 16)
-
 
 ```python
 def match_vasicek_parameters(sigma):
@@ -801,7 +753,6 @@ for sigma in SIGMAS:
     print()
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -816,14 +767,11 @@ beta  = 0.030000
 eta   = 0.015000
 ```
 
+## Task 6. Numerical Search for Maximum VRF
 
-## Task 6. VRF를 높이는 파라미터 탐색
-
-α와 η를 격자 형태로 바꾸되 모든 조합에서 같은 난수를 사용하여 비교한다. 두 통제변량 각각의 VRF 히트맵을 생성하고 β를 바꿨을 때의 영향도 확인한다. 결과는 지정한 격자 내에서의 최선일 뿐 전역 최적을 보장하지 않는다.
-
+α와 η를 격자에서 변경하면서 통제변량별 VRF를 계산한다. 모든 격자점에서 같은 Gaussian 난수를 사용해 비교의 표본잡음을 줄인다. 결과는 **탐색한 격자 안에서의 최대값**이며 전역 최적성은 보장하지 않는다.
 
 **Python Implementation** (Notebook 셀 18)
-
 
 ```python
 # Search ranges
@@ -874,19 +822,133 @@ for sigma in SIGMAS:
     grid_results[sigma] = calculate_grid_vrf(sigma)
 
     print(f"Grid search completed: sigma = {sigma}")
-```
 
+
+# Report the best parameters found within the grid
+for sigma in SIGMAS:
+    vrf_zcb, vrf_coupon = grid_results[sigma]
+
+    for name, vrf_matrix in [
+        ("ZCB control", vrf_zcb),
+        ("Coupon-bond control", vrf_coupon)
+    ]:
+        i, j = np.unravel_index(
+            np.argmax(vrf_matrix),
+            vrf_matrix.shape
+        )
+
+        best_alpha = alpha_grid[j]
+        best_eta = eta_grid[i]
+        best_vrf = vrf_matrix[i, j]
+
+        print(f"\nBK sigma = {sigma}")
+        print(f"Control: {name}")
+        print(f"Best alpha: {best_alpha:.6f}")
+        print(f"Best beta: {beta_search:.6f}")
+        print(f"Best eta: {best_eta:.6f}")
+        print(f"Maximum grid VRF: {best_vrf:.4f}")
+```
 
 **저장된 실행 결과**
 
 ```text
 Grid search completed: sigma = 0.2
 Grid search completed: sigma = 0.5
-```
 
+BK sigma = 0.2
+Control: ZCB control
+Best alpha: 0.675000
+Best beta: 0.030000
+Best eta: 0.002000
+Maximum grid VRF: 183.9261
+
+BK sigma = 0.2
+Control: Coupon-bond control
+Best alpha: 0.837500
+Best beta: 0.030000
+Best eta: 0.002000
+Maximum grid VRF: 188.3937
+
+BK sigma = 0.5
+Control: ZCB control
+Best alpha: 0.675000
+Best beta: 0.030000
+Best eta: 0.002000
+Maximum grid VRF: 32.0218
+
+BK sigma = 0.5
+Control: Coupon-bond control
+Best alpha: 0.837500
+Best beta: 0.030000
+Best eta: 0.002000
+Maximum grid VRF: 32.1381
+```
 
 **Python Implementation** (Notebook 셀 19)
 
+```python
+# Additional check: is the best eta at the grid boundary?
+# Compare smaller eta values using the same random numbers.
+
+eta_check = [0.0005, 0.001, 0.002, 0.004]
+
+for sigma in SIGMAS:
+    print(f"\nBK sigma = {sigma}")
+
+    for control_name, alpha in [
+        ("ZCB", 0.675),
+        ("Coupon", 0.8375)
+    ]:
+        print(f"\n{control_name} control")
+
+        for eta in eta_check:
+            Y, Xz, Xc = simulate_joint(
+                z_search, sigma, alpha, beta_search, eta
+            )
+
+            X = Xz if control_name == "ZCB" else Xc
+            rho = np.corrcoef(Y, X)[0, 1]
+            vrf = 1 / (1 - rho**2)
+
+            print(f"eta={eta:.4f}, VRF={vrf:.4f}")
+```
+
+**저장된 실행 결과**
+
+```text
+
+BK sigma = 0.2
+
+ZCB control
+eta=0.0005, VRF=193.9270
+eta=0.0010, VRF=190.5250
+eta=0.0020, VRF=183.9261
+eta=0.0040, VRF=171.5209
+
+Coupon control
+eta=0.0005, VRF=197.0514
+eta=0.0010, VRF=194.1145
+eta=0.0020, VRF=188.3937
+eta=0.0040, VRF=177.5445
+
+BK sigma = 0.5
+
+ZCB control
+eta=0.0005, VRF=32.7107
+eta=0.0010, VRF=32.4792
+eta=0.0020, VRF=32.0218
+eta=0.0040, VRF=31.1295
+
+Coupon control
+eta=0.0005, VRF=32.7160
+eta=0.0010, VRF=32.5220
+eta=0.0020, VRF=32.1381
+eta=0.0040, VRF=31.3863
+```
+
+이 결과는 **최종 제출 Notebook에 저장된 실행 출력**을 그대로 옮긴 것이다.
+
+**Python Implementation** (Notebook 셀 20)
 
 ```python
 %matplotlib inline
@@ -934,24 +996,18 @@ for sigma in SIGMAS:
     print(f"Saved: {filename}")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
 Saved: vrf_heatmap_sigma_0.2.png
+
 Saved: vrf_heatmap_sigma_0.5.png
 ```
 
+![BK σ=0.2의 Vasicek 통제변량 VRF 히트맵](/assets/images/vrf_heatmap_sigma_0.2.png)
+*Figure. BK σ=0.2의 Vasicek 통제변량 VRF 히트맵.*
 
-![VRF heatmap for sigma 0.2](/assets/images/vrf_heatmap_sigma_0.2.png)
-
-![VRF heatmap for sigma 0.5](/assets/images/vrf_heatmap_sigma_0.5.png)
-
-*Figure 2–3. Vasicek 파라미터 α, η에 따른 VRF. 히트맵은 탐색 표본의 결과이며 전역 최적값은 아니다.*
-
-
-**Python Implementation** (Notebook 셀 20)
-
+**Python Implementation** (Notebook 셀 21)
 
 ```python
 # Investigate the effect of beta
@@ -988,7 +1044,6 @@ for beta in beta_values:
     print()
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -1005,17 +1060,18 @@ ZCB VRF:    24.8902
 Coupon VRF: 25.6528
 ```
 
+![BK σ=0.5의 Vasicek 통제변량 VRF 히트맵](/assets/images/vrf_heatmap_sigma_0.5.png)
+*Figure. BK σ=0.5의 Vasicek 통제변량 VRF 히트맵.*
 
-**Task 6 해석.** β를 바꿔도 Vasicek ZCB 통제변량의 최적 스칼라 VRF는 변하지 않았고, 쿠폰 채권의 VRF는 소폭 달라졌다. 만기 하나의 할인계수는 β 변화에 대해 공통 배수로 변하지만 쿠폰 채권은 여러 만기의 현금흐름을 더하기 때문이다.
+### Task 6. Results and Interpretation
 
+히트맵을 비교하면 η가 기존 격자의 하한에 있을 때 VRF가 크게 나오는 경우가 있다. 따라서 추가로 더 작은 η 값(0.0005, 0.001, 0.002, 0.004)을 같은 난수로 평가했다. 탐색 범위가 결과에 영향을 주므로 경계점의 최대 VRF를 전역 최적값으로 해석하지 않는다. β를 변화시킬 때 ZCB의 최적 스칼라 VRF는 거의 변하지 않지만 쿠폰 채권 VRF는 조금 달라질 수 있다.
 
-## Task 7. 파라미터 선택에 따른 성능 비교
+## Task 7. Comparison of Vasicek Parameter Choices
 
-기본값, Task 5의 근사값, Task 6의 격자 탐색값을 별도 가격 표본으로 평가한다. 가격·SE·ν̂·VRF를 함께 출력하고 근사 규칙이 반드시 최고 VRF를 주는 것은 아닌지 확인한다.
+Part C의 기본값(Baseline), Task 5의 모형 근사값(Matched), Task 6의 탐색값(Grid best)을 **같은 독립 가격 표본**에서 비교한다. 가격·SE·ν̂·VRF를 함께 확인하고 단순 근사 규칙이 언제나 가장 높은 VRF를 주지는 않는다는 점을 살펴본다.
 
-
-**Python Implementation** (Notebook 셀 23)
-
+**Python Implementation** (Notebook 셀 24)
 
 ```python
 task7_results = []
@@ -1085,10 +1141,10 @@ for sigma in SIGMAS:
             )
 ```
 
-
 **저장된 실행 결과**
 
 ```text
+
 BK sigma = 0.2, control = zcb
 Baseline   params=(0.8, 0.03, 0.01) price=1.04216099 SE=0.00000884 nu=0.67256 VRF=108.36
 Matched    params=(0.8, 0.029999999999999995, 0.005999999999999999) price=1.04216098 SE=0.00000837 nu=1.12178 VRF=120.78
@@ -1110,17 +1166,15 @@ Matched    params=(0.8, 0.029999999999999995, 0.014999999999999998) price=1.0341
 Grid best  params=(0.8374999999999999, 0.03, 0.002) price=1.03410222 SE=0.00004607 nu=8.21159 VRF=28.15
 ```
 
+### Task 7. Results and Interpretation
 
-**Task 7 해석.** 이번 실험에서 격자 탐색값이 더 높은 VRF를 보였지만 η가 탐색 범위의 하한에 있어 최적값 해석에는 주의가 필요하다. ν̂는 통제변량의 단위와 스케일에 따라 달라지므로 값의 크기만으로 성능을 판단할 수 없다.
-
+σ=0.2에서는 탐색값의 VRF가 기본값보다 높았다. σ=0.5에서는 Matched가 Baseline보다 낮은 VRF를 보이기도 했다. 따라서 모형을 국소적으로 잘 근사하는 파라미터가 통제변량 성능까지 최적으로 만든다고 볼 수 없다. ν̂의 크기도 통제변량의 스케일에 영향을 받으므로 단독 성능지표로 쓰지 않는다.
 
 ### Part C Validation
 
-통제변량 표본평균이 계산된 기대값으로부터 4 SE 안에 있는지 확인하고 가격·SE·VRF가 유한한지 테스트한다. 이 기본 테스트만으로 기대값 공식의 모든 오류를 배제할 수는 없다.
+독립 pilot 표본과 가격 표본을 분리했는지, 통제변량의 기대값과 시뮬레이션 평균이 통계적 허용 범위 내에 있는지, 각 가격·SE·VRF가 유한한지 확인한다. 기본 테스트만으로 모든 계산 오류를 배제할 수는 없다.
 
-
-**Python Implementation** (Notebook 셀 26)
-
+**Python Implementation** (Notebook 셀 27)
 
 ```python
 for sigma in SIGMAS:
@@ -1175,7 +1229,6 @@ for sigma in SIGMAS:
 print("All Part C basic validation tests passed.")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -1184,21 +1237,19 @@ BK sigma=0.5: validation passed
 All Part C basic validation tests passed.
 ```
 
+### Part C Summary
 
-### Part C 정리
-
-Vasicek 두 종류의 통제변량을 비교하고, 모델 근사 규칙과 수치 탐색을 통해 보정 성능이 파라미터에 따라 어떻게 달라지는지 확인했다.
-
+Part C에서는 두 Vasicek 통제변량의 분산 감소를 확인하고, BK 동역학 근사 및 수치 탐색에 따른 민감도를 비교했다. 마지막 선택은 VRF뿐 아니라 기대값의 정확성과 추가 계산 비용까지 고려해야 한다.
 
 # Part D: Controls Built from the BK Path
 
-두 번째 모델 없이 BK 적분 금리의 함수 자체를 통제변량으로 사용한다. 특히 2차 항까지 활용하여 할인계수의 비선형성을 근사한다.
+## Task 8. BK Control Expectations
 
-## Task 8. BK 적분 금리 통제변량의 기대값
+Part D에서는 별도의 금리 모형을 도입하지 않고 **BK 경로 자체**에서 통제변량을 만든다. 특히 할인계수의 Taylor 근사에 연결되는 적분 금리의 1차·2차 항을 이용한다.
 
-Part D에서는 다른 금리 모델 대신 BK 적분 금리 I(t) 자체를 사용한다. 할인계수의 2차 근사 exp(-I) ≈ 1 − I + I²/2를 바탕으로 X₁ = Σ cᵢI(tᵢ), X₂ = Σ cᵢI(tᵢ)²를 구성한다.
+### Theoretical Derivation
 
-### 기대값 유도
+BK 로그 금리는 Gaussian OU 과정이며 실제 금리는 로그정규 구조를 가진다. 먼저 연속시간의 금리 모멘트를 설명하고, 실제 계산에는 **Euler 로그 금리와 사다리꼴 누적 금리의 이산시간 모멘트**를 사용한다. 통제변량의 기대값은 반드시 시뮬레이션된 통제변량의 기대값과 같아야 한다.
 
 BK 로그 금리 x(t)는 Gaussian 과정이고 실제 금리는 exp(x(t))이므로 금리의 1차·2차 모멘트를 계산할 수 있다. 먼저 연속시간 기대값을 유도하고 실제 CV 구현에서는 Euler·Trapezoidal 방식과 일치하는 **이산시간 기대값**을 사용한다.
 
@@ -1251,9 +1302,7 @@ For the control-variate calculation, we will derive its exact discrete-time mome
 
 This ensures that the control expectations correspond to the quantities actually simulated.
 
-
-**Python Implementation** (Notebook 셀 30)
-
+**Python Implementation** (Notebook 셀 31)
 
 ```python
 import numpy as np
@@ -1348,7 +1397,6 @@ print(f"Pilot paths: {D_N_PILOT}")
 print(f"Pricing paths: {D_N}")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -1357,9 +1405,7 @@ Pilot paths: 2000
 Pricing paths: 20000
 ```
 
-
-**Python Implementation** (Notebook 셀 31)
-
+**Python Implementation** (Notebook 셀 32)
 
 ```python
 def d_integrated_rate_moments(sigma, dt=D_DT):
@@ -1460,10 +1506,10 @@ for sigma in D_SIGMAS:
         print(f"E[{name}] = {value:.8f}")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
+
 BK sigma = 0.2
 E[IT] = 0.15166495
 E[IT2] = 0.02318686
@@ -1477,14 +1523,11 @@ E[X1] = 0.17991247
 E[X2] = 0.02957599
 ```
 
+## Task 9. BK Path-Based Control Variates
 
-## Task 9. BK 경로 기반 통제변량 비교
+BK 만기 적분금리 I(T), I(T)와 제곱항, 쿠폰 가중 적분금리 X₁, 두 쿠폰 가중 항 X₁·X₂의 네 구성을 비교한다. 여러 통제변량을 동시에 사용하면 계수 ν̂는 벡터가 되며, 독립 pilot 표본에 대한 최소제곱으로 추정한다.
 
-I(T), [I(T), I(T)²], X₁, [X₁, X₂] 네 구성을 비교한다. 통제변량 두 개를 함께 쓰는 경우 ν̂는 벡터가 되며, 각 구성을 독립 pre-run에서 학습한 뒤 같은 가격 표본에 적용한다.
-
-
-**Python Implementation** (Notebook 셀 33)
-
+**Python Implementation** (Notebook 셀 34)
 
 ```python
 def d_make_controls(annual_integrals):
@@ -1576,14 +1619,13 @@ def d_fit_cv(
 print("BK path-based CV functions ready.")
 ```
 
+**저장된 실행 결과**
 
 ```text
 BK path-based CV functions ready.
 ```
 
-
-**Python Implementation** (Notebook 셀 34)
-
+**Python Implementation** (Notebook 셀 35)
 
 ```python
 d_task9_results = {}
@@ -1652,10 +1694,10 @@ for sigma in D_SIGMAS:
     print(f"SE:    {plain['plain_se']:.8f}")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
+
 === BK sigma = 0.2 ===
 
 Control: I(T)
@@ -1717,17 +1759,22 @@ Price: 1.03400908
 SE:    0.00024446
 ```
 
+### Task 9. Results and Interpretation
 
-**Task 9 해석.** 쿠폰 지급 시점을 반영하는 X₁, X₂가 이번 실험에서 큰 분산 감소 효과를 보였다. 그러나 VRF가 수백만 이상일 때는 기대값의 작은 오차도 SE보다 커질 수 있어 기대값 검증이 특히 중요하다.
+이번 실험에서는 쿠폰 지급 시점을 반영한 X₁, X₂ 구성이 특히 큰 분산 감소 효과를 보였다. 그러나 VRF가 수백만 이상으로 커지는 경우 **기대값의 작은 불일치가 추정 SE보다 훨씬 커질 수 있으므로**, 높은 VRF만으로 추정량의 정확성을 판단하면 안 된다.
 
+| BK σ | Control | SE | VRF |
+|---|---|---:|---:|
+| 0.2 | I(T) | 0.00000345 | 710.86 |
+| 0.2 | X₁, X₂ | 0.00000001 | 57,026,630.30 |
+| 0.5 | I(T) | 0.00001145 | 456.13 |
+| 0.5 | X₁, X₂ | 0.00000019 | 1,722,574.84 |
 
-## Task 10. Part C와 Part D 비교
+## Task 10. Comparison with Part C
 
-같은 BK 경로·난수·N으로 Vasicek 통제변량과 BK 경로 기반 통제변량의 SE 및 VRF를 비교한다. 이 셀은 Part C의 **기본 Vasicek 파라미터**를 기준으로 하며, 수치 탐색 최선값까지의 확장은 후속 검토 항목이다.
+Part C의 기본 Vasicek 통제변량과 Part D의 BK 경로 기반 통제변량을 동일한 BK 경로·난수·표본수 조건에서 비교한다. Part C의 Baseline 설정을 기준으로 한 비교임을 분명히 한다.
 
-
-**Python Implementation** (Notebook 셀 37)
-
+**Python Implementation** (Notebook 셀 38)
 
 ```python
 # Baseline Vasicek parameters from Part C
@@ -1833,14 +1880,13 @@ def d_vasicek_expectations(
 print("Part C comparison functions ready.")
 ```
 
+**저장된 실행 결과**
 
 ```text
 Part C comparison functions ready.
 ```
 
-
-**Python Implementation** (Notebook 셀 38)
-
+**Python Implementation** (Notebook 셀 39)
 
 ```python
 d_task10_results = {}
@@ -1903,10 +1949,10 @@ for sigma in D_SIGMAS:
         )
 ```
 
-
 **저장된 실행 결과**
 
 ```text
+
 === BK sigma = 0.2 ===
 Part C: Vasicek ZCB        SE=0.00000884 VRF=108.36 nu=[0.67256]
 Part C: Vasicek Coupon     SE=0.00000816 VRF=127.16 nu=[0.60476]
@@ -1924,22 +1970,18 @@ Part D: X1                 SE=0.00000710 VRF=1186.30 nu=[-0.84236]
 Part D: X1, X2             SE=0.00000019 VRF=1722574.84 nu=[-0.98535  0.41439]
 ```
 
+![Vasicek 및 BK 통제변량의 VRF 비교](/assets/images/bk_vrf_comparison.png)
+*Figure. Vasicek 및 BK 통제변량의 VRF 비교.*
 
-![VRF comparison](/assets/images/bk_vrf_comparison.png)
+### Task 10. Results and Interpretation
 
-*Figure 4. 통제변량별 VRF 비교. 큰 값과 작은 값이 함께 보이도록 로그 축을 사용했다.*
-
-
-**Task 10 해석.** 이번 계산에서는 BK의 쿠폰 가중 적분 금리 기반 통제변량이 더 높은 VRF를 보였다. 이는 할인계수의 Taylor 근사와 연결되지만, 이 결과가 모든 파라미터에서 성립하는 것은 아니다.
-
+이번 계산에서는 BK의 쿠폰 가중 적분금리 기반 통제변량이 더 높은 VRF를 기록했다. 이는 할인계수의 1차·2차 Taylor 근사와 관련되지만, 모든 변동성이나 파라미터에서 같은 우위가 보장되는 것은 아니다.
 
 ### Part D Validation
 
-모멘트의 기본 관계, 독립 표본의 통제변량 평균, σ=0에서의 결정론적 할인 가격 등을 검사한다. 허용오차와 검출 한계를 정리한 테스트 기록표는 제출 전 보완한다.
+Part D의 이산 모멘트가 기초 부등식을 만족하는지, 독립 표본평균이 계산된 기대값과 일치하는지, CV 추정 결과가 유한한지 검사한다. 또한 σ=0일 때 결정론적인 채권 가격으로 돌아가는지 확인한다.
 
-
-**Python Implementation** (Notebook 셀 41)
-
+**Python Implementation** (Notebook 셀 42)
 
 ```python
 # Part D validation
@@ -2034,7 +2076,6 @@ print("Zero-volatility validation passed.")
 print("All Part D validation tests passed.")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -2044,24 +2085,17 @@ Zero-volatility validation passed.
 All Part D validation tests passed.
 ```
 
+### Part D Summary
 
-### Part D 정리
-
-BK 적분 금리만으로 통제변량을 구성하고 네 가지 조합의 SE와 VRF를 비교했다. 분산을 줄이는 것과 기대값이 정확한 것은 별개의 검증 대상임을 확인했다.
-
+Part D에서는 BK 경로를 직접 사용하는 통제변량을 구성하고 네 조합의 성능을 비교했다. 특히 낮은 표준오차와 **편향이 없다는 사실은 별개의 검증 대상**이라는 점을 확인했다.
 
 # Part E: Testing the Known Expectations & Summary
 
-통제변량의 기대값을 검증하고 이산화 및 기대값 오류가 CV 추정량에 미치는 영향을 실험한다. 마지막으로 전체 추정량을 같은 조건에서 비교한다.
+## Task 11. Independent Validation of Control Expectations
 
+통제변량의 기대값이 정확한지를 독립 Monte Carlo 표본 30,000개로 검증한다. 기본 Vasicek 통제변량뿐 아니라 **Matched와 Grid best까지 포함**하여 Part C에서 실제 사용한 모든 설정을 확인한다. Part D의 I(T), I(T)², X₁, X₂도 두 BK 변동성별로 검증한다. 허용 기준은 최종 제출본에 맞춰 **3 SE**로 설정한다.
 
-## Task 11. 통제변량 기대값 독립 검증
-
-Part C·D에서 사용한 통제변량 기대값과 독립 Monte Carlo 표본평균을 비교한다. 두 값의 차이를 표본평균의 SE로 나눈 Z-score를 출력하고 |Z|≤4를 통계적 허용 기준으로 사용한다. **현재 셀은 Part C 기본 파라미터만 검증하므로 다른 선택값은 추가 검증이 필요하다.**
-
-
-**Python Implementation** (Notebook 셀 44)
-
+**Python Implementation** (Notebook 셀 45)
 
 ```python
 import numpy as np
@@ -2088,7 +2122,7 @@ mu_vas_z, mu_vas_c = d_vasicek_expectations(
     E_ALPHA, E_BETA, E_ETA, E_DT
 )
 
-# Same independent Gaussian increments
+# Simulate Vasicek controls
 Xz, Xc = d_simulate_vasicek_controls(
     z_test, E_ALPHA, E_BETA, E_ETA, E_DT
 )
@@ -2099,9 +2133,18 @@ def e_expectation_check(name, values, expected_mu):
     se_mc = np.std(values, ddof=1) / np.sqrt(len(values))
 
     difference = mean_mc - expected_mu
+    tolerance = 3.0 * se_mc
+
+    passed = abs(difference) <= tolerance
+
     z_score = difference / se_mc
 
-    passed = abs(z_score) <= 4
+    # Executable validation
+    assert passed, (
+        f"{name}: expectation check failed. "
+        f"Difference={difference:.8f}, "
+        f"Tolerance={tolerance:.8f}"
+    )
 
     return {
         "control": name,
@@ -2109,6 +2152,7 @@ def e_expectation_check(name, values, expected_mu):
         "mc_mean": float(mean_mc),
         "se": float(se_mc),
         "difference": float(difference),
+        "tolerance": float(tolerance),
         "z_score": float(z_score),
         "passed": bool(passed)
     }
@@ -2116,7 +2160,7 @@ def e_expectation_check(name, values, expected_mu):
 
 e_task11_results = []
 
-# Part C controls
+# Part C: Vasicek controls
 e_task11_results.append(
     e_expectation_check(
         "Vasicek ZCB", Xz, mu_vas_z
@@ -2129,7 +2173,8 @@ e_task11_results.append(
     )
 )
 
-# Part D controls, for both BK volatility values
+
+# Part D: BK path-based controls
 for sigma in E_SIGMAS:
     Y_test, I_test = d_simulate_bk(
         z_test, sigma, E_DT
@@ -2144,14 +2189,21 @@ for sigma in E_SIGMAS:
             controls[name],
             expectations[name]
         )
+
         e_task11_results.append(result)
 
 
 # Print validation table
 print("=== Task 11: Control Expectation Validation ===")
+
 print(
-    f"{'Control':27s} {'Expected':>11s} "
-    f"{'MC mean':>11s} {'Z-score':>10s} {'Pass':>6s}"
+    f"{'Control':27s} "
+    f"{'Expected':>11s} "
+    f"{'Observed':>11s} "
+    f"{'SE':>11s} "
+    f"{'Tolerance':>11s} "
+    f"{'Z-score':>9s} "
+    f"{'Pass':>6s}"
 )
 
 for r in e_task11_results:
@@ -2159,46 +2211,175 @@ for r in e_task11_results:
         f"{r['control']:27s} "
         f"{r['expected']:11.7f} "
         f"{r['mc_mean']:11.7f} "
-        f"{r['z_score']:10.3f} "
+        f"{r['se']:11.7f} "
+        f"{r['tolerance']:11.7f} "
+        f"{r['z_score']:9.3f} "
         f"{str(r['passed']):>6s}"
     )
 
-assert all(r["passed"] for r in e_task11_results)
-
 print("\nAll Task 11 expectation checks passed.")
 ```
-
 
 **저장된 실행 결과**
 
 ```text
 === Task 11: Control Expectation Validation ===
-Control                        Expected     MC mean    Z-score   Pass
-Vasicek ZCB                   0.8609221   0.8610819      1.454   True
-Vasicek coupon                1.0438936   1.0440688      1.428   True
-BK sigma=0.2, IT              0.1516649   0.1515368     -1.648   True
-BK sigma=0.2, IT2             0.0231869   0.0231450     -1.749   True
-BK sigma=0.2, X1              0.1698482   0.1697081     -1.621   True
-BK sigma=0.2, X2              0.0252263   0.0251813     -1.733   True
-BK sigma=0.5, IT              0.1607332   0.1603438     -1.847   True
-BK sigma=0.5, IT2             0.0271900   0.0270429     -1.967   True
-BK sigma=0.5, X1              0.1799125   0.1794867     -1.819   True
-BK sigma=0.5, X2              0.0295760   0.0294177     -1.951   True
+Control                        Expected    Observed          SE   Tolerance   Z-score   Pass
+Vasicek ZCB                   0.8609221   0.8610819   0.0001099   0.0003298     1.454   True
+Vasicek coupon                1.0438936   1.0440688   0.0001226   0.0003679     1.428   True
+BK sigma=0.2, IT              0.1516649   0.1515368   0.0000778   0.0002334    -1.648   True
+BK sigma=0.2, IT2             0.0231869   0.0231450   0.0000240   0.0000719    -1.749   True
+BK sigma=0.2, X1              0.1698482   0.1697081   0.0000864   0.0002593    -1.621   True
+BK sigma=0.2, X2              0.0252263   0.0251813   0.0000260   0.0000780    -1.733   True
+BK sigma=0.5, IT              0.1607332   0.1603438   0.0002108   0.0006323    -1.847   True
+BK sigma=0.5, IT2             0.0271900   0.0270429   0.0000748   0.0002244    -1.967   True
+BK sigma=0.5, X1              0.1799125   0.1794867   0.0002340   0.0007021    -1.819   True
+BK sigma=0.5, X2              0.0295760   0.0294177   0.0000811   0.0002433    -1.951   True
 
 All Task 11 expectation checks passed.
 ```
 
+**Python Implementation** (Notebook 셀 46)
 
-**Task 11 해석.** 현재 확인한 기대값은 독립 MC의 4 SE 허용범위 안에 있었다. 다만 검정력이 유한하므로 통과했다고 해서 모든 미세한 오류가 배제되는 것은 아니다.
+```python
+# =========================================================
+# TASK 11 - ADDITIONAL VASICEK EXPECTATION VALIDATION
+# Matched and Grid Best parameter configurations
+# =========================================================
+
+e_task11_extra_results = []
+
+for sigma in E_SIGMAS:
+
+    for control_name in ["zcb", "coupon"]:
+
+        # Retrieve exactly the parameters used in Task 7
+        records = [
+            r for r in task7_results
+            if r["sigma"] == sigma
+            and r["control"] == control_name
+            and r["choice"] in ["Matched", "Grid best"]
+        ]
+
+        assert len(records) == 2, (
+            f"Expected Matched and Grid best records "
+            f"for sigma={sigma}, control={control_name}"
+        )
+
+        for record in records:
+
+            alpha = record["alpha"]
+            beta = record["beta"]
+            eta = record["eta"]
+
+            # Exact expectation under Euler-trapezoidal
+            # Vasicek discretization
+            mu_z, mu_c = d_vasicek_expectations(
+                alpha, beta, eta, E_DT
+            )
+
+            # Independent MC sample from Task 11
+            Xz_test, Xc_test = d_simulate_vasicek_controls(
+                z_test, alpha, beta, eta, E_DT
+            )
+
+            if control_name == "zcb":
+                values = Xz_test
+                expected_mu = mu_z
+            else:
+                values = Xc_test
+                expected_mu = mu_c
+
+            label = (
+                f"Vasicek {control_name}, "
+                f"sigma={sigma}, {record['choice']}"
+            )
+
+            result = e_expectation_check(
+                label,
+                values,
+                expected_mu
+            )
+
+            e_task11_extra_results.append(result)
 
 
-## Task 12. 이산화가 통제변량 기대값에 미치는 영향
+# Verify that all 8 additional configurations
+# have been checked.
+assert len(e_task11_extra_results) == 8
 
-Δt=1/52와 1/252에서 통제변량 기대값을 비교하고 Vasicek에서는 사다리꼴과 왼쪽 직사각형 적분 결과도 비교한다. 서로 다른 방식으로 구한 기대값을 섞어 쓰면 생기는 CV 가격 이동을 SE 단위로 평가한다.
+assert all(
+    result["passed"]
+    for result in e_task11_extra_results
+)
 
+print("=== Task 11: Additional Vasicek Checks ===")
 
-**Python Implementation** (Notebook 셀 47)
+print(
+    f"{'Control':42s} "
+    f"{'Expected':>12s} "
+    f"{'Observed':>12s} "
+    f"{'Z-score':>10s} "
+    f"{'Pass':>6s}"
+)
 
+for r in e_task11_extra_results:
+    print(
+        f"{r['control']:42s} "
+        f"{r['expected']:12.8f} "
+        f"{r['mc_mean']:12.8f} "
+        f"{r['z_score']:10.3f} "
+        f"{str(r['passed']):>6s}"
+    )
+
+print(
+    "\nAdditional checks passed: "
+    f"{sum(r['passed'] for r in e_task11_extra_results)}/8"
+)
+
+print(
+    "Total Task 11 checks: "
+    f"{len(e_task11_results) + len(e_task11_extra_results)}"
+)
+```
+
+**저장된 실행 결과**
+
+```text
+=== Task 11: Additional Vasicek Checks ===
+Control                                        Expected     Observed    Z-score   Pass
+Vasicek zcb, sigma=0.2, Matched              0.86078504   0.86088177      1.467   True
+Vasicek zcb, sigma=0.2, Grid best            0.86071889   0.86075523      1.463   True
+Vasicek coupon, sigma=0.2, Matched           1.04374331   1.04384930      1.441   True
+Vasicek coupon, sigma=0.2, Grid best         1.04366754   1.04370208      1.457   True
+Vasicek zcb, sigma=0.5, Matched              0.86118973   0.86142681      1.437   True
+Vasicek zcb, sigma=0.5, Grid best            0.86071889   0.86075523      1.463   True
+Vasicek coupon, sigma=0.5, Matched           1.04418733   1.04444725      1.412   True
+Vasicek coupon, sigma=0.5, Grid best         1.04366754   1.04370208      1.457   True
+
+Additional checks passed: 8/8
+Total Task 11 checks: 18
+```
+
+이 결과는 **최종 제출 Notebook에 저장된 실행 출력**을 그대로 옮긴 것이다.
+
+### Task 11. Results and Interpretation
+
+추가 Vasicek 설정 8개도 독립 표본과 비교한 결과 모두 3 SE 기준을 통과했다. 기본 Vasicek 2개와 BK 통제변량 8개를 합하면 **총 18개 검사에서 18개 모두 통과**했다. 단, 통계적 허용 범위 통과는 수학적인 무오류 증명을 의미하지 않는다.
+
+| Validation category | Checks | Passed |
+|---|---:|---:|
+| Vasicek Baseline | 2 | 2 |
+| Vasicek Matched | 4 | 4 |
+| Vasicek Grid best | 4 | 4 |
+| BK path-based | 8 | 8 |
+| **Total** | **18** | **18** |
+
+## Task 12. Discretization Effects on Control Expectations
+
+시간 간격 1/52와 1/252에서 계산한 기대값을 비교한다. Vasicek은 연속시간 가격과 이산시간 기대값을 대조하고, BK는 두 시간격자에서 통제변량 기대값이 어떻게 달라지는지 확인한다. **사다리꼴 적분과 왼쪽 직사각형 적분의 차이도 Vasicek과 BK 모두 비교**한다.
+
+**Python Implementation** (Notebook 셀 49)
 
 ```python
 # Task 12: time-step effects
@@ -2265,7 +2446,6 @@ for sigma in E_SIGMAS:
         print(f"{name}: {coarse[name] - fine[name]:+.10f}")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -2308,9 +2488,7 @@ X1: +0.0000864939
 X2: +0.0000336947
 ```
 
-
-**Python Implementation** (Notebook 셀 48)
-
+**Python Implementation** (Notebook 셀 50)
 
 ```python
 def e_vasicek_expectations_with_rule(
@@ -2390,10 +2568,10 @@ for dt in E_STEPS:
         )
 ```
 
-
 **저장된 실행 결과**
 
 ```text
+
 Time step = 0.01923077
 ZCB: trapezoid=0.8609220553, left=0.8609214338, difference=-0.0000006215
 Coupon: trapezoid=1.0438936455, left=1.0438929251, difference=-0.0000007204
@@ -2403,9 +2581,163 @@ ZCB: trapezoid=0.8609213775, left=0.8609212490, difference=-0.0000001285
 Coupon: trapezoid=1.0438928806, left=1.0438927316, difference=-0.0000001490
 ```
 
+**Python Implementation** (Notebook 셀 51)
 
-**Python Implementation** (Notebook 셀 49)
+```python
+# BK trapezoidal vs left-point integration
+# Compare exact expectations of discretized controls.
 
+def e_bk_expectations_with_rule(sigma, dt, rule):
+    M = round(D_T / dt)
+    a = 1 - D_KAPPA * dt
+
+    mean_x = np.zeros(M + 1)
+    var_x = np.zeros(M + 1)
+
+    mean_x[0] = np.log(D_R0)
+
+    for k in range(1, M + 1):
+        mean_x[k] = (
+            a * mean_x[k - 1]
+            + D_KAPPA * D_THETA * dt
+        )
+        var_x[k] = (
+            a**2 * var_x[k - 1]
+            + sigma**2 * dt
+        )
+
+    indices = np.arange(M + 1)
+    k_min = np.minimum.outer(indices, indices)
+    k_diff = np.abs(np.subtract.outer(indices, indices))
+
+    cov_x = var_x[k_min] * a**k_diff
+
+    # Lognormal first and second moments
+    mean_r = np.exp(mean_x + 0.5 * var_x)
+
+    second_r = np.exp(
+        mean_x[:, None]
+        + mean_x[None, :]
+        + 0.5 * (
+            var_x[:, None] + var_x[None, :]
+        )
+        + cov_x
+    )
+
+    # Integration weights at annual payment dates
+    weights = np.zeros((D_T, M + 1))
+
+    for year in range(1, D_T + 1):
+        end = round(year / dt)
+
+        if rule == "trapezoid":
+            weights[year - 1, 0] = dt / 2
+            weights[year - 1, 1:end] = dt
+            weights[year - 1, end] = dt / 2
+
+        elif rule == "left":
+            weights[year - 1, :end] = dt
+
+        else:
+            raise ValueError("Unknown integration rule")
+
+    mean_I = weights @ mean_r
+
+    mean_I2 = np.sum(
+        (weights @ second_r) * weights,
+        axis=1
+    )
+
+    return {
+        "IT": float(mean_I[-1]),
+        "IT2": float(mean_I2[-1]),
+        "X1": float(D_CASHFLOWS @ mean_I),
+        "X2": float(D_CASHFLOWS @ mean_I2)
+    }
+
+
+print("=== Task 12: BK Integration Rule Comparison ===")
+
+for sigma in E_SIGMAS:
+    for dt in E_STEPS:
+
+        trap = e_bk_expectations_with_rule(
+            sigma, dt, "trapezoid"
+        )
+
+        left = e_bk_expectations_with_rule(
+            sigma, dt, "left"
+        )
+
+        # Cross-check against the original implementation
+        original = d_control_expectations(sigma, dt)
+
+        for name in ["IT", "IT2", "X1", "X2"]:
+            assert np.isclose(
+                trap[name],
+                original[name],
+                rtol=1e-10,
+                atol=1e-12
+            )
+
+        print(f"\nBK sigma = {sigma}, dt = {dt:.8f}")
+        print(
+            f"{'Control':8s} "
+            f"{'Trapezoid':>14s} "
+            f"{'Left-point':>14s} "
+            f"{'Difference':>14s}"
+        )
+
+        for name in ["IT", "IT2", "X1", "X2"]:
+            difference = left[name] - trap[name]
+
+            print(
+                f"{name:8s} "
+                f"{trap[name]:14.10f} "
+                f"{left[name]:14.10f} "
+                f"{difference:+14.10f}"
+            )
+
+print("\nAll BK integration-rule checks passed.")
+```
+
+**저장된 실행 결과**
+
+```text
+=== Task 12: BK Integration Rule Comparison ===
+
+BK sigma = 0.2, dt = 0.01923077
+Control       Trapezoid     Left-point     Difference
+IT         0.1516649462   0.1516612907  -0.0000036555
+IT2        0.0231868550   0.0231852098  -0.0000016452
+X1         0.1698481644   0.1698438141  -0.0000043503
+X2         0.0252263380   0.0252244812  -0.0000018567
+
+BK sigma = 0.2, dt = 0.00396825
+Control       Trapezoid     Left-point     Difference
+IT         0.1516532772   0.1516525275  -0.0000007497
+IT2        0.0231826949   0.0231823566  -0.0000003383
+X1         0.1698351258   0.1698342337  -0.0000008920
+X2         0.0252217937   0.0252214119  -0.0000003818
+
+BK sigma = 0.5, dt = 0.01923077
+Control       Trapezoid     Left-point     Difference
+IT         0.1607331617   0.1607095407  -0.0000236210
+IT2        0.0271899961   0.0271784454  -0.0000115507
+X1         0.1799124736   0.1798843700  -0.0000281036
+X2         0.0295759941   0.0295629588  -0.0000130353
+
+BK sigma = 0.5, dt = 0.00396825
+Control       Trapezoid     Left-point     Difference
+IT         0.1606557246   0.1606508815  -0.0000048431
+IT2        0.0271591460   0.0271567722  -0.0000023738
+X1         0.1798259797   0.1798202181  -0.0000057616
+X2         0.0295422994   0.0295396205  -0.0000026789
+
+All BK integration-rule checks passed.
+```
+
+**Python Implementation** (Notebook 셀 52)
 
 ```python
 # Task 12: expectation mismatch relative to standard error
@@ -2501,7 +2833,6 @@ for sigma in E_SIGMAS:
         )
 ```
 
-
 **저장된 실행 결과**
 
 ```text
@@ -2521,17 +2852,22 @@ sigma=0.5, Vasicek ZCB: price shift=-0.000001195, |shift|/SE=0.024
 sigma=0.5, Vasicek coupon: price shift=-0.000001212, |shift|/SE=0.025
 ```
 
+### Task 12. Results and Interpretation
 
-**Task 12 해석.** BK [X₁,X₂] 통제변량에서는 작은 기대값 차이도 CV 표준오차보다 수백 배 크게 나타났다. 이는 분산 감소에 성공했더라도 기대값 불일치를 방치하면 편향이 심각해질 수 있음을 보여준다. BK에서 적분 규칙 자체를 바꾼 비교는 추가할 예정이다.
+시간 간격을 줄이면 이 실험에서 이산화로 인한 기대값 차이가 작아졌다. BK에서는 적분 규칙을 왼쪽 직사각형으로 바꾸면 사다리꼴 기대값과 차이가 나고, 높은 변동성에서 차이가 더 컸다. 특히 [X₁, X₂]처럼 SE가 매우 작은 추정량에서는 작은 기대값 불일치도 수백 SE 규모의 가격 이동을 만들었다.
 
+| BK σ | dt | Left-point − Trapezoid: E[I(T)] | Left-point − Trapezoid: E[X₁] |
+|---|---|---:|---:|
+| 0.2 | 1/52 | −0.0000036555 | −0.0000043503 |
+| 0.2 | 1/252 | −0.0000007497 | −0.0000008920 |
+| 0.5 | 1/52 | −0.0000236210 | −0.0000281036 |
+| 0.5 | 1/252 | −0.0000048431 | −0.0000057616 |
 
-## Task 13. 의도적으로 틀린 기대값 사용
+## Task 13. Incorrect Control Expectations
 
-BK X₁의 기대값에 δ=0.005를 더해 CV 가격, SE와 95% 신뢰구간 포함률이 어떻게 달라지는지 비교한다. 반복 횟수 80회는 **과제 지시값이 아니라 실험을 위해 선택한 값**이며, 기준 가격도 큰 독립 MC 표본으로 얻은 수치적 추정값이다.
+BK 통제변량 X₁의 기대값에 의도적으로 δ=0.005를 더한다. 잘못된 기대값은 모든 보정 가격에 동일한 상수를 더하므로 **가격 추정값을 이동시키지만 표본분산과 SE를 바꾸지 않는다.** 95% 신뢰구간의 포함률도 독립 반복 실험으로 비교한다.
 
-
-**Python Implementation** (Notebook 셀 52)
-
+**Python Implementation** (Notebook 셀 55)
 
 ```python
 E_DELTA = 0.005
@@ -2591,10 +2927,10 @@ for sigma in E_SIGMAS:
 print("\nIncorrect-expectation shift tests passed.")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
+
 === BK sigma = 0.2 ===
 Correct CV price:   1.04215044
 Incorrect CV price: 1.03784782
@@ -2614,14 +2950,10 @@ Predicted shift:    -0.00421180
 Incorrect-expectation shift tests passed.
 ```
 
+![잘못된 기대값이 CV 가격을 이동시키는 현상](/assets/images/bk_wrong_mu_shift.png)
+*Figure. 잘못된 기대값이 CV 가격을 이동시키는 현상.*
 
-![Wrong expectation price shift](/assets/images/bk_wrong_mu_shift.png)
-
-*Figure 5. 통제변량 기대값의 오류가 CV 가격을 이동시키지만 SE를 바꾸지는 않는 사례.*
-
-
-**Python Implementation** (Notebook 셀 53)
-
+**Python Implementation** (Notebook 셀 56)
 
 ```python
 # Task 13: Confidence interval coverage experiment
@@ -2758,10 +3090,10 @@ for sigma in E_SIGMAS:
     )
 ```
 
-
 **저장된 실행 결과**
 
 ```text
+
 === BK sigma = 0.2 ===
 Reference price: 1.04215049
 Reference SE:    0.00000037
@@ -2779,19 +3111,23 @@ Correct mean CI width: 0.00008549
 Incorrect mean CI width: 0.00008549
 ```
 
+![올바른 기대값과 잘못된 기대값의 신뢰구간 포함률](/assets/images/bk_ci_coverage.png)
+*Figure. 올바른 기대값과 잘못된 기대값의 신뢰구간 포함률.*
 
-![Confidence interval coverage](/assets/images/bk_ci_coverage.png)
+### Task 13. Results and Interpretation
 
-*Figure 6. 80회 반복으로 확인한 95% 신뢰구간의 경험적 포함률. 기준 가격도 수치 추정값이다.*
+σ=0.2와 σ=0.5 모두 잘못된 기대값 때문에 채권 가격이 크게 이동했지만 SE는 동일했다. 80회 반복한 실험에서 올바른 기대값을 썼을 때 포함률은 각각 **92.5%, 97.5%**, 잘못된 기대값에서는 둘 다 **0%**였다. 참고 가격도 분석해가 아닌 큰 독립 MC 기반 수치 추정값이다.
 
+| BK σ | Correct CV price | Incorrect CV price | SE |
+|---|---:|---:|---:|
+| 0.2 | 1.04215044 | 1.03784782 | 0.00000093 |
+| 0.5 | 1.03405042 | 1.02983861 | 0.00000710 |
 
-## Task 14. 전체 추정량 비교
+## Task 14. Final Comparison of Estimators
 
-두 BK 변동성에서 Plain MC, Vasicek 통제변량(기본값·근사값·격자값), BK 경로 기반 통제변량의 가격·SE·VRF·실행 시간을 정리한다. 실행 시간은 컴퓨터 환경과 구현 방식에 의존하므로 상대적 비교 지표로 해석한다.
+마지막으로 Plain MC, Vasicek 통제변량의 기본·Matched·Grid 설정, BK 경로 기반 통제변량을 가격·SE·VRF·실행 시간으로 비교한다. 실행 시간은 하드웨어와 구현 순서에 의존하므로 절대적인 성능이라고 해석하지 않는다.
 
-
-**Python Implementation** (Notebook 셀 55)
-
+**Python Implementation** (Notebook 셀 59)
 
 ```python
 import time
@@ -3002,35 +3338,34 @@ for sigma in E_SIGMAS:
     print(f"SE:     {best['se']:.8f}")
 ```
 
-
 **저장된 실행 결과**
 
 ```text
 === Task 14: Final Estimator Comparison ===
 Sigma Method                                      Price           SE       VRF   Time(s)
 ----------------------------------------------------------------------------------------
-  0.2 Plain MC                               1.04212403   0.00009197      1.00    0.1810
-  0.2 Vasicek ZCB (Baseline)                 1.04216099   0.00000884    108.36    0.2332
-  0.2 Vasicek Coupon (Baseline)              1.04215894   0.00000816    127.16    0.2323
-  0.2 Vasicek ZCB (Matched)                  1.04216098   0.00000837    120.78    0.2319
-  0.2 Vasicek Coupon (Matched)               1.04215895   0.00000766    144.01    0.2283
-  0.2 Vasicek ZCB (Grid ZCB)                 1.04215872   0.00000730    158.51    0.3134
-  0.2 Vasicek Coupon (Grid Coupon)           1.04215954   0.00000721    162.75    0.3508
-  0.2 BK I(T)                                1.04215152   0.00000345    710.86    0.2527
-  0.2 BK I(T), I(T)^2                        1.04215154   0.00000333    763.39    0.1898
-  0.2 BK X1                                  1.04215044   0.00000093   9873.68    0.2491
-  0.2 BK X1, X2                              1.04215038   0.00000001 57026630.30    0.2835
-  0.5 Plain MC                               1.03400908   0.00024446      1.00    0.1771
-  0.5 Vasicek ZCB (Baseline)                 1.03410593   0.00004926     24.63    0.2261
-  0.5 Vasicek Coupon (Baseline)              1.03410052   0.00004851     25.39    0.2250
-  0.5 Vasicek ZCB (Matched)                  1.03410588   0.00005083     23.13    0.2276
-  0.5 Vasicek Coupon (Matched)               1.03410040   0.00005007     23.84    0.2264
-  0.5 Vasicek ZCB (Grid ZCB)                 1.03410006   0.00004620     28.00    0.2215
-  0.5 Vasicek Coupon (Grid Coupon)           1.03410222   0.00004607     28.15    0.2246
-  0.5 BK I(T)                                1.03404968   0.00001145    456.13    0.2611
-  0.5 BK I(T), I(T)^2                        1.03404802   0.00000892    751.80    0.1808
-  0.5 BK X1                                  1.03405042   0.00000710   1186.30    0.1917
-  0.5 BK X1, X2                              1.03404842   0.00000019 1722574.84    0.1787
+  0.2 Plain MC                               1.04212403   0.00009197      1.00    0.1738
+  0.2 Vasicek ZCB (Baseline)                 1.04216099   0.00000884    108.36    0.2027
+  0.2 Vasicek Coupon (Baseline)              1.04215894   0.00000816    127.16    0.2297
+  0.2 Vasicek ZCB (Matched)                  1.04216098   0.00000837    120.78    0.2395
+  0.2 Vasicek Coupon (Matched)               1.04215895   0.00000766    144.01    0.2201
+  0.2 Vasicek ZCB (Grid ZCB)                 1.04215872   0.00000730    158.51    0.1946
+  0.2 Vasicek Coupon (Grid Coupon)           1.04215954   0.00000721    162.75    0.1975
+  0.2 BK I(T)                                1.04215152   0.00000345    710.86    0.1435
+  0.2 BK I(T), I(T)^2                        1.04215154   0.00000333    763.39    0.1511
+  0.2 BK X1                                  1.04215044   0.00000093   9873.68    0.1466
+  0.2 BK X1, X2                              1.04215038   0.00000001 57026630.30    0.1508
+  0.5 Plain MC                               1.03400908   0.00024446      1.00    0.1385
+  0.5 Vasicek ZCB (Baseline)                 1.03410593   0.00004926     24.63    0.1926
+  0.5 Vasicek Coupon (Baseline)              1.03410052   0.00004851     25.39    0.1953
+  0.5 Vasicek ZCB (Matched)                  1.03410588   0.00005083     23.13    0.2036
+  0.5 Vasicek Coupon (Matched)               1.03410040   0.00005007     23.84    0.2662
+  0.5 Vasicek ZCB (Grid ZCB)                 1.03410006   0.00004620     28.00    0.2173
+  0.5 Vasicek Coupon (Grid Coupon)           1.03410222   0.00004607     28.15    0.1844
+  0.5 BK I(T)                                1.03404968   0.00001145    456.13    0.1465
+  0.5 BK I(T), I(T)^2                        1.03404802   0.00000892    751.80    0.1563
+  0.5 BK X1                                  1.03405042   0.00000710   1186.30    0.1854
+  0.5 BK X1, X2                              1.03404842   0.00000019 1722574.84    0.1450
 
 Best VRF for BK sigma=0.2:
 Method: BK X1, X2
@@ -3043,19 +3378,616 @@ VRF:    1722574.84
 SE:     0.00000019
 ```
 
+### Task 14. Final Interpretation
 
-통제변량은 BK 쿠폰 채권 가격의 통계적 정밀도를 크게 개선할 수 있다. 그러나 VRF가 높더라도 기대값이 잘못되면 가격이 이동하고 SE에는 그 편향이 드러나지 않는다. 따라서 **분산 감소 결과와 기대값 검증, 이산화 오차 분석을 함께 평가**해야 한다. 최종적인 실무 선택은 VRF뿐 아니라 추가 계산 비용과 기대값의 신뢰성까지 고려할 예정이다.
+실험 결과에서는 **BK X₁, X₂** 조합이 두 변동성 모두에서 가장 높은 VRF를 나타냈다. 다만 값이 극단적으로 큰 경우에도 기대값이 잘못되면 편향이 SE에 나타나지 않는다. 따라서 최종 방법을 선택할 때 VRF와 함께 기대값 검증, 이산화 오차, 연산 비용을 함께 고려한다.
 
+# Final Validation
+
+## 1. Executable Test Functions
+
+최종 제출본에서는 검증을 별도의 함수로 등록하고, 자동 생성되는 **Test Register**로 기록한다. 각 테스트는 기대 결과, 관측 결과, 허용오차와 근거를 함께 남긴다.
+
+**Python Implementation** (Notebook 셀 62)
+
+```python
+# =========================================================
+# FINAL VALIDATION - STEP 1: EXECUTABLE TEST FUNCTIONS
+# =========================================================
+
+final_test_results = []
+
+
+def test_F01_bk_zero_volatility():
+    """
+    Validation ladder 2: Reduction to a known case.
+
+    With sigma=0 and x0=theta, the BK rate is
+    constant at 3%, so the bond price is known.
+    """
+    test_n = 1000
+
+    price, se, simulated_payoffs = bk_mc(
+        sigma=0.0,
+        N=test_n,
+        dt=1/52,
+        seed=2026
+    )
+
+    expected = sum(
+        (C + (principal if year == T else 0.0))
+        * np.exp(-0.03 * year)
+        for year in range(1, T + 1)
+    )
+
+    tolerance = 1e-10
+    observed_error = abs(price - expected)
+
+    assert observed_error <= tolerance
+    assert np.allclose(
+        simulated_payoffs, expected,
+        rtol=0,
+        atol=tolerance
+    )
+    assert se < tolerance
+
+    return {
+        "check": "F01",
+        "property": "BK zero-volatility limit",
+        "expected": expected,
+        "observed": price,
+        "tolerance": tolerance,
+        "pass": True
+    }
+
+
+def test_F02_mc_standard_error():
+    """
+    Verify that the Monte Carlo standard error
+    equals sample standard deviation / sqrt(N).
+    """
+    data = results_bk[0.2]
+
+    simulated_payoffs = data["payoffs"]
+
+    expected_se = (
+        np.std(simulated_payoffs, ddof=1)
+        / np.sqrt(len(simulated_payoffs))
+    )
+
+    observed_se = data["se"]
+
+    tolerance = 1e-12
+
+    assert abs(observed_se - expected_se) <= tolerance
+
+    return {
+        "check": "F02",
+        "property": "MC standard error formula",
+        "expected": expected_se,
+        "observed": observed_se,
+        "tolerance": tolerance,
+        "pass": True
+    }
+
+
+def test_F03_control_expectations():
+    """
+    Validate all 18 independent control-expectation
+    checks from Task 11 using the three-SE criterion.
+    """
+
+    assert len(e_task11_results) == 10
+    assert len(e_task11_extra_results) == 8
+
+    all_results = (
+        e_task11_results + e_task11_extra_results
+    )
+
+    assert len(all_results) == 18
+
+    for result in all_results:
+        difference = abs(
+            result["mc_mean"] - result["expected"]
+        )
+
+        tolerance = 3.0 * result["se"]
+
+        assert np.isfinite(tolerance)
+        assert tolerance > 0
+
+        assert difference <= tolerance, (
+            f"Control expectation failed: "
+            f"{result['control']}, "
+            f"error={difference:.8g}, "
+            f"tolerance={tolerance:.8g}"
+        )
+
+        assert result["passed"]
+
+    return {
+        "check": "F03",
+        "property": "Independent control expectations",
+        "expected": "All 18 checks within 3 SE",
+        "observed": "All 18 checks passed",
+        "tolerance": "3 SE per control",
+        "pass": True
+    }
+
+# Execute validation tests
+for test_function in [
+    test_F01_bk_zero_volatility,
+    test_F02_mc_standard_error,
+    test_F03_control_expectations
+]:
+    result = test_function()
+    final_test_results.append(result)
+    print(f"{result['check']}: PASS - {result['property']}")
+
+print("\nAll Step 1 validation tests passed.")
+```
+
+**저장된 실행 결과**
+
+```text
+F01: PASS - BK zero-volatility limit
+F02: PASS - MC standard error formula
+F03: PASS - Independent control expectations
+
+All Step 1 validation tests passed.
+```
+
+## 2. Control-Variate Formula Validation
+
+수작업으로 계산할 수 있는 작은 데이터에 대해 CV 가격을 검증하고, 잘못된 기대값을 넣었을 때 가격 이동이 이론적 항등식과 맞는지 확인한다.
+
+**Python Implementation** (Notebook 셀 64)
+
+```python
+# =========================================================
+# FINAL VALIDATION - STEP 2: CV FORMULA TESTS
+# =========================================================
+
+def test_F04_hand_computable_cv():
+    """
+    Validation ladder 1:
+    Check the CV formula with a hand-computable dataset.
+    """
+
+    x_pilot = np.array([0.0, 1.0, 2.0])
+    y_pilot = np.array([1.0, 3.0, 5.0])
+
+    x_price = np.array([0.0, 1.0, 2.0])
+    y_price = np.array([4.0, 8.0, 12.0])
+
+    mu = 1.0
+
+    result = control_variate(
+        y_pilot, x_pilot,
+        y_price, x_price, mu
+    )
+
+    # Hand-computed coefficient: nu = 2
+    expected_nu = 2.0
+
+    # Corrected payoffs: [6, 8, 10]
+    expected_payoffs = np.array([6.0, 8.0, 10.0])
+
+    expected_price = 8.0
+    expected_se = (
+        np.std(expected_payoffs, ddof=1)
+        / np.sqrt(3)
+    )
+
+    tolerance = 1e-12
+
+    assert abs(result["nu"] - expected_nu) <= tolerance
+    assert abs(result["price"] - expected_price) <= tolerance
+    assert abs(result["se"] - expected_se) <= tolerance
+
+    return {
+        "check": "F04",
+        "property": "Hand-computed CV price",
+        "expected": expected_price,
+        "observed": result["price"],
+        "tolerance": tolerance,
+        "pass": True
+    }
+
+
+def test_F05_expectation_shift_identity():
+    """
+    Validation ladder 3:
+    Changing mu by delta shifts the CV price by nu*delta,
+    without changing SE or VRF.
+    """
+
+    x_pilot = np.array([0.0, 1.0, 2.0])
+    y_pilot = np.array([1.0, 3.0, 5.0])
+
+    x_price = np.array([0.0, 1.0, 2.0])
+    y_price = np.array([4.0, 8.0, 12.0])
+
+    mu = 1.0
+    delta = 0.1
+
+    correct = control_variate(
+        y_pilot, x_pilot,
+        y_price, x_price, mu
+    )
+
+    shifted = control_variate(
+        y_pilot, x_pilot,
+        y_price, x_price, mu + delta
+    )
+
+    expected_shift = correct["nu"] * delta
+    observed_shift = shifted["price"] - correct["price"]
+
+    tolerance = 1e-12
+
+    assert abs(observed_shift - expected_shift) <= tolerance
+
+    assert abs(
+        shifted["se"] - correct["se"]
+    ) <= tolerance
+
+    assert abs(
+        shifted["vrf"] - correct["vrf"]
+    ) <= tolerance
+
+    return {
+        "check": "F05",
+        "property": "CV expectation-shift identity",
+        "expected": expected_shift,
+        "observed": observed_shift,
+        "tolerance": tolerance,
+        "pass": True
+    }
+
+
+# Execute Step 2 tests
+for test_function in [
+    test_F04_hand_computable_cv,
+    test_F05_expectation_shift_identity
+]:
+    result = test_function()
+    final_test_results.append(result)
+
+    print(
+        f"{result['check']}: PASS - "
+        f"{result['property']}"
+    )
+
+print("\nAll Step 2 validation tests passed.")
+```
+
+**저장된 실행 결과**
+
+```text
+F04: PASS - Hand-computed CV price
+F05: PASS - CV expectation-shift identity
+
+All Step 2 validation tests passed.
+```
+
+이 결과는 **최종 제출 Notebook에 저장된 실행 출력**을 그대로 옮긴 것이다.
+
+## 3. Deliberate-Bug Test
+
+BK 통제변량 X₁의 기대값에 의도적으로 0.005를 더한 후 독립 기대값 검증을 실행한다. 올바른 기대값은 통과하고 잘못된 기대값은 **AssertionError로 탐지되어야 한다.** 예외는 테스트 안에서 기록하므로 Notebook 전체 재실행을 중단시키지 않는다.
+
+**Python Implementation** (Notebook 셀 66)
+
+```python
+# =========================================================
+# FINAL VALIDATION - STEP 3: DELIBERATE-BUG TEST
+# =========================================================
+
+def test_F06_deliberate_wrong_expectation():
+    """
+    Verify that the independent expectation test
+    detects an intentionally incorrect BK X1 mean.
+
+    The expected AssertionError is caught so that
+    Restart & Run All can finish successfully.
+    """
+
+    sigma = 0.2
+    delta = 0.005
+
+    # Independent simulation already used in Task 11
+    _, I_test = d_simulate_bk(z_test, sigma, E_DT)
+    controls = d_make_controls(I_test)
+
+    x1_samples = np.asarray(controls["X1"])
+
+    correct_mu = d_control_expectations(
+        sigma, E_DT
+    )["X1"]
+
+    wrong_mu = correct_mu + delta
+
+    # First verify that the CORRECT expectation passes.
+    correct_result = e_expectation_check(
+        "BK X1: correct expectation",
+        x1_samples,
+        correct_mu
+    )
+
+    assert correct_result["passed"]
+
+    # Now deliberately introduce the incorrect mean.
+    bug_detected = False
+    failure_message = ""
+
+    try:
+        e_expectation_check(
+            "BK X1: deliberately wrong expectation",
+            x1_samples,
+            wrong_mu
+        )
+
+    except AssertionError as error:
+        bug_detected = True
+        failure_message = str(error)
+
+    # This final assertion verifies detection itself.
+    assert bug_detected, (
+        "The independent expectation test failed "
+        "to detect the deliberately incorrect mean."
+    )
+
+    observed_mean = float(np.mean(x1_samples))
+    observed_se = float(
+        np.std(x1_samples, ddof=1)
+        / np.sqrt(len(x1_samples))
+    )
+
+    tolerance = 3.0 * observed_se
+    observed_error = abs(observed_mean - wrong_mu)
+
+    print("=== DELIBERATE-BUG TEST EVIDENCE ===")
+    print(f"BK sigma:         {sigma}")
+    print(f"Correct mu:       {correct_mu:.10f}")
+    print(f"Incorrect mu:     {wrong_mu:.10f}")
+    print(f"Independent mean: {observed_mean:.10f}")
+    print(f"Tolerance (3 SE): {tolerance:.10f}")
+    print(f"Observed error:   {observed_error:.10f}")
+    print()
+
+    print("Expected failure: AssertionError")
+    print("Actual result:    AssertionError caught")
+    print(f"Failure message:  {failure_message}")
+    print()
+    print("Correct expectation: PASS")
+    print("Incorrect expectation: DETECTED")
+    print("Original pricing implementation: UNCHANGED")
+
+    return {
+        "check": "F06",
+        "property": "Deliberately incorrect BK X1 expectation",
+        "expected": "AssertionError on incorrect mu",
+        "observed": "AssertionError caught",
+        "tolerance": f"3 SE = {tolerance:.10g}",
+        "pass": True
+    }
+
+
+f06_result = test_F06_deliberate_wrong_expectation()
+final_test_results.append(f06_result)
+
+print(
+    f"\n{f06_result['check']}: PASS - "
+    "Deliberate bug successfully detected"
+)
+```
+
+**저장된 실행 결과**
+
+```text
+=== DELIBERATE-BUG TEST EVIDENCE ===
+BK sigma:         0.2
+Correct mu:       0.1698481644
+Incorrect mu:     0.1748481644
+Independent mean: 0.1697080592
+Tolerance (3 SE): 0.0002593218
+Observed error:   0.0051401052
+
+Expected failure: AssertionError
+Actual result:    AssertionError caught
+Failure message:  BK X1: deliberately wrong expectation: expectation check failed. Difference=-0.00514011, Tolerance=0.00025932
+
+Correct expectation: PASS
+Incorrect expectation: DETECTED
+Original pricing implementation: UNCHANGED
+
+F06: PASS - Deliberate bug successfully detected
+```
+
+이 결과는 **최종 제출 Notebook에 저장된 실행 출력**을 그대로 옮긴 것이다.
+
+## 4. Test Register
+
+F01부터 F06까지 여섯 가지 테스트의 결과를 실제 실행된 검증 함수에서 수집해 기록한다. 반복 실행 중 기록이 중복되지 않도록 정리하며 허용오차와 검출 가능한 오류 범위를 명시한다.
+
+**Python Implementation** (Notebook 셀 68)
+
+```python
+# =========================================================
+# FINAL VALIDATION - STEP 4: TEST REGISTER
+# =========================================================
+
+import pandas as pd
+
+test_justifications = {
+    "F01": (
+        "Deterministic BK limit: numerical tolerance "
+        "1e-10 accounts for floating-point rounding."
+    ),
+    "F02": (
+        "Standard-error identity: tolerance 1e-12 "
+        "accounts for floating-point rounding."
+    ),
+    "F03": (
+        "Independent MC expectation checks: 3 SE "
+        "allows for sampling fluctuations. "
+        "This is a statistical, not absolute, criterion."
+    ),
+    "F04": (
+        "Hand-computable CV example: tolerance 1e-12 "
+        "checks numerical agreement."
+    ),
+    "F05": (
+        "CV expectation-shift identity: tolerance "
+        "1e-12 checks the mathematical relationship."
+    ),
+    "F06": (
+        "The deliberately wrong expectation must "
+        "trigger an AssertionError in the independent "
+        "3-SE expectation test."
+    )
+}
+
+test_function_names = {
+    "F01": "test_F01_bk_zero_volatility",
+    "F02": "test_F02_mc_standard_error",
+    "F03": "test_F03_control_expectations",
+    "F04": "test_F04_hand_computable_cv",
+    "F05": "test_F05_expectation_shift_identity",
+    "F06": "test_F06_deliberate_wrong_expectation"
+}
+
+expected_checks = [f"F{i:02d}" for i in range(1, 7)]
+
+# Keep the latest result for each test ID.
+# This avoids duplicate entries when validation cells
+# have been executed more than once.
+unique_results = {}
+
+for result in final_test_results:
+    unique_results[result["check"]] = result
+
+final_test_results = [
+    unique_results[check_id]
+    for check_id in expected_checks
+    if check_id in unique_results
+]
+
+# Check for missing or unexpected tests.
+recorded_checks = [
+    result["check"] for result in final_test_results
+]
+
+assert len(recorded_checks) == len(set(recorded_checks)), (
+    "Duplicate test IDs found in final_test_results."
+)
+
+assert set(recorded_checks) == set(expected_checks), (
+    f"Missing or unexpected tests: {recorded_checks}"
+)
+
+# Verify that all registered test functions exist.
+for check_id in expected_checks:
+    function_name = test_function_names[check_id]
+
+    assert callable(globals().get(function_name)), (
+        f"Missing test function: {function_name}"
+    )
+
+# Generate the register from actual test results.
+register_rows = []
+
+for result in final_test_results:
+    check_id = result["check"]
+
+    register_rows.append({
+        "Test ID": check_id,
+        "Test function": test_function_names[check_id],
+        "Property": result["property"],
+        "Expected": result["expected"],
+        "Observed": result["observed"],
+        "Tolerance": result["tolerance"],
+        "Tolerance justification": (
+            test_justifications[check_id]
+        ),
+        "Pass": bool(result["pass"])
+    })
+
+test_register = pd.DataFrame(register_rows)
+
+test_register = test_register.sort_values(
+    "Test ID"
+).reset_index(drop=True)
+
+# All registered tests must have passed.
+assert test_register["Pass"].all(), (
+    "At least one validation test did not pass."
+)
+
+print("=== FINAL TEST REGISTER ===")
+
+display(test_register)
+
+print(
+    f"\nTests passed: "
+    f"{int(test_register['Pass'].sum())}"
+    f"/{len(test_register)}"
+)
+
+print("Test Register generated successfully.")
+```
+
+**저장된 실행 결과**
+
+```text
+=== FINAL TEST REGISTER ===
+
+  Test ID                          Test function  \
+0     F01            test_F01_bk_zero_volatility   
+1     F02             test_F02_mc_standard_error   
+2     F03          test_F03_control_expectations   
+3     F04            test_F04_hand_computable_cv   
+4     F05    test_F05_expectation_shift_identity   
+5     F06  test_F06_deliberate_wrong_expectation   
+
+                                   Property                        Expected  \
+0                  BK zero-volatility limit                        1.043659   
+1                 MC standard error formula                        0.000092   
+2          Independent control expectations       All 18 checks within 3 SE   
+3                    Hand-computed CV price                             8.0   
+4             CV expectation-shift identity                             0.2   
+5  Deliberately incorrect BK X1 expectation  AssertionError on incorrect mu   
+
+                Observed               Tolerance  \
+0               1.043659                     0.0   
+1               0.000092                     0.0   
+2   All 18 checks passed        3 SE per control   
+3                    8.0                     0.0   
+4                    0.2                     0.0   
+5  AssertionError caught  3 SE = 0.0002593218362   
+
+                             Tolerance justification  Pass  
+0  Deterministic BK limit: numerical tolerance 1e...  True  
+1  Standard-error identity: tolerance 1e-12 accou...  True  
+2  Independent MC expectation checks: 3 SE allows...  True  
+3  Hand-computable CV example: tolerance 1e-12 ch...  True  
+4  CV expectation-shift identity: tolerance 1e-12...  True  
+5  The deliberately wrong expectation must trigge...  True
+
+
+Tests passed: 6/6
+Test Register generated successfully.
+```
+## 5. One Bug I Found
+
+최종 Test Register를 만드는 과정에서 검증 셀을 여러 번 실행하자 결과 목록에 같은 Test ID가 중복 저장되는 문제가 있었다. 원인은 Jupyter가 이전 실행의 리스트 상태를 유지한다는 점이었다. Test ID별 가장 최근 결과만 남기도록 수정한 뒤 **6/6 테스트 통과**를 확인했다. 실제 채권 가격이나 통제변량 계산식은 변경하지 않았다. 생성형 AI는 코드 작성·구조화·설명 정리의 보조 수단으로 사용했으며 최종 결과는 실행 결과를 기준으로 검토했다.
+
+### AI Declaration
+최종 제출 Notebook에는 AI 활용 선언을 명시했다. 사용한 방법과 검증 책임의 구분은 제출본의 선언을 따른다.
 
 ---
 
-## 검토하면서 수정할 사항
+## Final Summary
 
-이 글과 Jupyter Notebook은 아래 사항을 **함께 수정**할 예정이다.
-
-- **Task 11:** Part C에서 사용한 Baseline·Matched·Grid 파라미터까지 독립 기대값 검증 범위 확대
-- **Task 12:** BK 통제변량에서 적분 규칙 변경의 영향 추가 비교
-- **Task 13:** 신뢰구간 포함률 실험의 반복 수, 수치 기준 가격의 불확실성 명시
-- **Task 14:** 실제 출력값에 근거한 최종 방법 선택 및 전체 실행 시간 확인
-- **Assessment Rules:** 테스트 등록표(검증 대상·검출 가능/불가능 오류·허용오차 근거), AI 사용 선언 및 Restart & Run All 확인
-
+최종 제출본에서는 Part A–E의 가격 추정·통제변량 성능 비교뿐 아니라, **독립적인 기대값 검증 18개, BK 적분 규칙 비교, 의도적 오류 검출, 테스트 등록표 F01–F06**까지 추가했다. 위 코드와 실행 결과는 최종 제출 Notebook을 기준으로 옮겼으며, 블로그의 설명체와 표 구성은 기존 글의 스타일을 유지했다.
