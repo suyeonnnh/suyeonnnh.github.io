@@ -163,6 +163,11 @@ Stiff 문제에서는 매우 빠르게 감소하는 모드 때문에 Explicit �
 
 ### Lab 4 — Exercise 1(a): AB4와 AM4 구현
 
+> **Lab 4 · Exercise 1(a) — Problem**
+>
+> Implement k-step explicit Adams-Bashforth (AB) and implicit Adams-Moulton (AM) methods to solve a given first-order Initial Value Problem (IVP).
+{: .prompt-tip }
+
 Lecture 2–3의 예제 `y'(t)=t-y(t)`, `y(0)=1`, `0 ≤ t ≤ 1`, `h=0.2`를 사용한다. 정확해는 `y(t)=t-1+2exp(-t)`이다. AB4는 이전 네 도함숫값만 사용하는 explicit 방법이며, AM4는 새 시점 도함수를 포함하는 implicit 방법이다. 시작값 `y₁,y₂,y₃`은 RK4로 계산했다. 4차 AM 공식은 **3-step, order-4** 방법이라는 점에서 AB4의 4-step과 구분된다.
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%5E%7BAB4%7D%3Dy_n%2B%5Cfrac%7Bh%7D%7B24%7D%2855f_n-59f_%7Bn-1%7D%2B37f_%7Bn-2%7D-9f_%7Bn-3%7D%29)
@@ -274,6 +279,11 @@ plt.show()
 
 ### Lab 4 — Exercise 1(b): 국소 절단오차와 수렴차수
 
+> **Lab 4 · Exercise 1(b) — Problem**
+>
+> Compute the Local Truncation Error (LTE) empirically for various time step sizes (h) and verify the theoretical order of accuracy by analyzing the error ratio between grid spacings h and 2h.
+{: .prompt-tip }
+
 정확해를 차분식에 직접 대입해 `h`로 정규화한 LTE를 계산했다. 각 격자에서 최대 절댓값을 구하고 `h`를 절반으로 줄여 오차비를 비교한다. **국소 잔차의 차수**와 전체 구간에서 누적되는 **전역오차의 차수**는 개념적으로 구별해야 한다.
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p_%7B%5Cmathrm%7Bobs%7D%7D%3D%5Cfrac%7B%5Clog%28E%282h%29%2FE%28h%29%29%7D%7B%5Clog%202%7D%2C%5Cqquad%20E%28h%29%3D%5Cmax_n%7C%5Ctau_%7Bn%2B1%7D%28h%29%7C)
@@ -375,6 +385,11 @@ plt.show()
 ```
 
 ### Lab 4 — Exercise 1(c): PECE Predictor–Corrector
+
+> **Lab 4 · Exercise 1(c) — Problem**
+>
+> Program a Predictor-Corrector (PC) sequence in PECE mode by pairing an explicit AB predictor to calculate an initial guess with an implicit AM corrector.
+{: .prompt-tip }
 
 **Predict → Evaluate → Correct → Evaluate** 순서로 AB4 예측값을 만들고 AM4 공식을 한 번 적용한다. 완전한 implicit AM 해를 매 단계 구하는 것과는 다른 계산이며, 마지막 Evaluate는 보정된 새 상태의 도함수를 평가하는 단계다.
 
@@ -528,6 +543,11 @@ plt.show()
 
 ### Lab 4 — Exercise 2(a): Jacobian과 Stiffness Ratio
 
+> **Lab 4 · Exercise 2(a) — Problem**
+>
+> Write a small function or program to calculate the stiffness ratio of a given system of ODEs by evaluating the eigenvalues of its Jacobian matrix.
+{: .prompt-tip }
+
 Lab 4에서 특정 강성 시스템을 지정하지 않아, 느린 감쇠와 빠른 감쇠를 동시에 가진 선형 연립계를 선택했다.
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cmathbf%7By%7D%5Cprime%3DA%5Cmathbf%7By%7D%2C%5Cqquad%20A%3D%5Cbegin%7Bpmatrix%7D-1%260%5C%5C0%26-1000%5Cend%7Bpmatrix%7D%2C%5Cqquad%20%5Cmathbf%7By%7D%280%29%3D%5Cbegin%7Bpmatrix%7D1%5C%5C1%5Cend%7Bpmatrix%7D)
@@ -584,6 +604,11 @@ print(f"\nStiffness ratio: {ratio:.2f}")
 ```
 
 ### Lab 4 — Exercise 2(b): Explicit AB2의 시간 간격 제한
+
+> **Lab 4 · Exercise 2(b) — Problem**
+>
+> Attempt to solve a highly stiff system using an explicit LMM and observe the severe step-size restrictions (h < maxC|λi | ) dictated by absolute stability requirements.
+{: .prompt-tip }
 
 같은 시스템에 AB2를 적용하고 `h=0.0005`와 `h=0.01`을 비교했다. 빠른 성분의 고유값이 `−1000`이고, AB2의 음의 실수축 안정구간은 `−1 ≤ hλ ≤ 0`이므로 안정성 경계는 `h=0.001`이다. 따라서 `h=0.01`은 안정영역 밖이다. 초기 한 단계는 강의에서 소개한 RK4로 시작한다.
 
@@ -674,6 +699,11 @@ plt.show()
 ```
 
 ### Lab 4 — Exercise 2(c): BDF-1 및 BDF-2 안정성 비교
+
+> **Lab 4 · Exercise 2(c) — Problem**
+>
+> Implement Backward Differentiation Formulas (BDF-1 and BDF-2) and evaluate their performance on the stiff system, validating their theoretical advantages as A-stable and L-stable implicit methods.
+{: .prompt-tip }
 
 같은 연립계와 시간 간격에서 implicit BDF 방법을 적용했다. BDF-1은 Backward Euler이며, BDF-2는 2차 다단계법이다. BDF-2의 시작값은 한 번의 BDF-1 단계로 계산한다.
 
@@ -872,6 +902,11 @@ print("Both methods damp the stiff mode.")
 
 ### Lab 4 — Exercise 3(a): Linear Shooting
 
+> **Lab 4 · Exercise 3(a) — Problem**
+>
+> Solve a linear second-order Dirichlet BVP by expressing the solution as a linear combination of two independent IVPs (one inhomogeneous and one homogeneous).
+{: .prompt-tip }
+
 선형 2계 Dirichlet BVP는 **비제차 IVP와 제차 IVP**를 각각 풀어 선형결합한다. 이번 예제는 `y′′=y+x`, `y(0)=0`, `y(1)=1`이고 정확해는 `y(x)=2sinh(x)/sinh(1)−x`다.
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_1%5Cprime%5Cprime%3Dy_1%2Bx%2C%5Cquad%20y_1%280%29%3D0%2C%5Cquad%20y_1%5Cprime%280%29%3D0)
@@ -981,6 +1016,11 @@ plt.show()
 ```
 
 ### Lab 4 — Exercise 3(b): Nonlinear Shooting과 Newton–Raphson
+
+> **Lab 4 · Exercise 3(b) — Problem**
+>
+> Solve a non-linear BVP by implementing the Nonlinear Shooting Method paired with a Newton-Raphson root-finding iteration.
+{: .prompt-tip }
 
 비선형 예제로 `y′′=2y³`, `y(0)=0.5`, `y(1)=1`을 사용했다. 미지의 초기 기울기 `s=y′(0)`를 Newton 반복으로 찾아 오른쪽 경계잔차 `F(s)=y(1;s)−1`을 0으로 만든다. 비교할 정확해는 `y(x)=1/(2−x)`이므로 정확한 초기 기울기는 `0.25`다. 이 단계에서는 `F′(s)`를 중앙차분으로 근사했다.
 
@@ -1104,6 +1144,11 @@ plt.show()
 ```
 
 ### Lab 4 — Exercise 3(c): Variational Equation과 정확한 Newton 도함수
+
+> **Lab 4 · Exercise 3(c) — Problem**
+>
+> Formulate and simultaneously integrate the sensitivity function (variational equation) alongside the parameterized IVP to compute the exact derivative needed for the Newton-Raphson update steps.
+{: .prompt-tip }
 
 3(b)와 동일한 BVP에서 민감도 `z(x;s)=∂y(x;s)/∂s`를 정의한다. 원래 방정식을 `s`에 대해 미분하면 **변분방정식**이 얻어진다. 네 개의 1차 ODE를 함께 적분해 `F′(s)=z(1;s)`를 구하므로 Newton 업데이트에서는 유한차분을 사용하지 않는다.
 
@@ -2169,7 +2214,5 @@ print('Thomas check passed:', y)
 - Raj Dhara, *Numerical Method Lab: ODE Numerical Schemes & Convergence*, Exercise 5.
 - Raj Dhara, *Numerical Method Lab 4: Group-2 — ODE Numerical Schemes & Convergence*, 2026-10-28, Exercises 1–3.
 - `LAB_4.ipynb`, Exercises 1(a)–3(c): numerical experiments and generated figures.
-
-
 ---
 
