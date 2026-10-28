@@ -1,5 +1,5 @@
 ---
-title: "Numerical Methods : Euler Schemes, Consistency and Convergence"
+title: "Euler Schemes, Consistency and Convergence"
 date: 2026-10-27 18:10:00 +0100
 categories:
   - Numerical Analysis
@@ -724,7 +724,12 @@ Amplification factor: 2.7138
 
 ### 8.8 Forward and Backward Difference Operators
 
-격자 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20t_n%3Dnh)에서 도함수의 전진차분과 후진차분을 각각 정의하면
+
+격자
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20t_n%3Dnh)
+
+에서 도함수의 전진차분과 후진차분을 각각 정의하면
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cdelta_%2By%28t_n%29%3D%5Cfrac%7By%28t_n%2Bh%29-y%28t_n%29%7Dh)
 
@@ -742,9 +747,34 @@ Amplification factor: 2.7138
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cdelta_-y%28t_n%29%3Dy%27%28t_n%29-%5Cfrac%20h2%20y%27%27%28t_n%29%2BO%28h%5E2%29)
 
-를 얻는다. ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3Df%28t%2Cy%29)에서 남은 고차항을 버리면 **Forward Euler** ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_n%2Cy_n%29)와 **Backward Euler** ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_%7Bn%2B1%7D%2Cy_%7Bn%2B1%7D%29)가 나온다.
 
-전진형은 다음 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D)을 바로 계산하는 explicit 방법이고, 후진형은 미지수 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D)가 우변에도 등장하므로 일반적으로 각 단계에서 비선형 방정식을 풀어야 하는 implicit 방법이다.
+를 얻는다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3Df%28t%2Cy%29)
+
+
+에서 남은 고차항을 버리면 **Forward Euler**
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_n%2Cy_n%29)
+
+
+와 **Backward Euler**
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_%7Bn%2B1%7D%2Cy_%7Bn%2B1%7D%29)
+
+가 나온다.
+
+
+전진형은 다음
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D)
+
+
+을 바로 계산하는 explicit 방법이고, 후진형은 미지수
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D)
+
+가 우변에도 등장하므로 일반적으로 각 단계에서 비선형 방정식을 풀어야 하는 implicit 방법이다.
 
 ### 8.9 Local Truncation Error: Two Normalizations
 
@@ -756,31 +786,91 @@ Amplification factor: 2.7138
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Ctau_%7Bn%2B1%7D%3D%5Cfrac%20h2%20y%27%27%28t_n%29%2B%5Cfrac%7Bh%5E2%7D%7B6%7Dy%5E%7B%283%29%7D%28%5Cxi_n%29%3DO%28h%29)
 
-이므로 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0)에서 0으로 가서 consistent이다. 한편 **한 단계 업데이트의 결손량**을
+
+이므로
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0)
+
+에서 0으로 가서 consistent이다. 한편 **한 단계 업데이트의 결손량**을
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20d_%7Bn%2B1%7D%3Dy%28t_%7Bn%2B1%7D%29-y%28t_n%29-hf%28t_n%2Cy%28t_n%29%29)
 
-이라고 정의하면 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20d_%7Bn%2B1%7D%3Dh%5Ctau_%7Bn%2B1%7D%3DO%28h%5E2%29)이다. 따라서 'Euler LTE는 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20O%28h%29)'와 '한 단계 오차는 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20O%28h%5E2%29)'라는 진술은 **오차를 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)로 나누는지에 따라 동시에 맞을 수 있다**. Lab 코드에서 사용한 LTE 정의를 확인해야 비교가 가능하다.
 
-**주의 — Lecture의 인쇄식:** 원본은 Taylor 전개의 평가점과 잔여항 차수 표기가 혼동될 수 있으므로, 위 유도는 **정확해를 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20t_n)에서 전개하는 표준 표기**로 명시했다. 강의의 결론인 consistency와 1차 수렴성은 유지된다.
+이라고 정의하면
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20d_%7Bn%2B1%7D%3Dh%5Ctau_%7Bn%2B1%7D%3DO%28h%5E2%29)
+
+
+이다. 따라서 'Euler LTE는
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20O%28h%29)
+
+
+'와 '한 단계 오차는
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20O%28h%5E2%29)
+
+
+'라는 진술은 **오차를
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)
+
+로 나누는지에 따라 동시에 맞을 수 있다**. Lab 코드에서 사용한 LTE 정의를 확인해야 비교가 가능하다.
+
+
+**주의 — Lecture의 인쇄식:** 원본은 Taylor 전개의 평가점과 잔여항 차수 표기가 혼동될 수 있으므로, 위 유도는 **정확해를
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20t_n)
+
+에서 전개하는 표준 표기**로 명시했다. 강의의 결론인 consistency와 1차 수렴성은 유지된다.
 
 ### 8.10 Global Convergence: Full Induction Argument
 
-정확해와 수치해의 차이를 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_n%3Dy%28t_n%29-y_n)로 정의한다. 초기값을 정확히 지정했다고 가정하여 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_0%3D0)이다. ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cmax_%7B0%5Cle%20t%5Cle%20T%7D%7Cy%27%27%28t%29%7C%3DM_2)라고 하자.
+
+정확해와 수치해의 차이를
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_n%3Dy%28t_n%29-y_n)
+
+
+로 정의한다. 초기값을 정확히 지정했다고 가정하여
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_0%3D0)
+
+
+이다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cmax_%7B0%5Cle%20t%5Cle%20T%7D%7Cy%27%27%28t%29%7C%3DM_2)
+
+라고 하자.
 
 Taylor 전개에 의해
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t_%7Bn%2B1%7D%29%3Dy%28t_n%29%2Bh%20f%28t_n%2Cy%28t_n%29%29%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%27%27%28%5Cxi_n%29)
 
-이고, Euler 수치식 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_n%2Cy_n%29)를 빼면
+
+이고, Euler 수치식
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_n%2Cy_n%29)
+
+를 빼면
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_%7Bn%2B1%7D%3De_n%2Bh%5C%7Bf%28t_n%2Cy%28t_n%29%29-f%28t_n%2Cy_n%29%5C%7D%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%27%27%28%5Cxi_n%29)
 
-이다. ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f)가 상태변수에 대해 Lipschitz이면
+
+이다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f)
+
+가 상태변수에 대해 Lipschitz이면
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_%7Bn%2B1%7D%7C%5Cle%281%2BLh%29%7Ce_n%7C%2B%5Cfrac%7BM_2h%5E2%7D%7B2%7D)
 
-이다. ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Ctau%3DM_2h%5E2%2F2)라고 놓고 **귀납적 반복**을 수행하면
+
+이다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Ctau%3DM_2h%5E2%2F2)
+
+라고 놓고 **귀납적 반복**을 수행하면
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%5Ctau%5Csum_%7Bj%3D0%7D%5E%7Bn-1%7D%281%2BLh%29%5Ej)
 
@@ -790,15 +880,40 @@ Taylor 전개에 의해
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%3D%5Cfrac%7BM_2%7D%7B2L%7D%5Cbig%28%281%2BLh%29%5En-1%5Cbig%29h)
 
-이다. ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201%2BLh%5Cle%20e%5E%7BLh%7D)이므로 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20nh%5Cle%20T)일 때
+
+이다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201%2BLh%5Cle%20e%5E%7BLh%7D)
+
+
+이므로
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20nh%5Cle%20T)
+
+일 때
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%5Cfrac%7BM_2%7D%7B2L%7D%28e%5E%7BLT%7D-1%29h%3DCh)
 
-를 얻는다. ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20L%3D0)인 경우에는 따로 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%20%28M_2T%2F2%29h)로 처리한다. **따라서 Forward Euler는 고정 구간에서 1차 수렴한다.** 강의 Theorem 2.3은 Forward·Backward Euler 두 방법 모두 1차 수렴한다고 기술하고, 증명은 Forward Euler에 한정해 제시한다. 여기서도 그 범위를 구분했다.
+
+를 얻는다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20L%3D0)
+
+
+인 경우에는 따로
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%20%28M_2T%2F2%29h)
+
+로 처리한다. **따라서 Forward Euler는 고정 구간에서 1차 수렴한다.** 강의 Theorem 2.3은 Forward·Backward Euler 두 방법 모두 1차 수렴한다고 기술하고, 증명은 Forward Euler에 한정해 제시한다. 여기서도 그 범위를 구분했다.
 
 ### 8.11 Estimating Convergence Order from a Table
 
-전역오차가 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20E%28h%29%5Capprox%20Ch%5Ep)이면
+
+전역오차가
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20E%28h%29%5Capprox%20Ch%5Ep)
+
+이면
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cfrac%7BE%282h%29%7D%7BE%28h%29%7D%5Capprox2%5Ep)
 
@@ -806,7 +921,37 @@ Taylor 전개에 의해
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox%5Cfrac%7B%5Clog%28E%282h%29%2FE%28h%29%29%7D%7B%5Clog%202%7D)
 
-를 얻는다. 예를 들어 표를 만들 때 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)를 절반으로 줄였더니 오차도 절반으로 줄어들면 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox1), 오차가 네 배 줄면 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox2)라고 읽는다. Notebook의 회귀 기울기는 여러 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h) 값에 대해 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%20E%28h%29)를 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%20h)에 선형회귀한 것으로, 같은 원리다.
+
+를 얻는다. 예를 들어 표를 만들 때
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)
+
+
+를 절반으로 줄였더니 오차도 절반으로 줄어들면
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox1)
+
+
+, 오차가 네 배 줄면
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox2)
+
+
+라고 읽는다. Notebook의 회귀 기울기는 여러
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)
+
+
+값에 대해
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%20E%28h%29)
+
+
+를
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%20h)
+
+에 선형회귀한 것으로, 같은 원리다.
 
 ### 8.12 Leap-Frog: Characteristic Equation and Parasitic Root
 
@@ -814,11 +959,21 @@ Taylor 전개에 의해
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_%7Bn-1%7D-2hy_n%2C%5Cqquad%20y_0%3D1%2C%5C%20y_1%3D1)
 
-이는 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D-y)를 중앙차분으로 근사한 것이다. 정확해를 넣어 계산한 미분형 LTE는
+
+이는
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D-y)
+
+를 중앙차분으로 근사한 것이다. 정확해를 넣어 계산한 미분형 LTE는
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cfrac%7By%28t_%7Bn%2B1%7D%29-y%28t_%7Bn-1%7D%29%7D%7B2h%7D%2By%28t_n%29%3D%5Cfrac%7Bh%5E2%7D%7B6%7Dy%5E%7B%283%29%7D%28t_n%29%2BO%28h%5E4%29)
 
-이므로 일관성이 있다. 그러나 일반해 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3DC%20r%5En)을 대입하면
+
+이므로 일관성이 있다. 그러나 일반해
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3DC%20r%5En)
+
+을 대입하면
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r%5E%7Bn%2B1%7D%3Dr%5E%7Bn-1%7D-2hr%5En)
 
@@ -826,7 +981,22 @@ Taylor 전개에 의해
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_%5Cpm%3D-h%5Cpm%5Csqrt%7B1%2Bh%5E2%7D)
 
-이고, ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%3E0)에서 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Cr_-%7C%3Dh%2B%5Csqrt%7B1%2Bh%5E2%7D%3E1)이다. 따라서 고정된 시간 간격으로 무한히 오래 전진하면 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_-%5En) 성분이 증폭되는 **parasitic mode**가 존재한다.
+
+이고,
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%3E0)
+
+
+에서
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Cr_-%7C%3Dh%2B%5Csqrt%7B1%2Bh%5E2%7D%3E1)
+
+
+이다. 따라서 고정된 시간 간격으로 무한히 오래 전진하면
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_-%5En)
+
+성분이 증폭되는 **parasitic mode**가 존재한다.
 
 일반해는
 
@@ -840,11 +1010,61 @@ Taylor 전개에 의해
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20B%3D%5Cfrac%7Br_%2B-1%7D%7Br_%2B-r_-%7D%2C%5Cqquad%20A%3D1-B)
 
-이다. ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_%2B%3D1-h%2BO%28h%5E2%29)이므로 이 시작값에서는 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20B%3DO%28h%29)로 작지만 0은 아니다. **중요한 구분:** 유한한 고정 시간 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20T%3D1)에서 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0)인 수렴 문제와, ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)를 고정하고 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20T%5Cto%5Cinfty)인 장기 안정성 문제는 다르다. ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Cr_-%7C%3E1)만 보고 '모든 고정시간에서 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0) 수렴하지 않는다'라고 결론 내릴 수는 없다. 원본 강의는 이 차이를 엄밀히 구별하지 않은 문장을 포함하고, Lab 2의 긴 시간 실험은 장기 불안정성을 보여주는 자료로 해석하는 것이 정확하다.
+
+이다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_%2B%3D1-h%2BO%28h%5E2%29)
+
+
+이므로 이 시작값에서는
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20B%3DO%28h%29)
+
+
+로 작지만 0은 아니다. **중요한 구분:** 유한한 고정 시간
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20T%3D1)
+
+
+에서
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0)
+
+
+인 수렴 문제와,
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)
+
+
+를 고정하고
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20T%5Cto%5Cinfty)
+
+
+인 장기 안정성 문제는 다르다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Cr_-%7C%3E1)
+
+
+만 보고 '모든 고정시간에서
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0)
+
+수렴하지 않는다'라고 결론 내릴 수는 없다. 원본 강의는 이 차이를 엄밀히 구별하지 않은 문장을 포함하고, Lab 2의 긴 시간 실험은 장기 불안정성을 보여주는 자료로 해석하는 것이 정확하다.
 
 ### 8.13 Explicit Euler Worked Example: Negative Growth
 
-Lab Handout Exercise 1은 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D-4y%2C%5C%20y%280%29%3D3%2C%5C%20t%5Cin%5B0%2C1)]]이다. ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%3D1%2Fn)이면
+
+Lab Handout Exercise 1은
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D-4y%2C%5C%20y%280%29%3D3%2C%5C%20t%5Cin%5B0%2C1)
+
+
+]]이다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%3D1%2Fn)
+
+이면
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bj%2B1%7D%3Dy_j%2Bh%28-4y_j%29%3D%281-4%2Fn%29y_j)
 
@@ -852,15 +1072,40 @@ Lab Handout Exercise 1은 ![Equation](https://latex.codecogs.com/svg.image?%5Cco
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3D3%281-4%2Fn%29%5En)
 
-이다. 정확해는 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t%29%3D3e%5E%7B-4t%7D)이며
+
+이다. 정확해는
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t%29%3D3e%5E%7B-4t%7D)
+
+이며
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clim_%7Bn%5Cto%5Cinfty%7D3%281-4%2Fn%29%5En%3D3e%5E%7B-4%7D%3Dy%281%29)
 
-이다. ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n)이 작은 경우 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201-4%2Fn)이 음수이거나 0일 수 있지만, 극한 계산은 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%5Cto%5Cinfty)에서 수행한다.
+
+이다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n)
+
+
+이 작은 경우
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201-4%2Fn)
+
+
+이 음수이거나 0일 수 있지만, 극한 계산은
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%5Cto%5Cinfty)
+
+에서 수행한다.
 
 ### 8.14 Backward Euler Worked Example: Positive Growth
 
-Lab Handout Exercise 3은 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D5y%2C%5C%20y%280%29%3D2)이다. 후진 Euler는
+
+Lab Handout Exercise 3은
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D5y%2C%5C%20y%280%29%3D2)
+
+이다. 후진 Euler는
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bj%2B1%7D%3Dy_j%2B5hy_%7Bj%2B1%7D)
 
@@ -868,13 +1113,38 @@ Lab Handout Exercise 3은 ![Equation](https://latex.codecogs.com/svg.image?%5Cco
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%20y_n%3D2%281-5%2Fn%29%5E%7B-n%7D)
 
-을 준다(단, ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201-5%2Fn%5Cne0)). 정확해 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%281%29%3D2e%5E5)와 비교하면
+
+을 준다(단,
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201-5%2Fn%5Cne0)
+
+
+). 정확해
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%281%29%3D2e%5E5)
+
+와 비교하면
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%5Cleft%28%281-5%2Fn%29%5E%7B-n%7D%5Cright%29%3D-n%5Clog%281-5%2Fn%29)
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%3D-n%5Cleft%28-%5Cfrac5n-%5Cfrac%7B25%7D%7B2n%5E2%7D%2BO%28n%5E%7B-3%7D%29%5Cright%29%3D5%2B%5Cfrac%7B25%7D%7B2n%7D%2BO%28n%5E%7B-2%7D%29)
 
-이므로 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%5Cto%5Cinfty)일 때 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%5Cto2e%5E5)이다. 로그 전개를 쓰려면 충분히 큰 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%3E5)를 가정한다.
+
+이므로
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%5Cto%5Cinfty)
+
+
+일 때
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%5Cto2e%5E5)
+
+
+이다. 로그 전개를 쓰려면 충분히 큰
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%3E5)
+
+를 가정한다.
 
 ### 8.15 Full Lecture Checklist — Euler Section
 
@@ -916,6 +1186,8 @@ Lab Handout Exercise 3은 ![Equation](https://latex.codecogs.com/svg.image?%5Cco
 
 단, **n=5이면 첫 암시적 방정식을 유일하게 풀 수 없다.** `n<5`에서는 단계 계수가 음수일 수도 있으며, 극한을 증명할 때에는 `n>5`의 충분히 작은 스텝 크기를 고려한다. 이 예외를 무시한 무조건적인 닫힌형 공식은 부정확하다.
 
+
+
 **Consistency는 국소 오차가 사라진다는 조건이고, Convergence는 실제 해에 접근한다는 조건**이다. Leap-Frog는 작은 LTE만으로 충분하지 않다는 사실을 보여 준다. Long-time Instability의 원인은 Post 4의 Root Condition과 연결해 다시 정리한다.
 
 ## References
@@ -925,4 +1197,5 @@ Lab Handout Exercise 3은 ![Equation](https://latex.codecogs.com/svg.image?%5Cco
 - `LAB_1.ipynb`, Exercises 1–3 (Python implementation and stored results).
 
 
+---
 
