@@ -153,7 +153,7 @@ Stiff 문제에서는 매우 빠르게 감소하는 모드 때문에 Explicit �
 
 ### Lab 3 Connection — Runge-Kutta for ODE Systems
 
-`LAB_3.ipynb`에서는 벡터 RK4로 강제진동계 및 결합된 스프링-질량계를 계산한다. 이들은 Linear Multistep Method를 구현한 실습이 아니라 **one-step Runge–Kutta를 연립 ODE에 적용하는 실습**이므로 자세한 구현과 그래프는 앞선 Taylor and Runge-Kutta Methods 글에 배치했다. 이 글에서는 반복적으로 사용되는 안정성 및 수렴차수 개념과의 연결만 정리한다.
+`LAB_3.ipynb`에서는 벡터 RK4로 강제진동계 및 결합된 스프링-질량계를 계산한다. 이들은 **one-step Runge–Kutta를 연립 ODE에 적용하는 실습**이므로 자세한 구현과 그래프는 앞선 Taylor and Runge-Kutta Methods 글에 배치했다. 이 글에서는 반복적으로 사용되는 안정성 및 수렴차수 개념과의 연결만 정리한다.
 
 
 
@@ -593,7 +593,7 @@ print(f"\nStiffness ratio: {ratio:.2f}")
 
 *Figure 7. AB2의 시간 간격에 따른 빠른 성분 안정성 비교.*
 
-정확해 `y₂(t)=exp(−1000t)`는 감소하지만, 큰 시간 간격에서는 수치적인 기생 모드가 성장한다. 이는 **정확도 문제뿐 아니라 절대안정성 제약** 때문이다.
+정확해 `y₂(t)=exp(−1000t)`는 감소하지만, 큰 시간 간격에서는 수치적인 기생 모드가 성장한다. 이는 절대안정성 제약** 때문이다.
 
 **Python 구현**
 
@@ -1308,7 +1308,7 @@ plt.grid(True)
 plt.show()
 ```
 
-### Lab 4 — 실험 결과에서 확인한 핵심
+### Lab 4 — 실험 결과에서 확인한 점
 
 - **Adams Methods:** 같은 IVP에서 AB4, AM4 및 PECE의 동작을 비교했고, 정규화한 LTE의 수렴차수가 4에 가까워지는지 확인했다.
 - **Stiffness:** 강성비 `1000`인 시스템에서 AB2는 큰 스텝으로 불안정해졌지만 BDF-1과 BDF-2는 강한 감쇠 모드를 안정적으로 처리했다. **안정성과 정확성은 별도로 검증**해야 한다.
@@ -1395,8 +1395,6 @@ LMM의 특성다항식은
 이다. 모든 적절한 매끄러운 해에 대해 consistency를 얻기 위한 조건은
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20C_0%3DC_1%3D0)
-
-즉,
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Crho%281%29%3D0%2C%5Cqquad%5Crho%27%281%29%3D%5Csigma%281%29)
 
@@ -1661,8 +1659,7 @@ BDF는 새 시점의 도함수
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7C1%2Bz%7C%3C1)
 
-
-, 즉
+,
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20-2%3Cz%3C0)
 
@@ -1789,7 +1786,7 @@ Lab Handout Exercise 5는
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clim_%7Bz%5Cto-%5Cinfty%7D%7CR%28z%29%7C%3D0)
 
-을 요구한다. 강의의 결론은:
+을 요구한다. 결론은:
 
 - Forward Euler: A-stable이 아니므로 스텝 크기 제한이 있다.
 - Backward Euler(BDF1): A-stable이면서 L-stable이다.
@@ -1800,7 +1797,7 @@ Lab Handout Exercise 5는
 
 이므로 L-stable은 아니다.
 
-- BDF2: 강의에서 L-stable 방법의 예로 제시한다. 단, 다단계 방법에서는 특정 모드 증폭을 **단일한 스칼라
+- BDF2: L-stable 방법의 예로 제시한다. 단, 다단계 방법에서는 특정 모드 증폭을 **단일한 스칼라
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20R%28z%29)
 
@@ -1849,7 +1846,7 @@ Lab Handout Exercise 5는
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_2%28b%29%5Cne0)
 
-). 즉, 미지의 초기 기울기를 경계조건에서 결정해 BVP를 IVP로 푸는 방법이다.
+). 미지의 초기 기울기를 경계조건에서 결정해 BVP를 IVP로 푸는 방법이다.
 
 ### 6.2 Nonlinear Shooting and the Variational Equation
 
@@ -2138,7 +2135,7 @@ print('Thomas check passed:', y)
 
 ![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20R%28z%29%3D%5Cfrac%7B1%2Bz%2F2%7D%7B1-z%2F2%7D)
 
-`Re(z)<0`이면 `|1+z/2| < |1−z/2|`이므로 `|R(z)|<1`이고, 따라서 A-stable이다. 그러나 음의 실수축 `z→−∞`에서 `R(z)→−1`이라 감쇠가 강한 모드가 진동하며 사라지지 않는다. 즉 **A-stable이지만 L-stable은 아니다.**
+`Re(z)<0`이면 `|1+z/2| < |1−z/2|`이므로 `|R(z)|<1`이고, 따라서 A-stable이다. 그러나 음의 실수축 `z→−∞`에서 `R(z)→−1`이라 감쇠가 강한 모드가 진동하며 사라지지 않는다.
 
 ### Crank–Nicolson Lab Exercise 5: Closed Form and Limit
 
@@ -2163,7 +2160,7 @@ print('Thomas check passed:', y)
 강의 p.13–14의 Dahlquist Equivalence, First Barrier, Second Barrier는 **정리의 진술이 제시된 부분**이며 본문에 일반적인 완전 증명이 제공되지는 않는다. 이 블로그의 특정 방법에 대한 특성다항식 대입과 root check는 **추가 검산**이고, 그 자체로 Dahlquist 장벽정리 전체를 증명하지는 않는다.
 
 
-다단계법의 정확도를 평가할 때는 국소 절단오차뿐 아니라 **Zero-Stability와 Absolute Stability를 구분**해야 한다. Crank–Nicolson은 2차 정확도와 A-Stability를 얻지만, 매우 빠른 감쇠 모드를 강하게 없애는 L-Stability는 갖지 않는다.
+다단계법의 정확도를 평가할 때는 국소 절단오차와 **Zero-Stability와 Absolute Stability를 구분**해야 한다. Crank–Nicolson은 2차 정확도와 A-Stability를 얻지만, 매우 빠른 감쇠 모드를 강하게 없애는 L-Stability는 갖지 않는다.
 
 ## References
 
