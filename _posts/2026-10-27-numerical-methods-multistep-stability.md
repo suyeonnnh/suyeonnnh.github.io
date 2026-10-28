@@ -14,7 +14,7 @@ math: false
 
 ## Introduction
 
-이번 글에서는 이전 값을 여러 개 사용하는 Linear Multistep Methods를 정리하고, Consistency와 Zero-Stability가 수렴에 함께 필요하다는 것을 확인한다. `Lec-2_3_scheme.pdf`의 10–11쪽과 `Lec-4_scheme.pdf`의 10–14쪽을 연결하고, Lab Handout Exercise 5의 Crank–Nicolson 스킴을 안정성 함수로 해석한다.
+이번 글에서는 이전 값을 여러 개 사용하는 Linear Multistep Methods를 정리하고, Consistency와 Zero-Stability가 수렴에 함께 필요하다는 것을 확인한다. 또한 Lab 4의 Adams, Stiffness, Shooting 실습을 코드와 결과 그래프로 검증한다. `Lec-2_3_scheme.pdf`의 10–11쪽과 `Lec-4_scheme.pdf`의 10–14쪽을 연결하고, Lab Handout Exercise 5의 Crank–Nicolson 스킴을 안정성 함수로 해석한다.
 
 ## 1. Linear Multistep Methods
 
@@ -119,7 +119,7 @@ plt.show()
 
 ## 4. Crank-Nicolson / Trapezoidal Scheme — Lab Handout Exercise 5
 
-### 9.5 Lab Handout Exercise 5 — Crank–Nicolson / Trapezoidal Scheme
+### Lab Handout Exercise 5 — Crank–Nicolson / Trapezoidal Scheme
 
 마지막 문제는 `y'=λy`, `y(0)=y₀`, 최종시간 `T`, 간격 `h=T/n`이다. 양 끝 시점의 변화율을 평균해 업데이트한다.
 
@@ -144,7 +144,7 @@ Stiff 문제에서는 매우 빠르게 감소하는 모드 때문에 Explicit �
 
 ## 6. Further Topics — Boundary Value Problems
 
-`Lec-4_scheme.pdf`의 15–16쪽에서는 Boundary Value Problem, Shooting Method, Finite Difference Method 및 삼대각행렬을 푸는 Thomas Algorithm을 소개한다. 이 내용은 현재 Lab 1의 IVP 문제와는 별도 주제이므로 다음 글에서 구체적으로 다룬다.
+`Lec-4_scheme.pdf`의 15–16쪽에서는 Boundary Value Problem, Shooting Method, Finite Difference Method 및 삼대각행렬을 푸는 Thomas Algorithm을 소개한다. 이번 글의 Section 6에서 BVP와 Shooting, FDM 및 Thomas Algorithm을 상세히 정리하고, 아래 Lab 4 실습에서 Shooting을 구현한다.
 
 
 ### Lab 2 Connection — Leap-Frog Stability
@@ -155,6 +155,1164 @@ Stiff 문제에서는 매우 빠르게 감소하는 모드 때문에 Explicit �
 
 `LAB_3.ipynb`에서는 벡터 RK4로 강제진동계 및 결합된 스프링-질량계를 계산한다. 이들은 Linear Multistep Method를 구현한 실습이 아니라 **one-step Runge–Kutta를 연립 ODE에 적용하는 실습**이므로 자세한 구현과 그래프는 앞선 Taylor and Runge-Kutta Methods 글에 배치했다. 이 글에서는 반복적으로 사용되는 안정성 및 수렴차수 개념과의 연결만 정리한다.
 
+
+
+## Lab 4 — Computational Experiments: Multistep Methods, Stiffness, and Shooting
+
+이번 실습에서는 앞에서 정리한 선형 다단계법, 강성 문제의 절대안정성, 경계값 문제의 Shooting Method를 실제 수치 계산으로 연결한다. 기본 공식은 Lecture 2–3과 Lecture 4를 따르며, **Exercise 1은 강의에 주어진 IVP**, Exercise 2·3은 **Lab 4 원문에 구체적인 방정식과 경계조건이 없어 검증 가능한 예제를 선정**했다. 그래프와 출력값은 `LAB_4.ipynb`의 각 코드 셀에서 생성했다.
+
+### Lab 4 — Exercise 1(a): AB4와 AM4 구현
+
+Lecture 2–3의 예제 `y'(t)=t-y(t)`, `y(0)=1`, `0 ≤ t ≤ 1`, `h=0.2`를 사용한다. 정확해는 `y(t)=t-1+2exp(-t)`이다. AB4는 이전 네 도함숫값만 사용하는 explicit 방법이며, AM4는 새 시점 도함수를 포함하는 implicit 방법이다. 시작값 `y₁,y₂,y₃`은 RK4로 계산했다. 4차 AM 공식은 **3-step, order-4** 방법이라는 점에서 AB4의 4-step과 구분된다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%5E%7BAB4%7D%3Dy_n%2B%5Cfrac%7Bh%7D%7B24%7D%2855f_n-59f_%7Bn-1%7D%2B37f_%7Bn-2%7D-9f_%7Bn-3%7D%29)
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%5E%7BAM4%7D%3Dy_n%2B%5Cfrac%7Bh%7D%7B24%7D%289f_%7Bn%2B1%7D%2B19f_n-5f_%7Bn-1%7D%2Bf_%7Bn-2%7D%29)
+
+![Figure 3. AB4와 AM4의 수치해 및 정확해 비교.](/assets/images/ode_lab4_1a_1.png)
+
+*Figure 3. AB4와 AM4의 수치해 및 정확해 비교.*
+
+**Python 구현**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import root_scalar
+
+# IVP from Lecture 2_3, page 2
+# y' = t - y, y(0) = 1, 0 <= t <= 1, h = 0.2
+
+def f(t, y):
+    return t - y
+
+def exact(t):
+    return t - 1 + 2 * np.exp(-t)
+
+t0, T = 0.0, 1.0
+y0 = 1.0
+h = 0.2
+
+N = int(round((T - t0) / h))
+t = np.linspace(t0, T, N + 1)
+
+# RK4 starting method
+def rk4_step(t, y, h):
+    k1 = f(t, y)
+    k2 = f(t + h/2, y + h*k1/2)
+    k3 = f(t + h/2, y + h*k2/2)
+    k4 = f(t + h, y + h*k3)
+    return y + h*(k1 + 2*k2 + 2*k3 + k4)/6
+
+y_ab = np.zeros(N + 1)
+y_am = np.zeros(N + 1)
+
+y_ab[0] = y_am[0] = y0
+
+# Compute y1, y2, y3 using RK4
+for n in range(3):
+    y_ab[n+1] = rk4_step(t[n], y_ab[n], h)
+    y_am[n+1] = y_ab[n+1]
+
+# Adams-Bashforth 4-step (explicit)
+for n in range(3, N):
+    y_ab[n+1] = y_ab[n] + h/24 * (
+        55*f(t[n], y_ab[n])
+        - 59*f(t[n-1], y_ab[n-1])
+        + 37*f(t[n-2], y_ab[n-2])
+        - 9*f(t[n-3], y_ab[n-3])
+    )
+
+# Adams-Moulton, fourth-order (implicit)
+for n in range(3, N):
+    known = y_am[n] + h/24 * (
+        19*f(t[n], y_am[n])
+        - 5*f(t[n-1], y_am[n-1])
+        + f(t[n-2], y_am[n-2])
+    )
+
+    def residual(z):
+        return z - known - 9*h/24*f(t[n+1], z)
+
+    sol = root_scalar(
+        residual,
+        bracket=[-10, 10],
+        method="brentq"
+    )
+
+    y_am[n+1] = sol.root
+
+# Exact solution and errors
+y_exact = exact(t)
+
+print(" t       Exact        AB4          AM4       AB Error    AM Error")
+for i in range(N + 1):
+    print(
+        f"{t[i]:.1f}   {y_exact[i]:.8f}   "
+        f"{y_ab[i]:.8f}   {y_am[i]:.8f}   "
+        f"{abs(y_ab[i]-y_exact[i]):.2e}   "
+        f"{abs(y_am[i]-y_exact[i]):.2e}"
+    )
+
+print("\nMaximum errors:")
+print(f"AB4: {np.max(np.abs(y_ab - y_exact)):.6e}")
+print(f"AM4: {np.max(np.abs(y_am - y_exact)):.6e}")
+
+# Plot numerical and exact solutions
+plt.figure(figsize=(9, 5))
+plt.plot(t, y_exact, "k-", label="Exact solution")
+plt.plot(t, y_ab, "o--", label="Adams-Bashforth 4")
+plt.plot(t, y_am, "s--", label="Adams-Moulton 4")
+
+plt.xlabel("t")
+plt.ylabel("y(t)")
+plt.title("Exercise 1(a): AB4 and AM4 Methods")
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+### Lab 4 — Exercise 1(b): 국소 절단오차와 수렴차수
+
+정확해를 차분식에 직접 대입해 `h`로 정규화한 LTE를 계산했다. 각 격자에서 최대 절댓값을 구하고 `h`를 절반으로 줄여 오차비를 비교한다. **국소 잔차의 차수**와 전체 구간에서 누적되는 **전역오차의 차수**는 개념적으로 구별해야 한다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p_%7B%5Cmathrm%7Bobs%7D%7D%3D%5Cfrac%7B%5Clog%28E%282h%29%2FE%28h%29%29%7D%7B%5Clog%202%7D%2C%5Cqquad%20E%28h%29%3D%5Cmax_n%7C%5Ctau_%7Bn%2B1%7D%28h%29%7C)
+
+AB4와 AM4의 정규화된 LTE는 이론적으로 `O(h⁴)`이며, 작은 `h`에서 오차비는 16, 관측차수는 4에 가까워져야 한다.
+
+![Figure 4. 시간 간격별 AB4·AM4 국소절단오차와 4차 기준선.](/assets/images/ode_lab4_1b_1.png)
+
+*Figure 4. 시간 간격별 AB4·AM4 국소절단오차와 4차 기준선.*
+
+**Python 구현**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# IVP from Lecture 2_3
+def f(t, y):
+    return t - y
+
+def exact(t):
+    return t - 1 + 2*np.exp(-t)
+
+# Lecture example h = 0.2, followed by grid refinement
+h_values = np.array([0.2, 0.1, 0.05, 0.025, 0.0125])
+
+ab_errors = []
+am_errors = []
+
+for h in h_values:
+    t = np.arange(0, 1 + h/2, h)
+    y = exact(t)
+    fy = f(t, y)
+
+    lte_ab = []
+    lte_am = []
+
+    for n in range(3, len(t)-1):
+
+        # AB4 local truncation error
+        ab_residual = (
+            (y[n+1] - y[n])/h
+            - (
+                55*fy[n] - 59*fy[n-1]
+                + 37*fy[n-2] - 9*fy[n-3]
+              )/24
+        )
+
+        # AM4 local truncation error
+        am_residual = (
+            (y[n+1] - y[n])/h
+            - (
+                9*fy[n+1] + 19*fy[n]
+                - 5*fy[n-1] + fy[n-2]
+              )/24
+        )
+
+        lte_ab.append(abs(ab_residual))
+        lte_am.append(abs(am_residual))
+
+    ab_errors.append(max(lte_ab))
+    am_errors.append(max(lte_am))
+
+ab_errors = np.array(ab_errors)
+am_errors = np.array(am_errors)
+
+print("h        AB4 LTE       AB Ratio   AB Order    "
+      "AM4 LTE       AM Ratio   AM Order")
+
+for i, h in enumerate(h_values):
+    if i == 0:
+        print(f"{h:<8.4f} {ab_errors[i]:.4e}   ---        ---       "
+              f"{am_errors[i]:.4e}   ---        ---")
+    else:
+        r_ab = ab_errors[i-1] / ab_errors[i]
+        r_am = am_errors[i-1] / am_errors[i]
+        p_ab = np.log2(r_ab)
+        p_am = np.log2(r_am)
+
+        print(f"{h:<8.4f} {ab_errors[i]:.4e}   "
+              f"{r_ab:7.3f}    {p_ab:7.3f}    "
+              f"{am_errors[i]:.4e}   "
+              f"{r_am:7.3f}    {p_am:7.3f}")
+
+plt.figure(figsize=(8,5))
+plt.loglog(h_values, ab_errors, 'o-', label='AB4 LTE')
+plt.loglog(h_values, am_errors, 's-', label='AM4 LTE')
+plt.loglog(
+    h_values,
+    ab_errors[0]*(h_values/h_values[0])**4,
+    'k--', label='Reference: O(h^4)'
+)
+plt.xlabel('Step size h')
+plt.ylabel('Maximum absolute LTE')
+plt.title('Exercise 1(b): Local Truncation Error')
+plt.legend()
+plt.grid(True, which='both')
+plt.show()
+```
+
+### Lab 4 — Exercise 1(c): PECE Predictor–Corrector
+
+**Predict → Evaluate → Correct → Evaluate** 순서로 AB4 예측값을 만들고 AM4 공식을 한 번 적용한다. 완전한 implicit AM 해를 매 단계 구하는 것과는 다른 계산이며, 마지막 Evaluate는 보정된 새 상태의 도함수를 평가하는 단계다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%5E%7B%2A%7D%3Dy_n%2B%5Cfrac%7Bh%7D%7B24%7D%2855f_n-59f_%7Bn-1%7D%2B37f_%7Bn-2%7D-9f_%7Bn-3%7D%29)
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2B%5Cfrac%7Bh%7D%7B24%7D%289f%28t_%7Bn%2B1%7D%2Cy_%7Bn%2B1%7D%5E%7B%2A%7D%29%2B19f_n-5f_%7Bn-1%7D%2Bf_%7Bn-2%7D%29)
+
+![Figure 5. AB4, AM4 및 PECE 수치해 비교.](/assets/images/ode_lab4_1c_1.png)
+
+*Figure 5. AB4, AM4 및 PECE 수치해 비교.*
+
+![Figure 6. 각 방법의 절대오차 비교.](/assets/images/ode_lab4_1c_2.png)
+
+*Figure 6. 각 방법의 절대오차 비교.*
+
+**Python 구현**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# IVP from Lecture 2_3
+def f(t, y):
+    return t - y
+
+def exact(t):
+    return t - 1 + 2*np.exp(-t)
+
+# RK4 starting method
+def rk4_step(t, y, h):
+    k1 = f(t, y)
+    k2 = f(t + h/2, y + h*k1/2)
+    k3 = f(t + h/2, y + h*k2/2)
+    k4 = f(t + h, y + h*k3)
+    return y + h*(k1 + 2*k2 + 2*k3 + k4)/6
+
+# Initial conditions from the lecture
+t0, T = 0.0, 1.0
+y0 = 1.0
+h = 0.2
+
+N = int(round((T-t0)/h))
+t = np.linspace(t0, T, N+1)
+
+y_ab = np.zeros(N+1)
+y_am = np.zeros(N+1)
+y_pc = np.zeros(N+1)
+
+y_ab[0] = y_am[0] = y_pc[0] = y0
+
+# Starting values y1, y2, y3 using RK4
+for n in range(3):
+    y_pc[n+1] = rk4_step(t[n], y_pc[n], h)
+
+y_ab[:4] = y_pc[:4]
+y_am[:4] = y_pc[:4]
+
+for n in range(3, N):
+
+    # Adams-Bashforth 4-step
+    y_ab[n+1] = y_ab[n] + h/24 * (
+        55*f(t[n], y_ab[n])
+        -59*f(t[n-1], y_ab[n-1])
+        +37*f(t[n-2], y_ab[n-2])
+        -9*f(t[n-3], y_ab[n-3])
+    )
+
+    # Implicit Adams-Moulton (solved analytically
+    # for this particular linear IVP)
+    known = y_am[n] + h/24 * (
+        19*f(t[n], y_am[n])
+        -5*f(t[n-1], y_am[n-1])
+        +f(t[n-2], y_am[n-2])
+    )
+
+    y_am[n+1] = (
+        known + (9*h/24)*t[n+1]
+    ) / (1 + 9*h/24)
+
+    # P: Predict with AB4
+    y_predict = y_pc[n] + h/24 * (
+        55*f(t[n], y_pc[n])
+        -59*f(t[n-1], y_pc[n-1])
+        +37*f(t[n-2], y_pc[n-2])
+        -9*f(t[n-3], y_pc[n-3])
+    )
+
+    # E: Evaluate predicted derivative
+    f_predict = f(t[n+1], y_predict)
+
+    # C: Correct with AM4
+    y_correct = y_pc[n] + h/24 * (
+        9*f_predict
+        +19*f(t[n], y_pc[n])
+        -5*f(t[n-1], y_pc[n-1])
+        +f(t[n-2], y_pc[n-2])
+    )
+
+    y_pc[n+1] = y_correct
+
+    # E: Evaluate corrected derivative
+    f_correct = f(t[n+1], y_pc[n+1])
+
+# Compare results
+y_exact = exact(t)
+
+print(" t      Exact        AB4          AM4          PECE")
+for i in range(N+1):
+    print(
+        f"{t[i]:.1f}   {y_exact[i]:.8f}   "
+        f"{y_ab[i]:.8f}   {y_am[i]:.8f}   "
+        f"{y_pc[i]:.8f}"
+    )
+
+print("\nMaximum absolute errors:")
+for name, values in [
+    ("AB4", y_ab),
+    ("AM4", y_am),
+    ("PECE", y_pc)
+]:
+    error = np.max(np.abs(values-y_exact))
+    print(f"{name}: {error:.6e}")
+
+# Plot solutions
+plt.figure(figsize=(9, 5))
+plt.plot(t, y_exact, 'k-', label='Exact')
+plt.plot(t, y_ab, 'o--', label='AB4')
+plt.plot(t, y_am, 's--', label='AM4')
+plt.plot(t, y_pc, 'd--', label='PECE')
+
+plt.xlabel('t')
+plt.ylabel('y(t)')
+plt.title('Exercise 1(c): AB4-AM4 Predictor-Corrector')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot absolute errors
+plt.figure(figsize=(9, 5))
+plt.semilogy(t, np.abs(y_ab-y_exact), 'o-', label='AB4')
+plt.semilogy(t, np.abs(y_am-y_exact), 's-', label='AM4')
+plt.semilogy(t, np.abs(y_pc-y_exact), 'd-', label='PECE')
+
+plt.xlabel('t')
+plt.ylabel('Absolute error')
+plt.title('Exercise 1(c): Error Comparison')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+### Lab 4 — Exercise 2(a): Jacobian과 Stiffness Ratio
+
+Lab 4에서 특정 강성 시스템을 지정하지 않아, 느린 감쇠와 빠른 감쇠를 동시에 가진 선형 연립계를 선택했다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cmathbf%7By%7D%5Cprime%3DA%5Cmathbf%7By%7D%2C%5Cqquad%20A%3D%5Cbegin%7Bpmatrix%7D-1%260%5C%5C0%26-1000%5Cend%7Bpmatrix%7D%2C%5Cqquad%20%5Cmathbf%7By%7D%280%29%3D%5Cbegin%7Bpmatrix%7D1%5C%5C1%5Cend%7Bpmatrix%7D)
+
+Jacobian은 상수행렬 `A`이고 고유값은 `−1`, `−1000`이다. 따라서 강성비는 `S=1000`이다. 서로 다른 시간척도를 가진다는 의미이며, 이것만으로 특정 수치해법의 안정성을 대신 판단할 수는 없다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20S%3D%5Cfrac%7B%5Cmax_i%7C%5Coperatorname%7BRe%7D%28%5Clambda_i%29%7C%7D%7B%5Cmin_i%7C%5Coperatorname%7BRe%7D%28%5Clambda_i%29%7C%7D%3D%5Cfrac%7B1000%7D%7B1%7D%3D1000)
+
+**Python 구현**
+
+```python
+import numpy as np
+
+# Stiff ODE system: y' = A y
+# Example selected for Exercise 2(a)-(c)
+A = np.array([
+    [-1.0, 0.0],
+    [0.0, -1000.0]
+])
+
+y0 = np.array([1.0, 1.0])
+
+def f(t, y):
+    return A @ y
+
+# Jacobian of the system
+def jacobian(t, y):
+    return A
+
+# Calculate stiffness ratio using Jacobian eigenvalues
+def stiffness_ratio(J):
+    eigenvalues = np.linalg.eigvals(J)
+
+    real_parts = np.abs(np.real(eigenvalues))
+
+    if np.any(real_parts == 0):
+        return np.inf, eigenvalues
+
+    ratio = np.max(real_parts) / np.min(real_parts)
+
+    return ratio, eigenvalues
+
+J = jacobian(0.0, y0)
+
+ratio, eigenvalues = stiffness_ratio(J)
+
+print("Jacobian matrix:")
+print(J)
+
+print("\nEigenvalues:")
+print(eigenvalues)
+
+print(f"\nStiffness ratio: {ratio:.2f}")
+```
+
+### Lab 4 — Exercise 2(b): Explicit AB2의 시간 간격 제한
+
+같은 시스템에 AB2를 적용하고 `h=0.0005`와 `h=0.01`을 비교했다. 빠른 성분의 고유값이 `−1000`이고, AB2의 음의 실수축 안정구간은 `−1 ≤ hλ ≤ 0`이므로 안정성 경계는 `h=0.001`이다. 따라서 `h=0.01`은 안정영역 밖이다. 초기 한 단계는 강의에서 소개한 RK4로 시작한다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cmathbf%7By%7D_%7Bn%2B1%7D%3D%5Cmathbf%7By%7D_n%2B%5Cfrac%20h2%283A%5Cmathbf%7By%7D_n-A%5Cmathbf%7By%7D_%7Bn-1%7D%29)
+
+![Figure 7. AB2의 시간 간격에 따른 빠른 성분 안정성 비교.](/assets/images/ode_lab4_2b_1.png)
+
+*Figure 7. AB2의 시간 간격에 따른 빠른 성분 안정성 비교.*
+
+정확해 `y₂(t)=exp(−1000t)`는 감소하지만, 큰 시간 간격에서는 수치적인 기생 모드가 성장한다. 이는 **정확도 문제뿐 아니라 절대안정성 제약** 때문이다.
+
+**Python 구현**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Same stiff system as Exercise 2(a)
+A = np.array([[-1.0, 0.0],
+              [0.0, -1000.0]])
+y0 = np.array([1.0, 1.0])
+
+def f(t, y):
+    return A @ y
+
+def exact(t):
+    return np.column_stack((np.exp(-t), np.exp(-1000*t)))
+
+# RK4 starting step, following Lecture 2_3
+def rk4_step(t, y, h):
+    k1 = f(t, y)
+    k2 = f(t+h/2, y+h*k1/2)
+    k3 = f(t+h/2, y+h*k2/2)
+    k4 = f(t+h, y+h*k3)
+    return y + h*(k1+2*k2+2*k3+k4)/6
+
+# Explicit Adams-Bashforth 2-step method
+def ab2(h, T):
+    N = int(round(T/h))
+    t = np.linspace(0, T, N+1)
+    y = np.zeros((N+1, 2))
+    y[0] = y0
+
+    # One starting value from RK4
+    y[1] = rk4_step(t[0], y[0], h)
+
+    for n in range(1, N):
+        y[n+1] = y[n] + h/2 * (
+            3*f(t[n], y[n]) - f(t[n-1], y[n-1])
+        )
+    return t, y
+
+# Stability restriction for AB2
+eigenvalues = np.linalg.eigvals(A)
+h_limit = 1 / max(abs(eigenvalues))
+
+print(f"Jacobian eigenvalues: {eigenvalues}")
+print(f"AB2 stability boundary: h = {h_limit:.6f}")
+
+# Stable and unstable step sizes
+h_values = [0.0005, 0.01]
+T = 0.1
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+for ax, h in zip(axes, h_values):
+    t, y = ab2(h, T)
+    y_true = exact(t)
+
+    ax.plot(t, y[:, 1], 'o-', markersize=3,
+            label=f'AB2 (h={h})')
+    ax.plot(t, y_true[:, 1], 'k--',
+            label='Exact solution')
+
+    ax.set_xlabel('t')
+    ax.set_ylabel('y2(t)')
+    ax.set_title(f'AB2: h = {h}')
+    ax.grid(True)
+    ax.legend()
+
+    error = np.max(np.abs(y - y_true))
+    print(f"h = {h:.4f}: maximum absolute error = {error:.6e}")
+    print(f"         final y2 = {y[-1, 1]:.6e}")
+
+plt.suptitle('Exercise 2(b): Explicit AB2 Stability')
+plt.tight_layout()
+plt.show()
+```
+
+### Lab 4 — Exercise 2(c): BDF-1 및 BDF-2 안정성 비교
+
+같은 연립계와 시간 간격에서 implicit BDF 방법을 적용했다. BDF-1은 Backward Euler이며, BDF-2는 2차 다단계법이다. BDF-2의 시작값은 한 번의 BDF-1 단계로 계산한다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%28I-hA%29%5Cmathbf%7By%7D_%7Bn%2B1%7D%3D%5Cmathbf%7By%7D_n)
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%283I-2hA%29%5Cmathbf%7By%7D_%7Bn%2B1%7D%3D4%5Cmathbf%7By%7D_n-%5Cmathbf%7By%7D_%7Bn-1%7D)
+
+![Figure 8. 작은 시간 간격에서 AB2, BDF-1, BDF-2 비교.](/assets/images/ode_lab4_2c_1.png)
+
+*Figure 8. 작은 시간 간격에서 AB2, BDF-1, BDF-2 비교.*
+
+![Figure 9. 큰 시간 간격에서 명시적 AB2와 암시적 BDF 방법의 비교.](/assets/images/ode_lab4_2c_2.png)
+
+*Figure 9. 큰 시간 간격에서 명시적 AB2와 암시적 BDF 방법의 비교.*
+
+![Figure 10. 느린 모드에서 BDF-1과 BDF-2 비교.](/assets/images/ode_lab4_2c_3.png)
+
+*Figure 10. 느린 모드에서 BDF-1과 BDF-2 비교.*
+
+BDF-1과 BDF-2는 모두 A-stable이므로 해당 음의 실수 고유값에 대해 큰 스텝에서도 안정적이다. BDF-1의 단일 증폭인자와 달리 BDF-2의 안정성은 **두 특성근**으로 분석해야 한다. 두 근의 크기는 강성 극한에서 0으로 향하지만, 안정하다는 사실이 **모든 `h`에서 작은 오차를 보장하지는 않는다.** 특히 BDF-2 시작값을 BDF-1로 구했기 때문에 관측 오차에 시작 절차의 영향이 남을 수 있다.
+
+**Python 구현**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Same stiff system as Exercise 2(a) and 2(b)
+A = np.array([
+    [-1.0, 0.0],
+    [0.0, -1000.0]
+])
+
+y0 = np.array([1.0, 1.0])
+I = np.eye(2)
+
+def f(t, y):
+    return A @ y
+
+def exact(t):
+    return np.column_stack((
+        np.exp(-t),
+        np.exp(-1000*t)
+    ))
+
+# BDF-1 (Backward Euler)
+def bdf1(h, T):
+    N = int(round(T/h))
+    t = np.linspace(0, T, N+1)
+    y = np.zeros((N+1, 2))
+    y[0] = y0
+
+    M = I - h*A
+
+    for n in range(N):
+        y[n+1] = np.linalg.solve(M, y[n])
+
+    return t, y
+
+# BDF-2
+def bdf2(h, T):
+    N = int(round(T/h))
+    t = np.linspace(0, T, N+1)
+    y = np.zeros((N+1, 2))
+    y[0] = y0
+
+    # Starting value computed using BDF-1
+    if N >= 1:
+        y[1] = np.linalg.solve(I-h*A, y[0])
+
+    M = 3*I - 2*h*A
+
+    for n in range(1, N):
+        rhs = 4*y[n] - y[n-1]
+        y[n+1] = np.linalg.solve(M, rhs)
+
+    return t, y
+
+# Explicit AB2 from Exercise 2(b), for comparison
+def rk4_step(t, y, h):
+    k1 = f(t, y)
+    k2 = f(t+h/2, y+h*k1/2)
+    k3 = f(t+h/2, y+h*k2/2)
+    k4 = f(t+h, y+h*k3)
+    return y + h*(k1+2*k2+2*k3+k4)/6
+
+def ab2(h, T):
+    N = int(round(T/h))
+    t = np.linspace(0, T, N+1)
+    y = np.zeros((N+1, 2))
+    y[0] = y0
+
+    if N >= 1:
+        y[1] = rk4_step(t[0], y[0], h)
+
+    for n in range(1, N):
+        y[n+1] = y[n] + h/2 * (
+            3*f(t[n], y[n])
+            - f(t[n-1], y[n-1])
+        )
+
+    return t, y
+
+# Numerical experiments
+T = 0.1
+h_values = [0.0005, 0.01]
+
+for h in h_values:
+    t, y_ab = ab2(h, T)
+    _, y_bdf1 = bdf1(h, T)
+    _, y_bdf2 = bdf2(h, T)
+
+    y_true = exact(t)
+
+    print(f"\nStep size h = {h}")
+    print("-" * 68)
+    print(f"{'Method':<10} {'Max Error':<15} "
+          f"{'Final y1':<15} {'Final y2':<15}")
+
+    for name, y in [
+        ("AB2", y_ab),
+        ("BDF-1", y_bdf1),
+        ("BDF-2", y_bdf2)
+    ]:
+        error = np.max(
+            np.abs(y - y_true)
+        )
+
+        print(
+            f"{name:<10} {error:<15.6e} "
+            f"{y[-1,0]:<15.6e} "
+            f"{y[-1,1]:<15.6e}"
+        )
+
+    print(
+        f"{'Exact':<10} {'---':<15} "
+        f"{y_true[-1,0]:<15.6e} "
+        f"{y_true[-1,1]:<15.6e}"
+    )
+
+    # Plot fast component
+    plt.figure(figsize=(9, 5))
+
+    plt.plot(t, y_true[:,1], 'k-',
+             label='Exact')
+    plt.plot(t, y_ab[:,1], 'o--',
+             markersize=3, label='AB2')
+    plt.plot(t, y_bdf1[:,1], 's-',
+             markersize=3, label='BDF-1')
+    plt.plot(t, y_bdf2[:,1], 'd-',
+             markersize=3, label='BDF-2')
+
+    plt.xlabel('t')
+    plt.ylabel('y2(t)')
+    plt.title(f'Exercise 2(c): Stability Comparison (h={h})')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+# Compare slow component for a large step size
+h = 0.01
+
+t, y_bdf1 = bdf1(h, T)
+_, y_bdf2 = bdf2(h, T)
+y_true = exact(t)
+
+plt.figure(figsize=(9, 5))
+plt.plot(t, y_true[:,0], 'k-', label='Exact')
+plt.plot(t, y_bdf1[:,0], 's--', label='BDF-1')
+plt.plot(t, y_bdf2[:,0], 'd--', label='BDF-2')
+
+plt.xlabel('t')
+plt.ylabel('y1(t)')
+plt.title('Slow Component: BDF-1 vs BDF-2')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Stability amplification analysis
+print("\nStiff-mode amplification for h=0.01")
+
+z = -1000 * 0.01
+
+# BDF-1 amplification factor
+R_bdf1 = 1 / (1-z)
+
+# BDF-2 characteristic roots:
+# (3 - 2z) r^2 - 4r + 1 = 0
+roots_bdf2 = np.roots([3-2*z, -4, 1])
+
+print(f"z = {z}")
+print(f"BDF-1 amplification magnitude: {abs(R_bdf1):.6f}")
+print(f"BDF-2 root magnitudes: {np.abs(roots_bdf2)}")
+print("Both methods damp the stiff mode.")
+```
+
+### Lab 4 — Exercise 3(a): Linear Shooting
+
+선형 2계 Dirichlet BVP는 **비제차 IVP와 제차 IVP**를 각각 풀어 선형결합한다. 이번 예제는 `y′′=y+x`, `y(0)=0`, `y(1)=1`이고 정확해는 `y(x)=2sinh(x)/sinh(1)−x`다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_1%5Cprime%5Cprime%3Dy_1%2Bx%2C%5Cquad%20y_1%280%29%3D0%2C%5Cquad%20y_1%5Cprime%280%29%3D0)
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_2%5Cprime%5Cprime%3Dy_2%2C%5Cquad%20y_2%280%29%3D0%2C%5Cquad%20y_2%5Cprime%280%29%3D1)
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28x%29%3Dy_1%28x%29%2Bcy_2%28x%29%2C%5Cqquad%20c%3D%5Cfrac%7B1-y_1%281%29%7D%7By_2%281%29%7D)
+
+![Figure 11. 두 IVP를 결합한 Linear Shooting 해와 정확해.](/assets/images/ode_lab4_3a_1.png)
+
+*Figure 11. 두 IVP를 결합한 Linear Shooting 해와 정확해.*
+
+![Figure 12. Linear Shooting의 절대오차.](/assets/images/ode_lab4_3a_2.png)
+
+*Figure 12. Linear Shooting의 절대오차.*
+
+**Python 구현**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import solve_ivp
+
+# Linear BVP selected for Exercise 3(a)
+# y'' = y + x, y(0) = 0, y(1) = 1
+
+a, b = 0.0, 1.0
+alpha, beta = 0.0, 1.0
+
+x_grid = np.linspace(a, b, 201)
+
+# IVP 1: Inhomogeneous equation
+# y1'' = y1 + x
+# y1(0) = 0, y1'(0) = 0
+def ivp1(x, Y):
+    y, yp = Y
+    return [yp, y + x]
+
+sol1 = solve_ivp(
+    ivp1, (a, b), [alpha, 0.0],
+    t_eval=x_grid,
+    rtol=1e-10, atol=1e-12
+)
+
+# IVP 2: Homogeneous equation
+# y2'' = y2
+# y2(0) = 0, y2'(0) = 1
+def ivp2(x, Y):
+    y, yp = Y
+    return [yp, y]
+
+sol2 = solve_ivp(
+    ivp2, (a, b), [0.0, 1.0],
+    t_eval=x_grid,
+    rtol=1e-10, atol=1e-12
+)
+
+assert sol1.success and sol2.success
+
+y1 = sol1.y[0]
+y2 = sol2.y[0]
+
+# Linear combination coefficient
+c = (beta - y1[-1]) / y2[-1]
+
+# Shooting solution
+y_shoot = y1 + c*y2
+
+# Exact solution
+def exact(x):
+    return 2*np.sinh(x)/np.sinh(1) - x
+
+y_exact = exact(x_grid)
+
+# Errors
+errors = np.abs(y_shoot - y_exact)
+
+print(f"Shooting coefficient c = {c:.10f}")
+print(f"Initial boundary y(0) = {y_shoot[0]:.10f}")
+print(f"Final boundary y(1) = {y_shoot[-1]:.10f}")
+print(f"Maximum absolute error = {np.max(errors):.6e}")
+
+# Plot the two IVPs and the combined solution
+plt.figure(figsize=(9, 5))
+
+plt.plot(x_grid, y1, '--', label='IVP 1: Inhomogeneous')
+plt.plot(x_grid, y2, '--', label='IVP 2: Homogeneous')
+plt.plot(x_grid, y_shoot, 'b-', label='Linear Shooting')
+plt.plot(x_grid, y_exact, 'k:', label='Exact Solution')
+
+plt.xlabel('x')
+plt.ylabel('y(x)')
+plt.title('Exercise 3(a): Linear Shooting Method')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Error plot
+plt.figure(figsize=(9, 4))
+plt.plot(x_grid, errors)
+
+plt.xlabel('x')
+plt.ylabel('Absolute Error')
+plt.title('Exercise 3(a): Error of Linear Shooting')
+plt.grid(True)
+plt.show()
+```
+
+### Lab 4 — Exercise 3(b): Nonlinear Shooting과 Newton–Raphson
+
+비선형 예제로 `y′′=2y³`, `y(0)=0.5`, `y(1)=1`을 사용했다. 미지의 초기 기울기 `s=y′(0)`를 Newton 반복으로 찾아 오른쪽 경계잔차 `F(s)=y(1;s)−1`을 0으로 만든다. 비교할 정확해는 `y(x)=1/(2−x)`이므로 정확한 초기 기울기는 `0.25`다. 이 단계에서는 `F′(s)`를 중앙차분으로 근사했다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20s_%7Bk%2B1%7D%3Ds_k-%5Cfrac%7BF%28s_k%29%7D%7BF%5Cprime%28s_k%29%7D%2C%5Cqquad%20F%28s%29%3Dy%281%3Bs%29-1)
+
+![Figure 13. 비선형 Shooting 해와 정확해.](/assets/images/ode_lab4_3b_1.png)
+
+*Figure 13. 비선형 Shooting 해와 정확해.*
+
+![Figure 14. Newton 반복에 따른 경계잔차 감소.](/assets/images/ode_lab4_3b_2.png)
+
+*Figure 14. Newton 반복에 따른 경계잔차 감소.*
+
+**Python 구현**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import solve_ivp
+
+# Nonlinear BVP selected for Exercises 3(b) and 3(c)
+# y'' = 2y^3, y(0) = 0.5, y(1) = 1
+
+a, b = 0.0, 1.0
+alpha, beta = 0.5, 1.0
+x_grid = np.linspace(a, b, 201)
+
+# Parameterized IVP: initial slope = s
+def nonlinear_ivp(x, Y):
+    y, yp = Y
+    return [yp, 2*y**3]
+
+def shoot(s, t_eval=None):
+    sol = solve_ivp(
+        nonlinear_ivp, (a, b), [alpha, s],
+        t_eval=t_eval,
+        rtol=1e-10, atol=1e-12
+    )
+    if not sol.success:
+        raise RuntimeError(sol.message)
+    return sol
+
+# Boundary residual F(s) = y(1;s) - beta
+def F(s):
+    return shoot(s).y[0, -1] - beta
+
+# Central finite difference approximation of F'(s)
+def dF(s, epsilon=1e-5):
+    return (F(s + epsilon) - F(s - epsilon))/(2*epsilon)
+
+# Newton-Raphson iteration
+s = 0.2
+tol = 1e-10
+max_iter = 20
+
+s_history = [s]
+residual_history = []
+
+print("Iteration     Initial slope       Boundary residual")
+
+for k in range(max_iter):
+    residual = F(s)
+    residual_history.append(abs(residual))
+
+    print(f"{k:<13} {s:<19.12f} {residual:.6e}")
+
+    if abs(residual) < tol:
+        break
+
+    derivative = dF(s)
+
+    if abs(derivative) < 1e-14:
+        raise RuntimeError("Newton derivative is too small.")
+
+    s = s - residual/derivative
+    s_history.append(s)
+else:
+    raise RuntimeError("Newton iteration did not converge.")
+
+# Final numerical solution
+sol = shoot(s, t_eval=x_grid)
+y_shoot = sol.y[0]
+
+# Exact solution for verification
+def exact(x):
+    return 1/(2-x)
+
+y_exact = exact(x_grid)
+
+error = np.max(np.abs(y_shoot - y_exact))
+
+print("\nFinal results:")
+print(f"Computed initial slope = {s:.12f}")
+print(f"Exact initial slope    = {0.25:.12f}")
+print(f"Computed y(1)          = {y_shoot[-1]:.12f}")
+print(f"Boundary residual      = {abs(y_shoot[-1]-beta):.6e}")
+print(f"Maximum absolute error = {error:.6e}")
+
+# Plot numerical and exact solutions
+plt.figure(figsize=(9, 5))
+plt.plot(x_grid, y_shoot, 'b-', label='Nonlinear Shooting')
+plt.plot(x_grid, y_exact, 'k--', label='Exact Solution')
+plt.xlabel('x')
+plt.ylabel('y(x)')
+plt.title('Exercise 3(b): Nonlinear Shooting Method')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot Newton-Raphson convergence
+plt.figure(figsize=(8, 4))
+plt.semilogy(
+    range(len(residual_history)),
+    residual_history, 'o-'
+)
+plt.xlabel('Newton Iteration')
+plt.ylabel('Absolute Boundary Residual')
+plt.title('Exercise 3(b): Newton-Raphson Convergence')
+plt.grid(True)
+plt.show()
+```
+
+### Lab 4 — Exercise 3(c): Variational Equation과 정확한 Newton 도함수
+
+3(b)와 동일한 BVP에서 민감도 `z(x;s)=∂y(x;s)/∂s`를 정의한다. 원래 방정식을 `s`에 대해 미분하면 **변분방정식**이 얻어진다. 네 개의 1차 ODE를 함께 적분해 `F′(s)=z(1;s)`를 구하므로 Newton 업데이트에서는 유한차분을 사용하지 않는다.
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20z%5Cprime%5Cprime%3D6y%5E2z%2C%5Cqquad%20z%280%29%3D0%2C%5Cquad%20z%5Cprime%280%29%3D1)
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cbegin%7Baligned%7Dy%5Cprime%26%3Dv%2C%26v%5Cprime%26%3D2y%5E3%2C%5C%5Cz%5Cprime%26%3Dw%2C%26w%5Cprime%26%3D6y%5E2z%5Cend%7Baligned%7D)
+
+![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20s_%7Bk%2B1%7D%3Ds_k-%5Cfrac%7By%281%3Bs_k%29-1%7D%7Bz%281%3Bs_k%29%7D)
+
+![Figure 15. Sensitivity를 이용한 Nonlinear Shooting과 정확해.](/assets/images/ode_lab4_3c_1.png)
+
+*Figure 15. Sensitivity를 이용한 Nonlinear Shooting과 정확해.*
+
+![Figure 16. 계산된 Sensitivity Function.](/assets/images/ode_lab4_3c_2.png)
+
+*Figure 16. 계산된 Sensitivity Function.*
+
+![Figure 17. Sensitivity 기반 Newton 반복의 수렴.](/assets/images/ode_lab4_3c_3.png)
+
+*Figure 17. Sensitivity 기반 Newton 반복의 수렴.*
+
+유한차분으로 계산한 경계잔차 도함수와 민감도 방정식으로 계산한 도함수를 비교해 검산한다. 여기서 “exact derivative”는 **수학적으로 올바르게 유도된 도함수**를 뜻하며, IVP 자체의 수치 적분 오차가 사라진다는 의미는 아니다.
+
+**Python 구현**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import solve_ivp
+
+# Nonlinear BVP from Exercise 3(b)
+# y'' = 2y^3, y(0) = 0.5, y(1) = 1
+# Example selected for the lab demonstration
+
+a, b = 0.0, 1.0
+alpha, beta = 0.5, 1.0
+x_grid = np.linspace(a, b, 201)
+
+# Augmented system:
+# Y = [y, y', z, z']
+# z = partial derivative of y with respect to s
+#
+# Original equation: y'' = 2y^3
+# Sensitivity equation: z'' = 6y^2*z
+
+def augmented_system(x, Y):
+    y, yp, z, zp = Y
+
+    return [
+        yp,
+        2*y**3,
+        zp,
+        6*y**2*z
+    ]
+
+# Solve the parameterized IVP and sensitivity equation
+# simultaneously for a given initial slope s
+def solve_augmented(s, t_eval=None):
+    Y0 = [alpha, s, 0.0, 1.0]
+
+    sol = solve_ivp(
+        augmented_system,
+        (a, b),
+        Y0,
+        t_eval=t_eval,
+        rtol=1e-10,
+        atol=1e-12
+    )
+
+    if not sol.success:
+        raise RuntimeError(sol.message)
+
+    return sol
+
+# Newton-Raphson iteration using sensitivity derivative
+s = 0.2
+tol = 1e-10
+max_iter = 20
+
+s_history = [s]
+residual_history = []
+
+print("Iteration     Slope s          F(s)           F'(s)")
+
+for k in range(max_iter):
+    sol = solve_augmented(s)
+
+    y_b = sol.y[0, -1]
+    z_b = sol.y[2, -1]
+
+    # Boundary residual F(s) = y(1;s) - beta
+    F = y_b - beta
+
+    # Derivative F'(s) = z(1;s), from the variational equation
+    dF = z_b
+
+    residual_history.append(abs(F))
+
+    print(
+        f"{k:<13} {s:<16.12f} "
+        f"{F:<14.6e} {dF:.6e}"
+    )
+
+    if abs(F) < tol:
+        break
+
+    if abs(dF) < 1e-14:
+        raise RuntimeError("Sensitivity derivative is too small.")
+
+    # Newton-Raphson update
+    s = s - F/dF
+    s_history.append(s)
+
+else:
+    raise RuntimeError("Newton iteration did not converge.")
+
+# Final numerical solution and sensitivity function
+sol = solve_augmented(s, t_eval=x_grid)
+
+y_num = sol.y[0]
+z_num = sol.y[2]
+
+# Exact solution for numerical verification
+def exact(x):
+    return 1/(2-x)
+
+y_exact = exact(x_grid)
+
+# Maximum absolute solution error
+max_error = np.max(np.abs(y_num - y_exact))
+
+# Verify the sensitivity derivative at the final shooting parameter.
+# The variational equation provides F'(s) = z(1;s).
+# A central finite difference is used only for verification,
+# not for the Newton-Raphson updates.
+
+epsilon = 1e-5
+
+y_plus = solve_augmented(s + epsilon).y[0, -1]
+y_minus = solve_augmented(s - epsilon).y[0, -1]
+
+dF_fd = (y_plus - y_minus)/(2*epsilon)
+dF_sensitivity = sol.y[2, -1]
+
+print("\nFinal results:")
+print(f"Computed initial slope       = {s:.12f}")
+print(f"Exact initial slope          = {0.25:.12f}")
+print(f"Computed y(1)                = {y_num[-1]:.12f}")
+print(f"Boundary residual            = {abs(y_num[-1]-beta):.6e}")
+print(f"Maximum absolute error       = {max_error:.6e}")
+print(f"Derivative by sensitivity    = {dF_sensitivity:.12f}")
+print(f"Derivative by finite diff.   = {dF_fd:.12f}")
+print(f"Derivative difference        = {abs(dF_sensitivity-dF_fd):.6e}")
+
+# Plot 1: Numerical and exact solutions
+plt.figure(figsize=(9, 5))
+
+plt.plot(
+    x_grid, y_num, 'b-',
+    label='Shooting with Sensitivity'
+)
+plt.plot(
+    x_grid, y_exact, 'k--',
+    label='Exact Solution'
+)
+
+plt.xlabel('x')
+plt.ylabel('y(x)')
+plt.title('Exercise 3(c): Nonlinear Shooting with Sensitivity')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot 2: Sensitivity function
+plt.figure(figsize=(9, 5))
+
+plt.plot(
+    x_grid, z_num, 'r-',
+    label='Sensitivity z(x)'
+)
+
+plt.xlabel('x')
+plt.ylabel('z(x)')
+plt.title('Exercise 3(c): Sensitivity Function')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot 3: Newton-Raphson convergence
+plt.figure(figsize=(8, 4))
+
+plt.semilogy(
+    range(len(residual_history)),
+    residual_history,
+    'o-'
+)
+
+plt.xlabel('Newton Iteration')
+plt.ylabel('Absolute Boundary Residual')
+plt.title('Exercise 3(c): Newton-Raphson Convergence')
+plt.grid(True)
+plt.show()
+```
+
+### Lab 4 — 실험 결과에서 확인한 핵심
+
+- **Adams Methods:** 같은 IVP에서 AB4, AM4 및 PECE의 동작을 비교했고, 정규화한 LTE의 수렴차수가 4에 가까워지는지 확인했다.
+- **Stiffness:** 강성비 `1000`인 시스템에서 AB2는 큰 스텝으로 불안정해졌지만 BDF-1과 BDF-2는 강한 감쇠 모드를 안정적으로 처리했다. **안정성과 정확성은 별도로 검증**해야 한다.
+- **Shooting Methods:** 선형 문제는 두 IVP의 결합으로, 비선형 문제는 초기 기울기에 대한 Newton 업데이트로 해결했다. 변분방정식을 함께 적분하면 도함수에 대한 유한차분 근사 없이 Newton 반복이 가능하다.
 
 
 ## Detailed Lecture Notes — Linear Multistep Methods, Stability, and BVPs
@@ -938,7 +2096,7 @@ def thomas(lower, diag, upper, rhs):
     return y
 
 # Independent numerical check: [2,-1,0; -1,2,-1; 0,-1,2] y = [1,0,1]
-A = np.array(![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%202.%2C%20-1.%2C%200.%5D%2C%20%5B-1.%2C%202.%2C%20-1.%5D%2C%20%5B0.%2C%20-1.%2C%202.))
+A = np.array([[2., -1., 0.], [-1., 2., -1.], [0., -1., 2.]])
 y = thomas([-1., -1.], [2., 2., 2.], [-1., -1.], [1., 0., 1.])
 assert np.allclose(A @ y, [1., 0., 1.])
 print('Thomas check passed:', y)
@@ -1012,6 +2170,8 @@ print('Thomas check passed:', y)
 - Raj Dhara, *Lec-2_3_scheme*, 2026-10-12, pp. 10–11.
 - Raj Dhara, *Lec-4_scheme*, pp. 10–14.
 - Raj Dhara, *Numerical Method Lab: ODE Numerical Schemes & Convergence*, Exercise 5.
+- Raj Dhara, *Numerical Method Lab 4: Group-2 — ODE Numerical Schemes & Convergence*, 2026-10-28, Exercises 1–3.
+- `LAB_4.ipynb`, Exercises 1(a)–3(c): numerical experiments and generated figures.
 
 
 ---
