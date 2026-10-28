@@ -163,7 +163,7 @@ Stiff 문제에서는 매우 빠르게 감소하는 모드 때문에 Explicit �
 
 ### Lab 4 — Exercise 1(a): AB4와 AM4 구현
 
-> **Lab 4 · Exercise 1(a) — Problem**
+> **Problem**
 >
 > Implement k-step explicit Adams-Bashforth (AB) and implicit Adams-Moulton (AM) methods to solve a given first-order Initial Value Problem (IVP).
 {: .prompt-tip }
@@ -279,7 +279,7 @@ plt.show()
 
 ### Lab 4 — Exercise 1(b): 국소 절단오차와 수렴차수
 
-> **Lab 4 · Exercise 1(b) — Problem**
+> **Problem**
 >
 > Compute the Local Truncation Error (LTE) empirically for various time step sizes (h) and verify the theoretical order of accuracy by analyzing the error ratio between grid spacings h and 2h.
 {: .prompt-tip }
@@ -386,7 +386,7 @@ plt.show()
 
 ### Lab 4 — Exercise 1(c): PECE Predictor–Corrector
 
-> **Lab 4 · Exercise 1(c) — Problem**
+> **Problem**
 >
 > Program a Predictor-Corrector (PC) sequence in PECE mode by pairing an explicit AB predictor to calculate an initial guess with an implicit AM corrector.
 {: .prompt-tip }
@@ -543,7 +543,7 @@ plt.show()
 
 ### Lab 4 — Exercise 2(a): Jacobian과 Stiffness Ratio
 
-> **Lab 4 · Exercise 2(a) — Problem**
+> **Problem**
 >
 > Write a small function or program to calculate the stiffness ratio of a given system of ODEs by evaluating the eigenvalues of its Jacobian matrix.
 {: .prompt-tip }
@@ -605,7 +605,7 @@ print(f"\nStiffness ratio: {ratio:.2f}")
 
 ### Lab 4 — Exercise 2(b): Explicit AB2의 시간 간격 제한
 
-> **Lab 4 · Exercise 2(b) — Problem**
+> **Problem**
 >
 > Attempt to solve a highly stiff system using an explicit LMM and observe the severe step-size restrictions (h < maxC|λi | ) dictated by absolute stability requirements.
 {: .prompt-tip }
@@ -700,7 +700,7 @@ plt.show()
 
 ### Lab 4 — Exercise 2(c): BDF-1 및 BDF-2 안정성 비교
 
-> **Lab 4 · Exercise 2(c) — Problem**
+> **Problem**
 >
 > Implement Backward Differentiation Formulas (BDF-1 and BDF-2) and evaluate their performance on the stiff system, validating their theoretical advantages as A-stable and L-stable implicit methods.
 {: .prompt-tip }
@@ -902,7 +902,7 @@ print("Both methods damp the stiff mode.")
 
 ### Lab 4 — Exercise 3(a): Linear Shooting
 
-> **Lab 4 · Exercise 3(a) — Problem**
+> **Problem**
 >
 > Solve a linear second-order Dirichlet BVP by expressing the solution as a linear combination of two independent IVPs (one inhomogeneous and one homogeneous).
 {: .prompt-tip }
@@ -1017,7 +1017,7 @@ plt.show()
 
 ### Lab 4 — Exercise 3(b): Nonlinear Shooting과 Newton–Raphson
 
-> **Lab 4 · Exercise 3(b) — Problem**
+> **Problem**
 >
 > Solve a non-linear BVP by implementing the Nonlinear Shooting Method paired with a Newton-Raphson root-finding iteration.
 {: .prompt-tip }
@@ -1145,7 +1145,7 @@ plt.show()
 
 ### Lab 4 — Exercise 3(c): Variational Equation과 정확한 Newton 도함수
 
-> **Lab 4 · Exercise 3(c) — Problem**
+> **Problem**
 >
 > Formulate and simultaneously integrate the sensitivity function (variational equation) alongside the parameterized IVP to compute the exact derivative needed for the Newton-Raphson update steps.
 {: .prompt-tip }
@@ -2214,5 +2214,7 @@ print('Thomas check passed:', y)
 - Raj Dhara, *Numerical Method Lab: ODE Numerical Schemes & Convergence*, Exercise 5.
 - Raj Dhara, *Numerical Method Lab 4: Group-2 — ODE Numerical Schemes & Convergence*, 2026-10-28, Exercises 1–3.
 - `LAB_4.ipynb`, Exercises 1(a)–3(c): numerical experiments and generated figures.
+
+
 ---
 
