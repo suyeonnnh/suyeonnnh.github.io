@@ -1,6 +1,6 @@
 ---
 title: "Numerical Methods : Fundamentals of Ordinary Differential Equations"
-date: 2026-10-28 18:00:00 +0100
+date: 2026-10-27 18:00:00 +0100
 categories:
   - Numerical Analysis
 tags:
