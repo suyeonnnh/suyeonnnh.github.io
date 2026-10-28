@@ -2,7 +2,7 @@
 title: "Euler Schemes, Consistency and Convergence"
 date: 2026-10-27 18:10:00 +0100
 categories:
-  - Numerical Methods
+  - Numerical Analysis
 tags:
   - Euler-Method
   - Consistency
