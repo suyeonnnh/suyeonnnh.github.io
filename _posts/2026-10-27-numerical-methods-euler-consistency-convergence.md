@@ -2,7 +2,7 @@
 title: "Euler Schemes, Consistency and Convergence"
 date: 2026-10-27 18:10:00 +0100
 categories:
-  - Numerical Analysis
+  - Numerical Methods
 tags:
   - Euler-Method
   - Consistency
@@ -24,7 +24,9 @@ math: false
 
 Forward Euler는 현재 위치에서의 기울기를 이용해 다음 지점을 예측하는 가장 기본적인 명시적 수치 스킴이다.
 
-![Forward Euler update](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_%7Bn%2B1%7D%3Dy_n%2Bh%5C%2Cf%28t_n%2Cy_n%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_%7Bn%2B1%7D%3Dy_n%2Bh%5C%2Cf%28t_n%2Cy_n%29" alt="Forward Euler update" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 계산 과정은 다음과 같다.
 
@@ -52,9 +54,13 @@ Forward Euler는 현재 위치에서의 기울기를 이용해 다음 지점을 
 - **Consistency:** 시간 간격 `h → 0`일 때 적절히 정규화한 LTE가 0으로 수렴하는 성질.
 - **Global Error:** 시작점부터 반복한 근삿값 `yₙ`과 정확한 값 `y(tₙ)` 사이의 차이.
 
-![Forward Euler normalized LTE](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Ctau_%7Bn%2B1%7D%3D%5Cfrac%7By%28t_%7Bn%2B1%7D%29-y%28t_n%29%7D%7Bh%7D-f%28t_n%2Cy%28t_n%29%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Ctau_%7Bn%2B1%7D%3D%5Cfrac%7By%28t_%7Bn%2B1%7D%29-y%28t_n%29%7D%7Bh%7D-f%28t_n%2Cy%28t_n%29%29" alt="Forward Euler normalized LTE" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Global error](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7De_n%3D%5Cleft%7Cy%28t_n%29-y_n%5Cright%7C)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7De_n%3D%5Cleft%7Cy%28t_n%29-y_n%5Cright%7C" alt="Global error" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 여기서는 **`h`로 나눈 정규화 LTE**를 사용한다. 이 정의에 따르면 Forward Euler의 LTE는 보통 `O(h)`이고, 한 단계 업데이트 자체의 결함은 `O(h²)`이다. 두 표기가 혼용되므로 정의를 확인해야 한다.
 
@@ -62,7 +68,9 @@ Forward Euler는 현재 위치에서의 기울기를 이용해 다음 지점을 
 
 업로드한 `LAB_1.ipynb`의 첫 번째 실험에서는 `y'=−y`, 정확한 해 `y(t)=e^(−t)`를 사용한다. 고정된 지점 `t=1`에서 `h`를 변화시키며 정규화 LTE를 계산한다. 이 실험은 *Lab-1.pdf*의 Exercise 1과는 별개의 실험이다.
 
-![Euler LTE for exponential decay](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Ctau%3D%5Cfrac%7Be%5E%7B-1%7D-e%5E%7B-%281-h%29%7D%7D%7Bh%7D%2Be%5E%7B-%281-h%29%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Ctau%3D%5Cfrac%7Be%5E%7B-1%7D-e%5E%7B-%281-h%29%7D%7D%7Bh%7D%2Be%5E%7B-%281-h%29%7D" alt="Euler LTE for exponential decay" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 Taylor 전개를 적용하면 LTE의 선도항 크기는 `e^(−1)·h/2`이므로 `h`가 충분히 작아지면 로그-로그 그래프에서 기울기 약 1을 기대한다.
 
@@ -135,11 +143,15 @@ n = 10000, h = 0.00010, LTE = 0.0000183952
 
 두 번째 실험은 `y'=−2y`, `y(0)=1`이며 `T=1`에서 정확한 해 `e^(−2)`와 수치해를 비교한다.
 
-![Euler convergence update](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_%7Bn%2B1%7D%3D%281-2h%29y_n%2C%5Cqquad%20y_n%3D%281-2%2Fn%29%5En)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_%7Bn%2B1%7D%3D%281-2h%29y_n%2C%5Cqquad%20y_n%3D%281-2%2Fn%29%5En" alt="Euler convergence update" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 Global Error를 여러 `h`에 대해 계산한 다음, `ln(Error)`와 `ln(h)`의 선형 회귀 기울기 `p`로 수렴 차수를 추정한다.
 
-![Convergence order regression](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Clog%28E%28h%29%29%5Capprox%20p%5Clog%28h%29%2B%5Clog%28C%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Clog%28E%28h%29%29%5Capprox%20p%5Clog%28h%29%2B%5Clog%28C%29" alt="Convergence order regression" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 기울기가 약 `1`이면 오차가 `h`에 비례한다는 뜻이다.
 
@@ -233,13 +245,17 @@ Consistency는 한 단계의 수치식이 미분방정식을 잘 근사하는지
 
 세 번째 실험은 다음 ODE와 다단계 스킴을 사용한다.
 
-![Leap frog recurrence](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy%27%3D-y%2C%5Cquad%20y%280%29%3D1%2C%5Cqquad%20y_%7Bn%2B1%7D%3Dy_%7Bn-1%7D-2hy_n)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy%27%3D-y%2C%5Cquad%20y%280%29%3D1%2C%5Cqquad%20y_%7Bn%2B1%7D%3Dy_%7Bn-1%7D-2hy_n" alt="Leap frog recurrence" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 Notebook에서는 두 초기 데이터를 `y₀=1`, `y₁=1`로 지정했다. 하지만 정확한 해의 첫 번째 다음 값은 `y(h)=e^(−h)`이므로 **시작값 `y₁=1`에는 `O(h)`의 시작 오차가 있다.** 이 때문에 고정 시간 `T=1`에서 관찰하는 수렴차수가 스킴 자체의 형식적 정확도와 다를 수 있다.
 
 특성방정식을 세우면 다음과 같다.
 
-![Leap frog characteristic roots](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Crho%5E2%2B2h%5Crho-1%3D0%2C%5Cqquad%5Crho_%7B%5Cpm%7D%3D-h%5Cpm%5Csqrt%7B1%2Bh%5E2%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Crho%5E2%2B2h%5Crho-1%3D0%2C%5Cqquad%5Crho_%7B%5Cpm%7D%3D-h%5Cpm%5Csqrt%7B1%2Bh%5E2%7D" alt="Leap frog characteristic roots" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 한 근은 약 `1−h`로 감소하는 해를 따라가지만, 다른 근은 `−1−h`에 가까워 절댓값이 1보다 크다. **후자의 근이 불안정한 기생 모드를 생성한다.** 고정된 `T=1`의 수치 오차가 감소하는 현상과 긴 시간에 진동이 증폭되는 현상은 모순이 아니다.
 
@@ -397,9 +413,13 @@ n = 160, h = 0.00625, y(T) = 0.3605599872, Error = 0.0073194539
 
 Forward Euler를 적용하면 다음과 같다.
 
-![Forward Euler negative growth](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_%7Bj%2B1%7D%3Dy_j-4hy_j%3D%281-4h%29y_j)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_%7Bj%2B1%7D%3Dy_j-4hy_j%3D%281-4h%29y_j" alt="Forward Euler negative growth" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Closed form Euler negative growth](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_n%3D3%5Cleft%281-%5Cfrac4n%5Cright%29%5En)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_n%3D3%5Cleft%281-%5Cfrac4n%5Cright%29%5En" alt="Closed form Euler negative growth" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 정확한 해는 `y(t)=3e^(−4t)`이다. 지수함수의 극한 공식에서 `(1−4/n)^n → e^(−4)`이므로 `n → ∞`에서 수치해가 `y(1)=3e^(−4)`로 수렴한다. 다만 작은 `n`에서는 증폭인자 `1−4h`가 음수이거나 절댓값이 클 수 있으므로 수렴 극한과 개별 시간 간격의 안정성은 구분해야 한다.
 
@@ -407,9 +427,13 @@ Forward Euler를 적용하면 다음과 같다.
 
 문제는 `y'=5y`, `y(0)=2`, `T=1`이다. Backward Euler는 다음 시간의 미지값 `yₙ₊₁`에서 변화율을 평가한다.
 
-![Backward Euler equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_%7Bj%2B1%7D%3Dy_j%2Bh%5C%2C5y_%7Bj%2B1%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_%7Bj%2B1%7D%3Dy_j%2Bh%5C%2C5y_%7Bj%2B1%7D" alt="Backward Euler equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Backward Euler closed form](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_n%3D2%5Cleft%281-%5Cfrac5n%5Cright%29%5E%7B-n%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7Dy_n%3D2%5Cleft%281-%5Cfrac5n%5Cright%29%5E%7B-n%7D" alt="Backward Euler closed form" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 업데이트식이 `yₙ₊₁ = yₙ/(1−5h)`로 정리되므로 단계를 반복하면 위의 식을 얻는다. 정확한 해는 `2e^(5t)`이며 `n → ∞`에서 `yₙ → 2e^5`이다. **단, `n=5`이면 분모가 0이 되어 스킴이 정의되지 않는다.** 극한을 다룰 때는 충분히 큰 `n`을 고려한다.
 
@@ -727,52 +751,76 @@ Amplification factor: 2.7138
 
 격자
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20t_n%3Dnh)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20t_n%3Dnh" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 에서 도함수의 전진차분과 후진차분을 각각 정의하면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cdelta_%2By%28t_n%29%3D%5Cfrac%7By%28t_n%2Bh%29-y%28t_n%29%7Dh)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cdelta_%2By%28t_n%29%3D%5Cfrac%7By%28t_n%2Bh%29-y%28t_n%29%7Dh" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cdelta_-y%28t_n%29%3D%5Cfrac%7By%28t_n%29-y%28t_n-h%29%7Dh)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cdelta_-y%28t_n%29%3D%5Cfrac%7By%28t_n%29-y%28t_n-h%29%7Dh" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이다. Taylor 정리를 쓰면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t_n%2Bh%29%3Dy%28t_n%29%2Bh%20y%27%28t_n%29%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%27%27%28t_n%29%2B%5Cfrac%7Bh%5E3%7D%7B6%7Dy%5E%7B%283%29%7D%28%5Cxi_%2B%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t_n%2Bh%29%3Dy%28t_n%29%2Bh%20y%27%28t_n%29%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%27%27%28t_n%29%2B%5Cfrac%7Bh%5E3%7D%7B6%7Dy%5E%7B%283%29%7D%28%5Cxi_%2B%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t_n-h%29%3Dy%28t_n%29-h%20y%27%28t_n%29%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%27%27%28t_n%29-%5Cfrac%7Bh%5E3%7D%7B6%7Dy%5E%7B%283%29%7D%28%5Cxi_-%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t_n-h%29%3Dy%28t_n%29-h%20y%27%28t_n%29%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%27%27%28t_n%29-%5Cfrac%7Bh%5E3%7D%7B6%7Dy%5E%7B%283%29%7D%28%5Cxi_-%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이므로
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cdelta_%2By%28t_n%29%3Dy%27%28t_n%29%2B%5Cfrac%20h2%20y%27%27%28t_n%29%2BO%28h%5E2%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cdelta_%2By%28t_n%29%3Dy%27%28t_n%29%2B%5Cfrac%20h2%20y%27%27%28t_n%29%2BO%28h%5E2%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cdelta_-y%28t_n%29%3Dy%27%28t_n%29-%5Cfrac%20h2%20y%27%27%28t_n%29%2BO%28h%5E2%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cdelta_-y%28t_n%29%3Dy%27%28t_n%29-%5Cfrac%20h2%20y%27%27%28t_n%29%2BO%28h%5E2%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 를 얻는다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3Df%28t%2Cy%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3Df%28t%2Cy%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 에서 남은 고차항을 버리면 **Forward Euler**
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_n%2Cy_n%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_n%2Cy_n%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 와 **Backward Euler**
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_%7Bn%2B1%7D%2Cy_%7Bn%2B1%7D%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_%7Bn%2B1%7D%2Cy_%7Bn%2B1%7D%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 가 나온다.
 
 
 전진형은 다음
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 을 바로 계산하는 explicit 방법이고, 후진형은 미지수
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 가 우변에도 등장하므로 일반적으로 각 단계에서 비선형 방정식을 풀어야 하는 implicit 방법이다.
 
@@ -780,47 +828,65 @@ Amplification factor: 2.7138
 
 강의에서는 미분방정식 잔차로 정의한 LTE를 사용한다. 정확해를 수치방정식에 넣어
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Ctau_%7Bn%2B1%7D%3D%5Cfrac%7By%28t_%7Bn%2B1%7D%29-y%28t_n%29%7Dh-f%28t_n%2Cy%28t_n%29%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Ctau_%7Bn%2B1%7D%3D%5Cfrac%7By%28t_%7Bn%2B1%7D%29-y%28t_n%29%7Dh-f%28t_n%2Cy%28t_n%29%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이라고 하면 Taylor 전개로
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Ctau_%7Bn%2B1%7D%3D%5Cfrac%20h2%20y%27%27%28t_n%29%2B%5Cfrac%7Bh%5E2%7D%7B6%7Dy%5E%7B%283%29%7D%28%5Cxi_n%29%3DO%28h%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Ctau_%7Bn%2B1%7D%3D%5Cfrac%20h2%20y%27%27%28t_n%29%2B%5Cfrac%7Bh%5E2%7D%7B6%7Dy%5E%7B%283%29%7D%28%5Cxi_n%29%3DO%28h%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이므로
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 에서 0으로 가서 consistent이다. 한편 **한 단계 업데이트의 결손량**을
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20d_%7Bn%2B1%7D%3Dy%28t_%7Bn%2B1%7D%29-y%28t_n%29-hf%28t_n%2Cy%28t_n%29%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20d_%7Bn%2B1%7D%3Dy%28t_%7Bn%2B1%7D%29-y%28t_n%29-hf%28t_n%2Cy%28t_n%29%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이라고 정의하면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20d_%7Bn%2B1%7D%3Dh%5Ctau_%7Bn%2B1%7D%3DO%28h%5E2%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20d_%7Bn%2B1%7D%3Dh%5Ctau_%7Bn%2B1%7D%3DO%28h%5E2%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이다. 따라서 'Euler LTE는
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20O%28h%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20O%28h%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 '와 '한 단계 오차는
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20O%28h%5E2%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20O%28h%5E2%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 '라는 진술은 **오차를
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 로 나누는지에 따라 동시에 맞을 수 있다**. Lab 코드에서 사용한 LTE 정의를 확인해야 비교가 가능하다.
 
 
 **주의 — Lecture의 인쇄식:** 원본은 Taylor 전개의 평가점과 잔여항 차수 표기가 혼동될 수 있으므로, 위 유도는 **정확해를
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20t_n)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20t_n" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 에서 전개하는 표준 표기**로 명시했다. 강의의 결론인 consistency와 1차 수렴성은 유지된다.
 
@@ -829,80 +895,114 @@ Amplification factor: 2.7138
 
 정확해와 수치해의 차이를
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_n%3Dy%28t_n%29-y_n)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_n%3Dy%28t_n%29-y_n" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 로 정의한다. 초기값을 정확히 지정했다고 가정하여
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_0%3D0)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_0%3D0" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cmax_%7B0%5Cle%20t%5Cle%20T%7D%7Cy%27%27%28t%29%7C%3DM_2)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cmax_%7B0%5Cle%20t%5Cle%20T%7D%7Cy%27%27%28t%29%7C%3DM_2" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 라고 하자.
 
 Taylor 전개에 의해
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t_%7Bn%2B1%7D%29%3Dy%28t_n%29%2Bh%20f%28t_n%2Cy%28t_n%29%29%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%27%27%28%5Cxi_n%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t_%7Bn%2B1%7D%29%3Dy%28t_n%29%2Bh%20f%28t_n%2Cy%28t_n%29%29%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%27%27%28%5Cxi_n%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이고, Euler 수치식
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_n%2Cy_n%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_n%2Bhf%28t_n%2Cy_n%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 를 빼면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_%7Bn%2B1%7D%3De_n%2Bh%5C%7Bf%28t_n%2Cy%28t_n%29%29-f%28t_n%2Cy_n%29%5C%7D%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%27%27%28%5Cxi_n%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20e_%7Bn%2B1%7D%3De_n%2Bh%5C%7Bf%28t_n%2Cy%28t_n%29%29-f%28t_n%2Cy_n%29%5C%7D%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%27%27%28%5Cxi_n%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20f" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 가 상태변수에 대해 Lipschitz이면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_%7Bn%2B1%7D%7C%5Cle%281%2BLh%29%7Ce_n%7C%2B%5Cfrac%7BM_2h%5E2%7D%7B2%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_%7Bn%2B1%7D%7C%5Cle%281%2BLh%29%7Ce_n%7C%2B%5Cfrac%7BM_2h%5E2%7D%7B2%7D" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Ctau%3DM_2h%5E2%2F2)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Ctau%3DM_2h%5E2%2F2" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 라고 놓고 **귀납적 반복**을 수행하면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%5Ctau%5Csum_%7Bj%3D0%7D%5E%7Bn-1%7D%281%2BLh%29%5Ej)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%5Ctau%5Csum_%7Bj%3D0%7D%5E%7Bn-1%7D%281%2BLh%29%5Ej" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이며 등비수열 합을 계산해
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%5Cfrac%7BM_2h%5E2%7D%7B2%7D%5Cfrac%7B%281%2BLh%29%5En-1%7D%7BLh%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%5Cfrac%7BM_2h%5E2%7D%7B2%7D%5Cfrac%7B%281%2BLh%29%5En-1%7D%7BLh%7D" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%3D%5Cfrac%7BM_2%7D%7B2L%7D%5Cbig%28%281%2BLh%29%5En-1%5Cbig%29h)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%3D%5Cfrac%7BM_2%7D%7B2L%7D%5Cbig%28%281%2BLh%29%5En-1%5Cbig%29h" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201%2BLh%5Cle%20e%5E%7BLh%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201%2BLh%5Cle%20e%5E%7BLh%7D" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이므로
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20nh%5Cle%20T)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20nh%5Cle%20T" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 일 때
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%5Cfrac%7BM_2%7D%7B2L%7D%28e%5E%7BLT%7D-1%29h%3DCh)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%5Cfrac%7BM_2%7D%7B2L%7D%28e%5E%7BLT%7D-1%29h%3DCh" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 를 얻는다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20L%3D0)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20L%3D0" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 인 경우에는 따로
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%20%28M_2T%2F2%29h)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Ce_n%7C%5Cle%20%28M_2T%2F2%29h" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 로 처리한다. **따라서 Forward Euler는 고정 구간에서 1차 수렴한다.** 강의 Theorem 2.3은 Forward·Backward Euler 두 방법 모두 1차 수렴한다고 기술하고, 증명은 Forward Euler에 한정해 제시한다. 여기서도 그 범위를 구분했다.
 
@@ -911,45 +1011,63 @@ Taylor 전개에 의해
 
 전역오차가
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20E%28h%29%5Capprox%20Ch%5Ep)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20E%28h%29%5Capprox%20Ch%5Ep" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cfrac%7BE%282h%29%7D%7BE%28h%29%7D%5Capprox2%5Ep)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cfrac%7BE%282h%29%7D%7BE%28h%29%7D%5Capprox2%5Ep" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이므로 양변에 로그를 취해
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox%5Cfrac%7B%5Clog%28E%282h%29%2FE%28h%29%29%7D%7B%5Clog%202%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox%5Cfrac%7B%5Clog%28E%282h%29%2FE%28h%29%29%7D%7B%5Clog%202%7D" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 를 얻는다. 예를 들어 표를 만들 때
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 를 절반으로 줄였더니 오차도 절반으로 줄어들면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox1)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox1" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 , 오차가 네 배 줄면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox2)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20p%5Capprox2" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 라고 읽는다. Notebook의 회귀 기울기는 여러
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 값에 대해
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%20E%28h%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%20E%28h%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 를
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%20h)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%20h" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 에 선형회귀한 것으로, 같은 원리다.
 
@@ -957,98 +1075,140 @@ Taylor 전개에 의해
 
 강의는 다음 두 단계 점화식을 사용한다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_%7Bn-1%7D-2hy_n%2C%5Cqquad%20y_0%3D1%2C%5C%20y_1%3D1)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bn%2B1%7D%3Dy_%7Bn-1%7D-2hy_n%2C%5Cqquad%20y_0%3D1%2C%5C%20y_1%3D1" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이는
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D-y)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D-y" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 를 중앙차분으로 근사한 것이다. 정확해를 넣어 계산한 미분형 LTE는
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cfrac%7By%28t_%7Bn%2B1%7D%29-y%28t_%7Bn-1%7D%29%7D%7B2h%7D%2By%28t_n%29%3D%5Cfrac%7Bh%5E2%7D%7B6%7Dy%5E%7B%283%29%7D%28t_n%29%2BO%28h%5E4%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cfrac%7By%28t_%7Bn%2B1%7D%29-y%28t_%7Bn-1%7D%29%7D%7B2h%7D%2By%28t_n%29%3D%5Cfrac%7Bh%5E2%7D%7B6%7Dy%5E%7B%283%29%7D%28t_n%29%2BO%28h%5E4%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이므로 일관성이 있다. 그러나 일반해
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3DC%20r%5En)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3DC%20r%5En" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 을 대입하면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r%5E%7Bn%2B1%7D%3Dr%5E%7Bn-1%7D-2hr%5En)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r%5E%7Bn%2B1%7D%3Dr%5E%7Bn-1%7D-2hr%5En" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r%5E2%2B2hr-1%3D0)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r%5E2%2B2hr-1%3D0" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_%5Cpm%3D-h%5Cpm%5Csqrt%7B1%2Bh%5E2%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_%5Cpm%3D-h%5Cpm%5Csqrt%7B1%2Bh%5E2%7D" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이고,
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%3E0)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%3E0" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 에서
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Cr_-%7C%3Dh%2B%5Csqrt%7B1%2Bh%5E2%7D%3E1)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Cr_-%7C%3Dh%2B%5Csqrt%7B1%2Bh%5E2%7D%3E1" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이다. 따라서 고정된 시간 간격으로 무한히 오래 전진하면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_-%5En)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_-%5En" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 성분이 증폭되는 **parasitic mode**가 존재한다.
 
 일반해는
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3DA%20r_%2B%5En%2BB%20r_-%5En)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3DA%20r_%2B%5En%2BB%20r_-%5En" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이고 시작값으로
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20A%2BB%3D1%2C%5Cqquad%20Ar_%2B%2BBr_-%3D1)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20A%2BB%3D1%2C%5Cqquad%20Ar_%2B%2BBr_-%3D1" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 을 얻는다. 따라서
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20B%3D%5Cfrac%7Br_%2B-1%7D%7Br_%2B-r_-%7D%2C%5Cqquad%20A%3D1-B)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20B%3D%5Cfrac%7Br_%2B-1%7D%7Br_%2B-r_-%7D%2C%5Cqquad%20A%3D1-B" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_%2B%3D1-h%2BO%28h%5E2%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_%2B%3D1-h%2BO%28h%5E2%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이므로 이 시작값에서는
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20B%3DO%28h%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20B%3DO%28h%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 로 작지만 0은 아니다. **중요한 구분:** 유한한 고정 시간
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20T%3D1)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20T%3D1" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 에서
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 인 수렴 문제와,
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 를 고정하고
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20T%5Cto%5Cinfty)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20T%5Cto%5Cinfty" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 인 장기 안정성 문제는 다르다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Cr_-%7C%3E1)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%7Cr_-%7C%3E1" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 만 보고 '모든 고정시간에서
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%5Cto0" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 수렴하지 않는다'라고 결론 내릴 수는 없다. 원본 강의는 이 차이를 엄밀히 구별하지 않은 문장을 포함하고, Lab 2의 긴 시간 실험은 장기 불안정성을 보여주는 자료로 해석하는 것이 정확하다.
 
@@ -1057,44 +1217,62 @@ Taylor 전개에 의해
 
 Lab Handout Exercise 1은
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D-4y%2C%5C%20y%280%29%3D3%2C%5C%20t%5Cin%5B0%2C1)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D-4y%2C%5C%20y%280%29%3D3%2C%5C%20t%5Cin%5B0%2C1" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 ]]이다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%3D1%2Fn)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20h%3D1%2Fn" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bj%2B1%7D%3Dy_j%2Bh%28-4y_j%29%3D%281-4%2Fn%29y_j)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bj%2B1%7D%3Dy_j%2Bh%28-4y_j%29%3D%281-4%2Fn%29y_j" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이므로 귀납적으로
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3D3%281-4%2Fn%29%5En)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3D3%281-4%2Fn%29%5En" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이다. 정확해는
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t%29%3D3e%5E%7B-4t%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t%29%3D3e%5E%7B-4t%7D" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이며
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clim_%7Bn%5Cto%5Cinfty%7D3%281-4%2Fn%29%5En%3D3e%5E%7B-4%7D%3Dy%281%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clim_%7Bn%5Cto%5Cinfty%7D3%281-4%2Fn%29%5En%3D3e%5E%7B-4%7D%3Dy%281%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이 작은 경우
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201-4%2Fn)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201-4%2Fn" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이 음수이거나 0일 수 있지만, 극한 계산은
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%5Cto%5Cinfty)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%5Cto%5Cinfty" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 에서 수행한다.
 
@@ -1103,46 +1281,68 @@ Lab Handout Exercise 1은
 
 Lab Handout Exercise 3은
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D5y%2C%5C%20y%280%29%3D2)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%27%3D5y%2C%5C%20y%280%29%3D2" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 이다. 후진 Euler는
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bj%2B1%7D%3Dy_j%2B5hy_%7Bj%2B1%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_%7Bj%2B1%7D%3Dy_j%2B5hy_%7Bj%2B1%7D" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%20%281-5h%29y_%7Bj%2B1%7D%3Dy_j)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%20%281-5h%29y_%7Bj%2B1%7D%3Dy_j" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%20y_n%3D2%281-5%2Fn%29%5E%7B-n%7D)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%20y_n%3D2%281-5%2Fn%29%5E%7B-n%7D" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 을 준다(단,
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201-5%2Fn%5Cne0)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%201-5%2Fn%5Cne0" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 ). 정확해
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%281%29%3D2e%5E5)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%281%29%3D2e%5E5" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 와 비교하면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%5Cleft%28%281-5%2Fn%29%5E%7B-n%7D%5Cright%29%3D-n%5Clog%281-5%2Fn%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Clog%5Cleft%28%281-5%2Fn%29%5E%7B-n%7D%5Cright%29%3D-n%5Clog%281-5%2Fn%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%3D-n%5Cleft%28-%5Cfrac5n-%5Cfrac%7B25%7D%7B2n%5E2%7D%2BO%28n%5E%7B-3%7D%29%5Cright%29%3D5%2B%5Cfrac%7B25%7D%7B2n%7D%2BO%28n%5E%7B-2%7D%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%3D-n%5Cleft%28-%5Cfrac5n-%5Cfrac%7B25%7D%7B2n%5E2%7D%2BO%28n%5E%7B-3%7D%29%5Cright%29%3D5%2B%5Cfrac%7B25%7D%7B2n%7D%2BO%28n%5E%7B-2%7D%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이므로
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%5Cto%5Cinfty)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%5Cto%5Cinfty" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 일 때
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%5Cto2e%5E5)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%5Cto2e%5E5" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 
 이다. 로그 전개를 쓰려면 충분히 큰
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%3E5)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20n%3E5" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 를 가정한다.
 
@@ -1156,9 +1356,13 @@ Lab Handout Exercise 3은
 
 강의 p.3의 LTE는 `h`로 나눈 **잔차형 LTE**이다. `y(t+h)`를 `t`에서 전개하면
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t%2Bh%29%3Dy%28t%29%2Bhy%5Cprime%28t%29%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%5Cprime%5Cprime%28t%29%2B%5Cfrac%7Bh%5E3%7D%7B6%7Dy%5E%7B%283%29%7D%28t%29%2BO%28h%5E4%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y%28t%2Bh%29%3Dy%28t%29%2Bhy%5Cprime%28t%29%2B%5Cfrac%7Bh%5E2%7D%7B2%7Dy%5Cprime%5Cprime%28t%29%2B%5Cfrac%7Bh%5E3%7D%7B6%7Dy%5E%7B%283%29%7D%28t%29%2BO%28h%5E4%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cfrac%7By%28t%2Bh%29-y%28t%29%7D%7Bh%7D-f%28t%2Cy%28t%29%29%3D%5Cfrac%20h2%20y%5Cprime%5Cprime%28t%29%2B%5Cfrac%7Bh%5E2%7D%7B6%7Dy%5E%7B%283%29%7D%28t%29%2BO%28h%5E3%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20%5Cfrac%7By%28t%2Bh%29-y%28t%29%7D%7Bh%7D-f%28t%2Cy%28t%29%29%3D%5Cfrac%20h2%20y%5Cprime%5Cprime%28t%29%2B%5Cfrac%7Bh%5E2%7D%7B6%7Dy%5E%7B%283%29%7D%28t%29%2BO%28h%5E3%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 반면 한 스텝의 **업데이트 오차**는 위 식에 `h`를 곱한 것이므로 `O(h²)`다. 교수 자료 p.3의 Taylor 표기에 인덱스와 차수의 오탈자로 보이는 부분이 있지만, 원래 과제가 확인하려는 **잔차 LTE = O(h)**, **한 스텝 오차 = O(h²)**는 구별해야 한다. 이는 강의 공식과 직접 Taylor 전개를 대조한 검산 결과다.
 
@@ -1170,7 +1374,9 @@ Lab Handout Exercise 3은
 
 강의 p.3의 고정된 `h>0`에 대한 근은 다음과 같다.
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_%7B%5Cpm%7D%3D-h%5Cpm%5Csqrt%7B1%2Bh%5E2%7D%2C%5Cqquad%20%7Cr_-%7C%3Dh%2B%5Csqrt%7B1%2Bh%5E2%7D%3E1)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20r_%7B%5Cpm%7D%3D-h%5Cpm%5Csqrt%7B1%2Bh%5E2%7D%2C%5Cqquad%20%7Cr_-%7C%3Dh%2B%5Csqrt%7B1%2Bh%5E2%7D%3E1" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 그러므로 일반적인 초기화에서 기생모드가 **고정된 h로 장시간 적분할 때** 커진다. 하지만 `h→0`, `nh=T` 고정인 수렴 문제와 혼동하면 안 된다. `h=0`의 첫 특성다항식은 `ρ(r)=r²−1`이며 두 단위근 `+1,−1`은 **서로 다른 단순근**이다. 따라서 이 방법은 고전적 의미의 **zero-stability 조건을 충족**한다. `y₀=y₁=1`이라는 초기화는 정확한 `y(h)=e^(−h)`와 `O(h)`만큼 다르므로, 고정된 `T`에서 수렴하더라도 초기화 때문에 관측 차수가 낮아질 수 있다. 이 점은 Lab-2의 T=1 및 장기 그래프를 함께 해석할 때 필수다. 강의의 'lack of convergence' 문장은 일반적인 장기 성장 현상을 강조한 것으로 읽되, 모든 고정 T에서 `h→0` 수렴 불가능하다는 결론으로 확대하지 않는다.
 
@@ -1178,11 +1384,15 @@ Lab Handout Exercise 3은
 
 `y′=−4y`, `y(0)=3`, `h=1/n`인 Forward Euler는 `yₙ₊₁=(1−4/n)yₙ`, 따라서
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3D3%281-4%2Fn%29%5En%5C%20%5Clongrightarrow%5C%203e%5E%7B-4%7D%3Dy%281%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3D3%281-4%2Fn%29%5En%5C%20%5Clongrightarrow%5C%203e%5E%7B-4%7D%3Dy%281%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 `y′=5y`, `y(0)=2`인 Backward Euler는 `yₙ₊₁=yₙ+(5/n)yₙ₊₁`이므로 `n≠5`에서
 
-![Equation](https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3D2%281-5%2Fn%29%5E%7B-n%7D%5C%20%5Clongrightarrow%5C%202e%5E5%3Dy%281%29)
+<div style="display:block;clear:both;width:100%;max-width:100%;text-align:center;overflow-x:auto;margin:0.9rem 0;">
+<img src="https://latex.codecogs.com/svg.image?%5Ccolor%7Bwhite%7D%5Cdisplaystyle%20y_n%3D2%281-5%2Fn%29%5E%7B-n%7D%5C%20%5Clongrightarrow%5C%202e%5E5%3Dy%281%29" alt="Equation" style="display:inline-block;max-width:100%;height:auto;vertical-align:middle;" />
+</div>
 
 단, **n=5이면 첫 암시적 방정식을 유일하게 풀 수 없다.** `n<5`에서는 단계 계수가 음수일 수도 있으며, 극한을 증명할 때에는 `n>5`의 충분히 작은 스텝 크기를 고려한다. 이 예외를 무시한 무조건적인 닫힌형 공식은 부정확하다.
 
@@ -1198,4 +1408,3 @@ Lab Handout Exercise 3은
 
 
 ---
-
