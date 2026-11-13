@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 350" width="100%" role="img" aria-label="Illustrative oscillation of binomial call option price around the Black-Scholes benchmark as the number of periods increases">
+  <rect width="1060" height="350" rx="14" fill="#ffffff" stroke="#d8dee5"/>
+  <text x="30" y="30" font-size="21" font-weight="700" fill="#1f2937" font-family="Arial, sans-serif">Binomial call price convergence (illustrative)</text>
+  <line x1="92" y1="296" x2="1015" y2="296" stroke="#334155" stroke-width="2"/>
+  <polygon points="1015,296 1003,290 1003,302" fill="#334155"/>
+  <line x1="92" y1="296" x2="92" y2="55" stroke="#334155" stroke-width="2"/>
+  <polygon points="92,55 86,67 98,67" fill="#334155"/>
+  <line x1="92" y1="177" x2="1010" y2="177" stroke="#059669" stroke-width="2" stroke-dasharray="9 7"/>
+  <text x="820" y="166" font-size="15" fill="#047857" font-family="Arial, sans-serif">Black–Scholes benchmark</text>
+  <text x="28" y="70" font-size="15" fill="#334155" font-family="Arial, sans-serif">Price</text>
+  <text x="797" y="326" font-size="15" fill="#334155" font-family="Arial, sans-serif">Number of periods (N)</text>
+  <polyline points="105.0,269.0 126.7,92.4 148.4,254.9 170.1,105.3 191.8,243.1 213.5,116.0 235.2,233.3 256.9,125.0 278.6,225.1 300.3,132.5 322.0,218.2 343.7,138.7 365.4,212.6 387.1,143.9 408.8,207.8 430.5,148.3 452.2,203.8 473.9,151.9 495.6,200.5 517.3,154.9 539.0,197.8 560.7,157.4 582.4,195.5 604.1,159.5 625.8,193.6 647.5,161.2 669.2,192.0 690.9,162.7 712.6,190.7 734.3,163.9 756.0,189.6 777.7,164.9 799.4,188.6 821.1,165.8 842.8,187.9 864.5,166.5 886.2,187.2 907.9,167.1 929.6,186.7 951.3,167.5 973.0,186.2" fill="none" stroke="#2563eb" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="114" y="278" font-size="14" fill="#2563eb" font-family="Arial, sans-serif">Binomial estimate</text>
+</svg>

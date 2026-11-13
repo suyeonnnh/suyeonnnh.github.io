@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "Computational Finance : Monte Carlo Greeks and Binomial Trees"
+title: "Computational Finance IV — Monte Carlo Greeks and Binomial Trees"
 date: 2026-11-13
-categories: [Computational Finance]
+categories: [Computational-Finance]
 tags: [Monte-Carlo, Greeks, Malliavin, Binomial-Tree, Black-Scholes, CRR]
 math: false
 ---
