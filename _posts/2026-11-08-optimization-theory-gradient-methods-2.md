@@ -1,6 +1,6 @@
 ---
 title: "Optimization Theory : Gradient Methods 2"
-date: 2026-11-13 00:00:00 +0100
+date: 2026-11-08 00:00:00 +0100
 categories:
   - Optimization Theory
 tags:
