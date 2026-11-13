@@ -1,5 +1,5 @@
 ---
-title: "Linear Programming1"
+title: "Optimization Theory : Linear Programming1"
 date: 2026-11-13 10:00:00 +0100
 categories:
   - Optimization Theory
