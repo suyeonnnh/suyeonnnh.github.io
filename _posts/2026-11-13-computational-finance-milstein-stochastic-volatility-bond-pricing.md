@@ -1,6 +1,6 @@
 ---
 title: "Computational Finance : Milstein Scheme, Stochastic Volatility and Bond Pricing"
-date: 2026-11-13 16:00:00 +0100
+date: 2026-11-13 12:30:00 +0100
 categories:
   - Computational Finance
 tags:
