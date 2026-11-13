@@ -1,6 +1,6 @@
 ---
 title: "Computational Finance : Black–Scholes Replication and Monte Carlo Greeks"
-date: 2026-11-13 17:00:00 +0100
+date: 2026-11-13 13:00:00 +0100
 categories:
   - Computational Finance
 tags:
