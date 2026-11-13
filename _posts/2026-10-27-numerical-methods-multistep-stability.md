@@ -618,7 +618,7 @@ print(f"\nStiffness ratio: {ratio:.2f}")
 
 *Figure 7. AB2의 시간 간격에 따른 빠른 성분 안정성 비교.*
 
-정확해 `y₂(t)=exp(−1000t)`는 감소하지만, 큰 시간 간격에서는 수치적인 기생 모드가 성장한다. 이는 절대안정성 제약** 때문이다.
+정확해 `y₂(t)=exp(−1000t)`는 감소하지만, 큰 시간 간격에서는 수치적인 기생 모드가 성장한다. 이는 절대안정성 제약 때문이다.
 
 **Python 구현**
 
@@ -1359,6 +1359,851 @@ plt.show()
 - **Stiffness:** 강성비 `1000`인 시스템에서 AB2는 큰 스텝으로 불안정해졌지만 BDF-1과 BDF-2는 강한 감쇠 모드를 안정적으로 처리했다. **안정성과 정확성은 별도로 검증**해야 한다.
 - **Shooting Methods:** 선형 문제는 두 IVP의 결합으로, 비선형 문제는 초기 기울기에 대한 Newton 업데이트로 해결했다. 변분방정식을 함께 적분하면 도함수에 대한 유한차분 근사 없이 Newton 반복이 가능하다.
 
+
+## Lab 5–6 — Numerical Experiments: Shooting, Finite Differences, and Heat Equation
+
+Lab 4에서 구현한 Shooting Method를 Lab 5의 지정된 경계값 문제에 적용한다. 이어서 유한차분법과 Thomas Algorithm으로 이산화한 BVP를 풀고, Lab 6의 열방정식에서는 명시적 FTCS와 암시적 BTCS의 안정성을 비교한다. 각 코드 아래에는 실행 결과와 해당 그래프를 배치했다.
+
+## Lab 5 — Shooting Methods and Boundary Value Problems
+
+Lab 5는 Linear Shooting, Nonlinear Shooting, 중앙차분법과 Thomas Algorithm으로 구성된다. Shooting 관련 이론은 위의 **Section 6.1–6.2**, 유한차분법은 **Section 6.3–6.6**과 연결된다. 각 실습의 수치해와 경계조건을 Python으로 확인했다.
+
+### Lab 5 — Exercise 1: Linear Shooting with RK4
+
+> **Problem**  
+> Solve the given linear second-order Dirichlet BVP using two IVPs (inhomogeneous and homogeneous) integrated with RK4.
+
+<div style="max-width:100%;overflow-x:auto;margin:14px 0 18px;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 54" role="img" aria-label="y″ = −(2/x)y′ + (2/x²)y + sin(ln x)/x²,    1 ≤ x ≤ 2" style="display:block;width:100%;max-width:780px;height:auto;">
+<text x="12" y="35" font-size="20" fill="currentColor" font-family="Georgia, serif">y″ = −(2/x)y′ + (2/x²)y + sin(ln x)/x²,    1 ≤ x ≤ 2</text>
+</svg>
+</div>
+경계조건은 `y(1)=1`, `y(2)=2`이다. 비제차 초기값 문제 `y₁(1)=1`, `y₁′(1)=0`과 동차 초기값 문제 `y₂(1)=0`, `y₂′(1)=1`을 RK4로 계산한다. 선형 결합 `y=y₁+c y₂`의 계수는 오른쪽 경계에서 결정한다.
+
+<div style="max-width:100%;overflow-x:auto;margin:14px 0 18px;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 54" role="img" aria-label="c = [2 − y₁(2)] / y₂(2),    y(x) = y₁(x) + c y₂(x)" style="display:block;width:100%;max-width:700px;height:auto;">
+<text x="12" y="35" font-size="20" fill="currentColor" font-family="Georgia, serif">c = [2 − y₁(2)] / y₂(2),    y(x) = y₁(x) + c y₂(x)</text>
+</svg>
+</div>
+**Python implementation**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def rk4_step(rhs, x, state, h):
+    k1 = rhs(x, state)
+    k2 = rhs(x + h/2, state + h*k1/2)
+    k3 = rhs(x + h/2, state + h*k2/2)
+    k4 = rhs(x + h, state + h*k3)
+    return state + (h/6)*(k1 + 2*k2 + 2*k3 + k4)
+
+def integrate_rk4(rhs, x0, x_end, initial_state, steps):
+    x = np.linspace(x0, x_end, steps + 1)
+    h = (x_end - x0)/steps
+    state = np.empty((steps + 1, len(initial_state)), dtype=float)
+    state[0] = np.asarray(initial_state, dtype=float)
+    for i in range(steps):
+        state[i + 1] = rk4_step(rhs, x[i], state[i], h)
+    return x, state
+
+def rhs_ex1(x, state, homogeneous=False):
+    y, yp = state
+    forcing = 0.0 if homogeneous else np.sin(np.log(x))/x**2
+    ypp = -2*yp/x + 2*y/x**2 + forcing
+    return np.array([yp, ypp])
+
+def rhs_ex1_particular(x, state):
+    return rhs_ex1(x, state, homogeneous=False)
+
+def rhs_ex1_homogeneous(x, state):
+    return rhs_ex1(x, state, homogeneous=True)
+
+N = 400
+x, s1 = integrate_rk4(rhs_ex1_particular, 1.0, 2.0, [1.0, 0.0], N)
+_, s2 = integrate_rk4(rhs_ex1_homogeneous, 1.0, 2.0, [0.0, 1.0], N)
+
+c = (2.0 - s1[-1, 0])/s2[-1, 0]
+y = s1[:, 0] + c*s2[:, 0]
+
+print(f"Shooting parameter c = y'(1) = {c:.10f}")
+print(f"Computed boundary value y(2) = {y[-1]:.10f}")
+
+plt.plot(x, y, label="Linear shooting solution")
+plt.scatter([1, 2], [1, 2], color="red", zorder=3, label="Boundary data")
+plt.xlabel("x")
+plt.ylabel("y(x)")
+plt.title("Exercise 1: Linear Shooting with RK4")
+plt.grid(True)
+plt.legend()
+plt.show()
+```
+
+**Numerical results**
+
+```text
+Shooting parameter c = y'(1) = 0.9176210395
+Computed boundary value y(2) = 2.0000000000
+```
+
+**Figure 1. Linear Shooting with RK4.** 실선은 두 초기값 문제를 결합한 수치해이고 점은 양 끝의 Dirichlet 경계값이다.
+
+![Figure 1: Numerical result](/assets/images/ode_lab5_1_linear_shooting.png)
+
+### Lab 5 — Exercise 2: Nonlinear Shooting and Sensitivity Equation
+
+> **Problem**  
+> Solve the nonlinear BVP using Newton–Raphson iterations on the initial slope. Integrate the sensitivity equation simultaneously with the state equation.
+
+<div style="max-width:100%;overflow-x:auto;margin:14px 0 18px;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 730 54" role="img" aria-label="y″ = (32 + 2x³ − y y′)/8,   1 ≤ x ≤ 3" style="display:block;width:100%;max-width:730px;height:auto;">
+<text x="12" y="35" font-size="20" fill="currentColor" font-family="Georgia, serif">y″ = (32 + 2x³ − y y′)/8,   1 ≤ x ≤ 3</text>
+</svg>
+</div>
+경계값은 `y(1)=17`, `y(3)=43/3`이다. 미지의 초기 기울기를 `t=y′(1)`로 놓고 `z=∂y/∂t`, `w=z′`, `v=y′`를 함께 계산한다. 변분방정식은 다음과 같다.
+
+<div style="max-width:100%;overflow-x:auto;margin:14px 0 18px;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 770 54" role="img" aria-label="z″ = −(z v + y w)/8,    z(1)=0,    z′(1)=1" style="display:block;width:100%;max-width:770px;height:auto;">
+<text x="12" y="35" font-size="20" fill="currentColor" font-family="Georgia, serif">z″ = −(z v + y w)/8,    z(1)=0,    z′(1)=1</text>
+</svg>
+</div>
+오른쪽 경계의 잔차 `R(t)=y(3;t)−43/3`과 도함수 `R′(t)=z(3;t)`를 사용해 `t ← t−R(t)/R′(t)`로 갱신한다.
+
+**Python implementation**
+
+```python
+def rhs_ex2(x, state):
+    y, v, z, w = state
+    ypp = (32 + 2*x**3 - y*v)/8
+    zpp = -(z*v + y*w)/8
+    return np.array([v, ypp, w, zpp])
+
+def shoot_ex2(t, steps=1200):
+    _, state = integrate_rk4(rhs_ex2, 1.0, 3.0, [17.0, t, 0.0, 1.0], steps)
+    y_at_3 = state[-1, 0]
+    sensitivity_at_3 = state[-1, 2]
+    residual = y_at_3 - 43.0/3.0
+    return residual, sensitivity_at_3, state
+
+t = -4.0/3.0  # Initial slope guess based on the secant between the boundary values
+tolerance = 1e-10
+max_iterations = 30
+
+for iteration in range(max_iterations):
+    residual, derivative, state = shoot_ex2(t)
+    print(f"Iteration {iteration:2d}: t = {t:.12f}, residual = {residual:.3e}")
+    if abs(residual) < tolerance:
+        break
+    if abs(derivative) < 1e-14:
+        raise RuntimeError("Newton iteration failed: sensitivity is too close to zero.")
+    t -= residual/derivative
+else:
+    raise RuntimeError("Newton iteration did not converge within the iteration limit.")
+
+x_ex2 = np.linspace(1.0, 3.0, len(state))
+y_ex2 = state[:, 0]
+print(f"\nConverged initial slope y'(1) = {t:.12f}")
+print(f"Computed boundary value y(3) = {y_ex2[-1]:.12f}")
+
+plt.plot(x_ex2, y_ex2, label="Nonlinear shooting solution")
+plt.scatter([1, 3], [17, 43/3], color="red", zorder=3, label="Boundary data")
+plt.xlabel("x")
+plt.ylabel("y(x)")
+plt.title("Exercise 2: Nonlinear Shooting with Newton–Raphson")
+plt.grid(True)
+plt.legend()
+plt.show()
+```
+
+**Numerical results**
+
+```text
+Iteration  0: t = -1.333333333333, residual = 6.146e+00
+Iteration  1: t = -16.317487122625, residual = -1.428e+00
+Iteration  2: t = -14.108569798501, residual = -6.398e-02
+Iteration  3: t = -14.000225758023, residual = -1.328e-04
+Iteration  4: t = -14.000000000986, residual = -5.725e-10
+Iteration  5: t = -14.000000000012, residual = 3.553e-15
+
+Converged initial slope y'(1) = -14.000000000012
+Computed boundary value y(3) = 14.333333333333
+```
+
+**Figure 2. Nonlinear Shooting with Newton–Raphson.** 초기 기울기 보정 후 수치해가 두 경계값을 만족한다.
+
+![Figure 2: Numerical result](/assets/images/ode_lab5_2_nonlinear_shooting.png)
+
+## Lab 5 — Exercise 3 / Lab 6 — Exercise 1: Finite Difference BVP and TDMA
+
+두 실습 모두 1D 선형 BVP의 격자 생성, 2차 중앙차분, 삼중대각행렬 조립, Thomas Algorithm, Ghost Point를 요구한다. LAB 5의 Exercise 3과 LAB 6의 Exercise 1은 중복 구현을 반복하지 않고, LAB 6의 보다 상세한 유도와 수렴 검증을 묶어 정리했다.
+
+> **Problem**  
+> Discretize `u″+p(x)u′+q(x)u=f(x)` on `[0,1]`, assemble a tridiagonal system with Dirichlet conditions, solve it with TDMA, and handle zero-flux Neumann boundary data using a ghost point.
+
+### Lab 5–6 — Grid Generation and Central Difference Discretization
+
+균일 격자 `xᵢ=ih`, `h=1/N`을 사용한다. 내부 격자점에서 2차 정확도의 중앙차분을 대입하면 아래 방정식이 나온다.
+
+<div style="max-width:100%;overflow-x:auto;margin:14px 0 18px;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 54" role="img" aria-label="(1−hpᵢ/2)uᵢ₋₁ + (−2+h²qᵢ)uᵢ + (1+hpᵢ/2)uᵢ₊₁ = h²fᵢ" style="display:block;width:100%;max-width:960px;height:auto;">
+<text x="12" y="35" font-size="20" fill="currentColor" font-family="Georgia, serif">(1−hpᵢ/2)uᵢ₋₁ + (−2+h²qᵢ)uᵢ + (1+hpᵢ/2)uᵢ₊₁ = h²fᵢ</text>
+</svg>
+</div>
+**Python implementation — Grid and coefficients**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def uniform_grid(N):
+    if not isinstance(N, (int, np.integer)) or N < 2:
+        raise ValueError("N must be an integer >= 2")
+
+    return np.linspace(0.0, 1.0, N + 1), 1.0 / N
+
+x_demo, h_demo = uniform_grid(10)
+
+print("h =", h_demo)
+print("Grid nodes:", x_demo)
+
+assert len(x_demo) == 11
+assert np.allclose(np.diff(x_demo), h_demo)
+
+def central_coefficients(x, h, p, q, f):
+    """Return tridiagonal coefficients at interior nodes."""
+
+    xi = np.asarray(x[1:-1])
+
+    pi = np.asarray([p(t) for t in xi], dtype=float)
+    qi = np.asarray([q(t) for t in xi], dtype=float)
+    fi = np.asarray([f(t) for t in xi], dtype=float)
+
+    lower = 1 - h * pi / 2
+    diag = -2 + h**2 * qi
+    upper = 1 + h * pi / 2
+    rhs = h**2 * fi
+
+    return lower, diag, upper, rhs
+
+
+# Illustrative coefficient functions
+p = lambda x: 0.0
+q = lambda x: -1.0
+f = lambda x: -1.0 - x
+
+lower, diag, upper, rhs = central_coefficients(
+    x_demo, h_demo, p, q, f
+)
+
+print("First interior row coefficients:")
+print("Lower:", lower[0])
+print("Main:", diag[0])
+print("Upper:", upper[0])
+print("RHS:", rhs[0])
+```
+
+### Lab 5–6 — Matrix Assembly and Thomas Algorithm
+
+내부 미지수 `u₁, …, uₙ₋₁`을 포함한 삼중대각 시스템 `Au=b`를 만든다. Dirichlet 경계값은 첫 번째와 마지막 내부 행의 우변에 반영한다. TDMA는 전진 소거와 후진 대입을 통해 `O(N)` 연산으로 해를 구한다.
+
+**Python implementation — Matrix assembly and TDMA**
+
+```python
+def assemble_dirichlet(N, p, q, f, alpha, beta):
+
+    x, h = uniform_grid(N)
+
+    left, main, right, b = central_coefficients(
+        x, h, p, q, f
+    )
+
+    b = b.copy()
+
+    # Incorporate Dirichlet boundary conditions
+    b[0] -= left[0] * alpha
+    b[-1] -= right[-1] * beta
+
+    # Lower and upper diagonals
+    a = left[1:].copy()
+    c = right[:-1].copy()
+
+    return x, a, main, c, b
+
+
+N = 40
+alpha, beta = 1.0, 2.0
+
+x, a, d, c, bvec = assemble_dirichlet(
+    N, p, q, f, alpha, beta
+)
+
+# Construct the full matrix for verification
+A = (
+    np.diag(d)
+    + np.diag(a, -1)
+    + np.diag(c, 1)
+)
+
+print("Matrix shape:", A.shape)
+print("RHS shape:", bvec.shape)
+
+print("First three rows of A:")
+print(A[:3, :5])
+
+def thomas(a, d, c, b):
+    """Solve a tridiagonal linear system."""
+
+    d = np.asarray(d, dtype=float).copy()
+    b = np.asarray(b, dtype=float).copy()
+    a = np.asarray(a, dtype=float)
+    c = np.asarray(c, dtype=float)
+
+    n = len(d)
+
+    if len(b) != n or len(a) != n-1 or len(c) != n-1:
+        raise ValueError("Incompatible tridiagonal dimensions")
+
+    # Forward elimination
+    for i in range(1, n):
+
+        if abs(d[i-1]) < 1e-14:
+            raise ZeroDivisionError("Zero pivot in Thomas elimination")
+
+        factor = a[i-1] / d[i-1]
+
+        d[i] -= factor * c[i-1]
+        b[i] -= factor * b[i-1]
+
+    if abs(d[-1]) < 1e-14:
+        raise ZeroDivisionError("Zero final pivot")
+
+    # Back substitution
+    u = np.empty(n)
+
+    u[-1] = b[-1] / d[-1]
+
+    for i in range(n-2, -1, -1):
+        u[i] = (b[i] - c[i]*u[i+1]) / d[i]
+
+    return u
+
+
+# Solve the Dirichlet boundary value problem
+u_int = thomas(a, d, c, bvec)
+
+u = np.r_[alpha, u_int, beta]
+u_exact = 1 + x
+
+# Numerical verification
+print("Maximum error:",
+      np.max(np.abs(u - u_exact)))
+
+print("TDMA vs NumPy solver:",
+      np.max(np.abs(u_int - np.linalg.solve(A, bvec))))
+
+assert np.allclose(u, u_exact, atol=1e-11)
+
+# Plot numerical and exact solutions
+plt.figure(figsize=(8, 5))
+
+plt.plot(x, u, 'o', ms=3, label='TDMA')
+plt.plot(x, u_exact, '-', label='Exact: 1+x')
+
+plt.xlabel('x')
+plt.ylabel('u(x)')
+plt.title('Exercise 1: Dirichlet BVP')
+
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+**Numerical verification**
+
+```text
+Maximum error: 4.1744385725905886e-14
+TDMA vs NumPy solver: 6.661338147750939e-16
+```
+
+**Figure 3. Dirichlet BVP solved by TDMA.** 수치해와 정확해 `u(x)=1+x`를 비교한다.
+
+![Figure 3: Numerical result](/assets/images/ode_lab6_1_dirichlet_tdma.png)
+
+### Lab 5–6 — Neumann Boundary and Ghost Point
+
+오른쪽 경계에 `u′(1)=0`을 부과하고 가상점 `xₙ₊₁=1+h`를 도입한다. 중앙차분 경계식에서 `uₙ₊₁=uₙ₋₁`을 얻는다. 경계점의 ODE에 대입하면 최종 행의 하대각 계수는 `2`, 주대각 계수는 `−2+h²qₙ`이다.
+
+<div style="max-width:100%;overflow-x:auto;margin:14px 0 18px;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 54" role="img" aria-label="uₙ₊₁ = uₙ₋₁,    2uₙ₋₁ + (−2+h²qₙ)uₙ = h²fₙ" style="display:block;width:100%;max-width:780px;height:auto;">
+<text x="12" y="35" font-size="20" fill="currentColor" font-family="Georgia, serif">uₙ₊₁ = uₙ₋₁,    2uₙ₋₁ + (−2+h²qₙ)uₙ = h²fₙ</text>
+</svg>
+</div>
+LAB 6의 검증 함수는 `u(x)=cos(πx)`이고, `p(x)=0`, `q(x)=−1`, `f(x)=−(π²+1)cos(πx)`, `u(0)=1`이다. 격자 크기를 줄였을 때 최대오차의 감소 비율로 2차 수렴을 확인한다.
+
+**Python implementation — Neumann boundary and convergence**
+
+```python
+def solve_neumann_right(N, p, q, f, alpha):
+
+    x, h = uniform_grid(N)
+
+    # Unknowns: u_1, ..., u_N
+    a = np.zeros(N-1)
+    d = np.zeros(N)
+    c = np.zeros(N-1)
+    b = np.zeros(N)
+
+    # Interior equations
+    for i in range(1, N):
+
+        xi = x[i]
+
+        li = 1 - h*p(xi)/2
+        di = -2 + h*h*q(xi)
+        ri = 1 + h*p(xi)/2
+
+        row = i-1
+
+        d[row] = di
+        b[row] = h*h*f(xi)
+
+        if i == 1:
+            b[row] -= li*alpha
+        else:
+            a[row-1] = li
+
+        c[row] = ri
+
+    # Ghost-point condition at x = 1:
+    # u_(N+1) = u_(N-1)
+    a[-1] = 2.0
+    d[-1] = -2 + h*h*q(x[-1])
+    b[-1] = h*h*f(x[-1])
+
+    return x, np.r_[alpha, thomas(a, d, c, b)]
+
+
+# Illustrative test problem
+pN = lambda x: 0.0
+qN = lambda x: -1.0
+fN = lambda x: -(np.pi**2 + 1)*np.cos(np.pi*x)
+
+xN, uN = solve_neumann_right(
+    80, pN, qN, fN, 1.0
+)
+
+hN = xN[1] - xN[0]
+
+# Verify the Neumann boundary condition
+ghost = uN[-2]
+
+centered_boundary_derivative = (
+    ghost - uN[-2]
+) / (2*hN)
+
+one_sided_derivative = (
+    3*uN[-1] - 4*uN[-2] + uN[-3]
+) / (2*hN)
+
+print("Centered ghost-point derivative:",
+      centered_boundary_derivative)
+
+print("Second-order one-sided derivative:",
+      one_sided_derivative)
+
+print("Maximum solution error:",
+      np.max(np.abs(uN - np.cos(np.pi*xN))))
+
+
+# Plot the numerical and exact solutions
+plt.figure(figsize=(8, 5))
+
+plt.plot(xN, uN, label='Ghost-point solution')
+
+plt.plot(
+    xN,
+    np.cos(np.pi*xN),
+    '--',
+    label='Exact solution'
+)
+
+plt.xlabel('x')
+plt.ylabel('u(x)')
+plt.title('Exercise 1: Zero-flux Boundary at x=1')
+
+plt.grid(True)
+plt.legend()
+plt.show()
+
+
+# Check second-order convergence
+Ns = [20, 40, 80, 160]
+errors = []
+
+for ni in Ns:
+
+    xx, uu = solve_neumann_right(
+        ni, pN, qN, fN, 1.0
+    )
+
+    errors.append(
+        np.max(np.abs(uu - np.cos(np.pi*xx)))
+    )
+
+print("N / max error / observed order")
+
+for j, ni in enumerate(Ns):
+
+    order = (
+        '---' if j == 0
+        else f'{np.log2(errors[j-1]/errors[j]):.3f}'
+    )
+
+    print(f'{ni:3d} / {errors[j]:.6e} / {order}')
+
+assert np.log2(errors[-2]/errors[-1]) > 1.8
+```
+
+**Numerical results**
+
+```text
+Centered ghost-point derivative: 0.0
+Second-order one-sided derivative: -4.75563953239444e-05
+Maximum solution error: 0.0001923203505393989
+N / max error / observed order
+ 20 / 3.080231e-03 / ---
+ 40 / 7.694366e-04 / 2.001
+ 80 / 1.923204e-04 / 2.000
+160 / 4.807766e-05 / 2.000
+```
+
+**Figure 4. Neumann BVP.** Ghost Point 해와 정확해 비교, 2차 수렴 확인.
+
+![Figure 4: Numerical result](/assets/images/ode_lab6_1_neumann_ghost.png)
+
+LAB 5의 별도 예제에서는 `u=x²`(Dirichlet), `u=x(2−x)`(Neumann)를 검사했다. 두 예제는 중앙차분으로 정확하게 재현되며 최대오차가 각각 약 `6.66×10⁻¹⁶`, `1.75×10⁻¹⁴`였다. 원본 LAB 5의 마지막 줄에서 `u_ghost = 2*ghost_value - uN[-1]`로 작성한 식은 `u′(1)=0`의 중앙차분 조건과 일치하지 않는다. 해당 조건에 맞는 값은 `u_ghost = uN[-2]`이므로, 경계 미분 확인 코드는 다음과 같이 고친다.
+
+```python
+# Correct ghost value for the zero-flux Neumann condition
+h = xN[1] - xN[0]
+u_ghost = uN[-2]
+centered_gradient = (u_ghost - uN[-2]) / (2*h)
+print("Centered boundary gradient:", centered_gradient)
+```
+
+## Lab 6 — Heat Equation and Stability Analysis
+
+LAB 6의 두 번째 문제는 1D 열방정식을 FTCS와 BTCS로 풀어 시간 간격에 따른 안정성을 확인한다. 위 Section 3의 Absolute Stability 개념을 편미분방정식의 공간차분에 적용한다.
+
+> **Problem**  
+> Solve `uₜ=αuₓₓ` with initial condition `u(x,0)=sin(πx/L)` and homogeneous Dirichlet boundaries. Compare FTCS and BTCS; solve BTCS using the Thomas algorithm.
+
+### Lab 6 — Exercise 2(1): Spatial and Temporal Grids
+
+공간격자 `Δx=L/Nₓ`, 시간격자 `Δt=T/Nₜ`를 정의한다. 안정성 판단에 사용하는 Fourier number는 다음과 같다.
+
+<div style="max-width:100%;overflow-x:auto;margin:14px 0 18px;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 54" role="img" aria-label="F = α Δt / (Δx)²" style="display:block;width:100%;max-width:520px;height:auto;">
+<text x="12" y="35" font-size="20" fill="currentColor" font-family="Georgia, serif">F = α Δt / (Δx)²</text>
+</svg>
+</div>
+검증 예제는 `L=1`, `T=0.1`, `α=1`을 사용한다. 주어진 초기 및 경계조건에 대응하는 정확해는 다음과 같다.
+
+<div style="max-width:100%;overflow-x:auto;margin:14px 0 18px;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 54" role="img" aria-label="u(x,t) = exp[−α(π/L)²t] sin(πx/L)" style="display:block;width:100%;max-width:760px;height:auto;">
+<text x="12" y="35" font-size="20" fill="currentColor" font-family="Georgia, serif">u(x,t) = exp[−α(π/L)²t] sin(πx/L)</text>
+</svg>
+</div>
+**Python implementation — Grids and exact solution**
+
+```python
+L = 1.0
+T = 0.1
+diffusivity = 1.0
+
+Nx = 20
+dx = L / Nx
+
+x_heat = np.linspace(0, L, Nx+1)
+
+initial = np.sin(np.pi*x_heat/L)
+
+
+def exact_heat(x, t, alpha=diffusivity, L=L):
+    return (
+        np.exp(-alpha*(np.pi/L)**2*t)
+        * np.sin(np.pi*x/L)
+    )
+
+
+print("dx =", dx)
+print("Initial boundary values:",
+      initial[0], initial[-1])
+```
+
+### Lab 6 — Exercise 2(2): Explicit FTCS Scheme
+
+전진 시간차분과 중앙 공간차분을 결합하면 다음 갱신식을 얻는다.
+
+<div style="max-width:100%;overflow-x:auto;margin:14px 0 18px;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 54" role="img" aria-label="uᵢⁿ⁺¹ = uᵢⁿ + F(uᵢ₊₁ⁿ − 2uᵢⁿ + uᵢ₋₁ⁿ)" style="display:block;width:100%;max-width:780px;height:auto;">
+<text x="12" y="35" font-size="20" fill="currentColor" font-family="Georgia, serif">uᵢⁿ⁺¹ = uᵢⁿ + F(uᵢ₊₁ⁿ − 2uᵢⁿ + uᵢ₋₁ⁿ)</text>
+</svg>
+</div>
+FTCS는 `F≤0.5`일 때 안정하다. 원래 초기조건이 하나의 저주파 sine 모드이므로, 불안정 사례에서 성장하는 고주파 오차를 관찰하도록 `10⁻⁸` 크기의 교란을 추가했다. 이 교란은 원본 문제의 초기조건에는 포함되지 않는다.
+
+**Python implementation — FTCS**
+
+```python
+def ftcs(Nx, Nt, L=1.0, T=0.1,
+         alpha=1.0, perturb=False):
+
+    x = np.linspace(0, L, Nx+1)
+
+    dx = L / Nx
+    dt = T / Nt
+
+    F = alpha*dt/dx**2
+
+    # Initial condition
+    u = np.sin(np.pi*x/L)
+
+    if perturb:
+        # Diagnostic perturbation for instability demonstration
+        u[1:-1] += (
+            1e-8*(-1.0)**np.arange(1, Nx)
+        )
+
+    u[0] = 0.0
+    u[-1] = 0.0
+
+    history = [u.copy()]
+
+    # Explicit time stepping
+    for _ in range(Nt):
+
+        v = u.copy()
+
+        v[1:-1] = (
+            u[1:-1]
+            + F*(u[2:] - 2*u[1:-1] + u[:-2])
+        )
+
+        v[0] = 0.0
+        v[-1] = 0.0
+
+        u = v
+        history.append(u.copy())
+
+    return x, F, np.asarray(history)
+
+
+Nx = 20
+
+# Stable and unstable time-step choices
+Nt_stable = int(
+    np.ceil(diffusivity*T/(0.4*(L/Nx)**2))
+)
+
+Nt_unstable = int(
+    np.ceil(diffusivity*T/(0.8*(L/Nx)**2))
+)
+
+
+# Stable FTCS
+xs, Fs, stable_hist = ftcs(
+    Nx, Nt_stable, L, T, diffusivity
+)
+
+# Unstable FTCS with a small perturbation
+xu, Fu, unstable_hist = ftcs(
+    Nx, Nt_unstable, L, T,
+    diffusivity, perturb=True
+)
+
+
+print(
+    f"Stable: Nt={Nt_stable}, F={Fs:.4f}, "
+    f"final error="
+    f"{np.max(np.abs(stable_hist[-1]-exact_heat(xs,T))):.4e}"
+)
+
+print(
+    f"Unstable demonstration: Nt={Nt_unstable}, "
+    f"F={Fu:.4f}, final max amplitude="
+    f"{np.max(np.abs(unstable_hist[-1])):.4e}"
+)
+
+
+# Plot stable and unstable solutions
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+
+ax[0].plot(
+    xs, stable_hist[-1], 'o-',
+    label='FTCS, F <= 0.5'
+)
+
+ax[0].plot(
+    xs, exact_heat(xs, T), '--',
+    label='Exact'
+)
+
+ax[0].set_title('Stable FTCS')
+ax[0].legend()
+ax[0].grid(True)
+
+
+ax[1].plot(
+    xu, unstable_hist[-1], 'o-',
+    label='FTCS, F > 0.5'
+)
+
+ax[1].plot(
+    xu, exact_heat(xu, T), '--',
+    label='Exact'
+)
+
+ax[1].set_title('Unstable FTCS (perturbed IC)')
+ax[1].legend()
+ax[1].grid(True)
+
+for aa in ax:
+    aa.set_xlabel('x')
+    aa.set_ylabel('u(x,T)')
+
+plt.tight_layout()
+plt.show()
+```
+
+**Numerical results**
+
+```text
+Stable: Nt=100, F=0.4000, final error=1.0625e-03
+Unstable demonstration: Nt=50, F=0.8000, final max amplitude=1.0623e+09
+```
+
+**Figure 5. FTCS stability.** `F=0.4`에서는 정확해에 가깝고, `F=0.8`에서는 작은 교란이 큰 진폭으로 증폭된다.
+
+![Figure 5: Numerical result](/assets/images/ode_lab6_2_ftcs_stability.png)
+
+### Lab 6 — Exercise 2(3): Implicit BTCS Scheme
+
+BTCS는 새 시각의 공간차분을 사용한다. 매 시간단계에서 삼중대각 시스템을 풀며, LAB 6 Exercise 1의 Thomas solver를 그대로 재사용한다.
+
+<div style="max-width:100%;overflow-x:auto;margin:14px 0 18px;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 54" role="img" aria-label="−Fuᵢ₋₁ⁿ⁺¹ + (1+2F)uᵢⁿ⁺¹ − Fuᵢ₊₁ⁿ⁺¹ = uᵢⁿ" style="display:block;width:100%;max-width:880px;height:auto;">
+<text x="12" y="35" font-size="20" fill="currentColor" font-family="Georgia, serif">−Fuᵢ₋₁ⁿ⁺¹ + (1+2F)uᵢⁿ⁺¹ − Fuᵢ₊₁ⁿ⁺¹ = uᵢⁿ</text>
+</svg>
+</div>
+`F>0`에서 무조건 안정이지만, 시간간격이 크면 이산화오차가 증가할 수 있다.
+
+**Python implementation — BTCS**
+
+```python
+def btcs(Nx, Nt, L=1.0, T=0.1, alpha=1.0):
+
+    x = np.linspace(0, L, Nx+1)
+
+    dx = L/Nx
+    dt = T/Nt
+
+    F = alpha*dt/dx**2
+
+    # Initial condition
+    u = np.sin(np.pi*x/L)
+
+    u[0] = 0.0
+    u[-1] = 0.0
+
+    n = Nx-1
+
+    # Tridiagonal matrix coefficients
+    lower = -F*np.ones(n-1)
+    diag = (1+2*F)*np.ones(n)
+    upper = -F*np.ones(n-1)
+
+    history = [u.copy()]
+
+    # Implicit time stepping
+    for _ in range(Nt):
+
+        u[1:-1] = thomas(
+            lower, diag, upper, u[1:-1]
+        )
+
+        u[0] = 0.0
+        u[-1] = 0.0
+
+        history.append(u.copy())
+
+    return x, F, np.asarray(history)
+
+
+# BTCS with F > 0.5
+xb, Fb, btcs_hist = btcs(
+    Nx, Nt_unstable, L, T, diffusivity
+)
+
+# Stable FTCS for comparison
+_, _, ftcs_original = ftcs(
+    Nx, Nt_stable, L, T, diffusivity
+)
+
+truth = exact_heat(xb, T)
+
+
+# Error comparison
+print("BTCS F:", Fb)
+
+print(
+    "BTCS maximum error:",
+    np.max(np.abs(btcs_hist[-1] - truth))
+)
+
+print(
+    "Stable FTCS maximum error:",
+    np.max(np.abs(ftcs_original[-1] - truth))
+)
+
+
+# Plot comparison
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    xb, truth, 'k-',
+    label='Exact'
+)
+
+plt.plot(
+    xb, btcs_hist[-1], 's--',
+    label=f'BTCS (F={Fb:.2f})'
+)
+
+plt.plot(
+    xb, ftcs_original[-1], 'o:',
+    label=f'FTCS (F={Fs:.2f})'
+)
+
+plt.xlabel('x')
+plt.ylabel('u(x,T)')
+plt.title('Heat Equation at T=0.1')
+
+plt.grid(True)
+plt.legend()
+plt.show()
+```
+
+**Numerical results**
+
+```text
+BTCS F: 0.7999999999999998
+BTCS maximum error: 0.004349741210414815
+Stable FTCS maximum error: 0.001062511783011033
+```
+
+**Figure 6. BTCS and FTCS versus the exact heat solution.** `F=0.8`에서도 BTCS는 안정적으로 계산되지만, 이 설정에서 안정한 FTCS보다 오차가 크다.
+
+![Figure 6: Numerical result](/assets/images/ode_lab6_2_btcs_comparison.png)
 
 ## Detailed Lecture Notes — Linear Multistep Methods, Stability, and BVPs
 
@@ -2213,8 +3058,8 @@ print('Thomas check passed:', y)
 - Raj Dhara, *Lec-4_scheme*, pp. 10–14.
 - Raj Dhara, *Numerical Method Lab: ODE Numerical Schemes & Convergence*, Exercise 5.
 - Raj Dhara, *Numerical Method Lab 4: Group-2 — ODE Numerical Schemes & Convergence*, 2026-10-28, Exercises 1–3.
-- `LAB_4.ipynb`, Exercises 1(a)–3(c): numerical experiments and generated figures.
 
 
 ---
-
+- Raj Dhara, *Numerical Method Lab 5: Group-2*, 2026-11-04, Exercises 1–3.
+- Raj Dhara, *Numerical Method Lab (uploaded as Lab 6)*, 2026-11-13, Exercises 1–2.
